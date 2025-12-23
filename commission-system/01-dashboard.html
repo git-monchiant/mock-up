@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Commission System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Sarabun', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-green-800 text-white">
+            <div class="p-4 border-b border-green-700">
+                <h1 class="text-xl font-bold">Commission System</h1>
+                <p class="text-sm text-green-300">ระบบคำนวณค่าคอมมิชชั่น</p>
+            </div>
+            <nav class="mt-4">
+                <a href="01-dashboard.html" class="flex items-center px-4 py-3 bg-green-700 text-white">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                    </svg>
+                    Dashboard
+                </a>
+                <a href="02-sale-commission.html" class="flex items-center px-4 py-3 text-green-200 hover:bg-green-700 hover:text-white">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                    </svg>
+                    Commission พนักงานขาย
+                </a>
+                <a href="03-agent-commission.html" class="flex items-center px-4 py-3 text-green-200 hover:bg-green-700 hover:text-white">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                    </svg>
+                    Commission Agent
+                </a>
+                <a href="04-commission-detail.html" class="flex items-center px-4 py-3 text-green-200 hover:bg-green-700 hover:text-white">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    รายละเอียดรายบุคคล
+                </a>
+                <a href="05-reports.html" class="flex items-center px-4 py-3 text-green-200 hover:bg-green-700 hover:text-white">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                    </svg>
+                    รายงาน
+                </a>
+            </nav>
+
+            <div class="absolute bottom-0 w-64 p-4 border-t border-green-700">
+                <a href="../index.html" class="flex items-center text-green-200 hover:text-white">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                    </svg>
+                    กลับหน้าหลัก
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 overflow-y-auto">
+            <!-- Header -->
+            <header class="bg-white shadow-sm">
+                <div class="px-6 py-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-800">Commission Dashboard</h2>
+                            <p class="text-sm text-gray-600 mt-1">ภาพรวมค่าคอมมิชชั่นประจำเดือน มกราคม 2026</p>
+                        </div>
+                        <div>
+                            <select class="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                                <option>มกราคม 2026</option>
+                                <option>ธันวาคม 2025</option>
+                                <option>พฤศจิกายน 2025</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <div class="p-6">
+                <!-- KPI Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                    <div class="bg-white rounded-lg shadow p-6 border-l-4 border-green-500">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-sm font-medium text-gray-600">Commission ทั้งหมด</h3>
+                            <span class="text-2xl">💰</span>
+                        </div>
+                        <p class="text-3xl font-bold text-gray-900">2,456,800 ฿</p>
+                        <p class="text-xs text-gray-500 mt-2">+18% จากเดือนที่แล้ว</p>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow p-6 border-l-4 border-blue-500">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-sm font-medium text-gray-600">Incentive</h3>
+                            <span class="text-2xl">🎯</span>
+                        </div>
+                        <p class="text-3xl font-bold text-gray-900">485,000 ฿</p>
+                        <p class="text-xs text-gray-500 mt-2">12 คน ถึงเป้า</p>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow p-6 border-l-4 border-yellow-500">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-sm font-medium text-gray-600">หักคืน (ยกเลิก)</h3>
+                            <span class="text-2xl">⚠️</span>
+                        </div>
+                        <p class="text-3xl font-bold text-gray-900">-156,200 ฿</p>
+                        <p class="text-xs text-gray-500 mt-2">8 รายการ</p>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow p-6 border-l-4 border-purple-500">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-sm font-medium text-gray-600">สุทธิจ่าย</h3>
+                            <span class="text-2xl">✅</span>
+                        </div>
+                        <p class="text-3xl font-bold text-green-600">2,785,600 ฿</p>
+                        <p class="text-xs text-gray-500 mt-2">Commission + Incentive - หักคืน</p>
+                    </div>
+                </div>
+
+                <!-- Charts Section -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                    <!-- Commission by Type -->
+                    <div class="bg-white rounded-lg shadow">
+                        <div class="px-6 py-4 border-b border-gray-200">
+                            <h3 class="text-lg font-semibold text-gray-800">Commission แยกตามประเภท</h3>
+                        </div>
+                        <div class="p-6">
+                            <div class="space-y-4">
+                                <div>
+                                    <div class="flex justify-between mb-2">
+                                        <span class="text-sm font-medium text-gray-700">Commission จองพนักงานขาย</span>
+                                        <span class="text-sm font-semibold text-green-600">1,245,000 ฿</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-3">
+                                        <div class="bg-green-500 h-3 rounded-full" style="width: 45%"></div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <div class="flex justify-between mb-2">
+                                        <span class="text-sm font-medium text-gray-700">Commission โอนพนักงานขาย</span>
+                                        <span class="text-sm font-semibold text-green-600">768,500 ฿</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-3">
+                                        <div class="bg-green-600 h-3 rounded-full" style="width: 28%"></div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <div class="flex justify-between mb-2">
+                                        <span class="text-sm font-medium text-gray-700">Commission จอง Agent</span>
+                                        <span class="text-sm font-semibold text-blue-600">298,300 ฿</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-3">
+                                        <div class="bg-blue-500 h-3 rounded-full" style="width: 11%"></div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <div class="flex justify-between mb-2">
+                                        <span class="text-sm font-medium text-gray-700">Commission โอน Agent</span>
+                                        <span class="text-sm font-semibold text-blue-600">145,000 ฿</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-3">
+                                        <div class="bg-blue-600 h-3 rounded-full" style="width: 5%"></div>
+                                    </div>
+                                </div>
+
+                                <div class="pt-2 border-t border-gray-200">
+                                    <div class="flex justify-between mb-2">
+                                        <span class="text-sm font-medium text-gray-700">Incentive พนักงานขาย</span>
+                                        <span class="text-sm font-semibold text-purple-600">485,000 ฿</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 rounded-full h-3">
+                                        <div class="bg-purple-500 h-3 rounded-full" style="width: 18%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Top Performers -->
+                    <div class="bg-white rounded-lg shadow">
+                        <div class="px-6 py-4 border-b border-gray-200">
+                            <h3 class="text-lg font-semibold text-gray-800">Top 5 Performers ประจำเดือน</h3>
+                        </div>
+                        <div class="p-6">
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between p-3 bg-yellow-50 rounded-lg border-l-4 border-yellow-500">
+                                    <div class="flex items-center">
+                                        <div class="text-2xl mr-3">🥇</div>
+                                        <div>
+                                            <div class="font-semibold text-gray-900">สมชาย ขยันขาย</div>
+                                            <div class="text-xs text-gray-500">พนักงานขาย</div>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="font-bold text-green-600">285,500 ฿</div>
+                                        <div class="text-xs text-gray-500">Com + Inc</div>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg border-l-4 border-gray-400">
+                                    <div class="flex items-center">
+                                        <div class="text-2xl mr-3">🥈</div>
+                                        <div>
+                                            <div class="font-semibold text-gray-900">สมหญิง รักงาน</div>
+                                            <div class="text-xs text-gray-500">พนักงานขาย</div>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="font-bold text-green-600">248,200 ฿</div>
+                                        <div class="text-xs text-gray-500">Com + Inc</div>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center justify-between p-3 bg-orange-50 rounded-lg border-l-4 border-orange-500">
+                                    <div class="flex items-center">
+                                        <div class="text-2xl mr-3">🥉</div>
+                                        <div>
+                                            <div class="font-semibold text-gray-900">วิชัย ขายดี</div>
+                                            <div class="text-xs text-gray-500">พนักงานขาย</div>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="font-bold text-green-600">212,800 ฿</div>
+                                        <div class="text-xs text-gray-500">Com + Inc</div>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                    <div class="flex items-center">
+                                        <div class="text-2xl mr-3">4️⃣</div>
+                                        <div>
+                                            <div class="font-semibold text-gray-900">ศิริ มั่นคง</div>
+                                            <div class="text-xs text-gray-500">Agent</div>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="font-bold text-green-600">185,600 ฿</div>
+                                        <div class="text-xs text-gray-500">Commission</div>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                    <div class="flex items-center">
+                                        <div class="text-2xl mr-3">5️⃣</div>
+                                        <div>
+                                            <div class="font-semibold text-gray-900">อรุณ สุขใจ</div>
+                                            <div class="text-xs text-gray-500">พนักงานขาย</div>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="font-bold text-green-600">178,400 ฿</div>
+                                        <div class="text-xs text-gray-500">Com + Inc</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Transactions -->
+                <div class="bg-white rounded-lg shadow">
+                    <div class="px-6 py-4 border-b border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-800">รายการล่าสุด</h3>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full">
+                            <thead class="bg-gray-50 border-b border-gray-200">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">วันที่</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ชื่อ</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ประเภท</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">รายการ</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">โครงการ</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ยอดขาย</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Commission</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 text-sm">18/01/2026</td>
+                                    <td class="px-6 py-4">
+                                        <div class="font-semibold text-gray-900">สมชาย ขยันขาย</div>
+                                        <div class="text-xs text-gray-500">พนักงานขาย</div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="px-3 py-1 bg-green-100 text-green-800 text-xs rounded-full font-semibold">โอน</span>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm">ห้อง A-1205</td>
+                                    <td class="px-6 py-4 text-sm">NICHE MONO Ratchada</td>
+                                    <td class="px-6 py-4 text-sm font-semibold">2,850,000 ฿</td>
+                                    <td class="px-6 py-4 text-sm font-bold text-green-600">+28,500 ฿</td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 text-sm">18/01/2026</td>
+                                    <td class="px-6 py-4">
+                                        <div class="font-semibold text-gray-900">สมหญิง รักงาน</div>
+                                        <div class="text-xs text-gray-500">พนักงานขาย</div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="px-3 py-1 bg-blue-100 text-blue-800 text-xs rounded-full font-semibold">จอง</span>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm">บ้าน H-208</td>
+                                    <td class="px-6 py-4 text-sm">SENA Park Ville</td>
+                                    <td class="px-6 py-4 text-sm font-semibold">4,250,000 ฿</td>
+                                    <td class="px-6 py-4 text-sm font-bold text-green-600">+21,250 ฿</td>
+                                </tr>
+                                <tr class="hover:bg-gray-50 bg-red-50">
+                                    <td class="px-6 py-4 text-sm">17/01/2026</td>
+                                    <td class="px-6 py-4">
+                                        <div class="font-semibold text-gray-900">วิชัย ขายดี</div>
+                                        <div class="text-xs text-gray-500">พนักงานขาย</div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="px-3 py-1 bg-red-100 text-red-800 text-xs rounded-full font-semibold">ยกเลิก</span>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm">ห้อง B-905</td>
+                                    <td class="px-6 py-4 text-sm">NICHE ID Rama 2</td>
+                                    <td class="px-6 py-4 text-sm font-semibold">2,390,000 ฿</td>
+                                    <td class="px-6 py-4 text-sm font-bold text-red-600">-11,950 ฿</td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 text-sm">16/01/2026</td>
+                                    <td class="px-6 py-4">
+                                        <div class="font-semibold text-gray-900">ศิริ มั่นคง</div>
+                                        <div class="text-xs text-gray-500">Agent</div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="px-3 py-1 bg-green-100 text-green-800 text-xs rounded-full font-semibold">โอน</span>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm">ห้อง C-1508</td>
+                                    <td class="px-6 py-4 text-sm">NICHE MONO Sukhumvit</td>
+                                    <td class="px-6 py-4 text-sm font-semibold">3,200,000 ฿</td>
+                                    <td class="px-6 py-4 text-sm font-bold text-green-600">+32,000 ฿</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

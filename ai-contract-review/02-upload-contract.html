@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Contract - AI Contract Review System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Sarabun', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-indigo-900 text-white">
+            <div class="p-4 border-b border-indigo-800">
+                <h1 class="text-xl font-bold">AI Contract Review</h1>
+                <p class="text-sm text-indigo-300">ระบบตรวจสัญญาอัตโนมัติ</p>
+            </div>
+            <nav class="mt-4">
+                <a href="01-dashboard.html" class="flex items-center px-4 py-3 text-indigo-200 hover:bg-indigo-800 hover:text-white">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                    </svg>
+                    Dashboard
+                </a>
+                <a href="02-upload-contract.html" class="flex items-center px-4 py-3 bg-indigo-800 text-white">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                    </svg>
+                    อัปโหลดสัญญา
+                </a>
+                <a href="03-template-check.html" class="flex items-center px-4 py-3 text-indigo-200 hover:bg-indigo-800 hover:text-white">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    ตรวจ Template
+                </a>
+                <a href="04-risk-analysis.html" class="flex items-center px-4 py-3 text-indigo-200 hover:bg-indigo-800 hover:text-white">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                    </svg>
+                    วิเคราะห์ความเสี่ยง
+                </a>
+                <a href="05-legal-review.html" class="flex items-center px-4 py-3 text-indigo-200 hover:bg-indigo-800 hover:text-white">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    ทีมกฎหมายอนุมัติ
+                </a>
+            </nav>
+
+            <div class="absolute bottom-0 w-64 p-4 border-t border-indigo-800">
+                <a href="../index.html" class="flex items-center text-indigo-200 hover:text-white">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                    </svg>
+                    กลับหน้าหลัก
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 overflow-y-auto">
+            <!-- Header -->
+            <header class="bg-white shadow-sm">
+                <div class="px-6 py-4">
+                    <h2 class="text-2xl font-bold text-gray-800">อัปโหลดสัญญาใหม่</h2>
+                    <p class="text-sm text-gray-600 mt-1">อัปโหลดไฟล์สัญญาเพื่อตรวจสอบด้วย AI</p>
+                </div>
+            </header>
+
+            <!-- Upload Form -->
+            <div class="p-6">
+                <div class="max-w-4xl mx-auto">
+                    <!-- Upload Area -->
+                    <div class="bg-white rounded-lg shadow p-8 mb-6">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">อัปโหลดไฟล์สัญญา</h3>
+
+                        <!-- Drag & Drop Area -->
+                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-12 text-center hover:border-indigo-500 transition-colors cursor-pointer bg-gray-50">
+                            <svg class="mx-auto h-16 w-16 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                            </svg>
+                            <p class="text-lg text-gray-700 mb-2">ลากไฟล์มาวางที่นี่ หรือ คลิกเพื่อเลือกไฟล์</p>
+                            <p class="text-sm text-gray-500">รองรับไฟล์: PDF, DOC, DOCX, TXT (ขนาดไม่เกิน 10MB)</p>
+                            <button class="mt-4 px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
+                                เลือกไฟล์
+                            </button>
+                        </div>
+
+                        <!-- Uploaded Files Preview (Example) -->
+                        <div class="mt-6">
+                            <h4 class="text-sm font-semibold text-gray-700 mb-3">ไฟล์ที่เลือก</h4>
+                            <div class="space-y-2">
+                                <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200">
+                                    <div class="flex items-center">
+                                        <svg class="w-8 h-8 text-red-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                                        </svg>
+                                        <div>
+                                            <p class="text-sm font-medium text-gray-900">สัญญาจ้างก่อสร้างโครงการA.pdf</p>
+                                            <p class="text-xs text-gray-500">2.4 MB</p>
+                                        </div>
+                                    </div>
+                                    <button class="text-red-600 hover:text-red-800">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contract Information Form -->
+                    <div class="bg-white rounded-lg shadow p-8 mb-6">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-6">ข้อมูลสัญญา</h3>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">ชื่อสัญญา *</label>
+                                <input type="text" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="เช่น สัญญาจ้างก่อสร้าง โครงการ A">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">ประเภทสัญญา *</label>
+                                <select class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                    <option>เลือกประเภทสัญญา</option>
+                                    <option>สัญญาจ้างก่อสร้าง</option>
+                                    <option>สัญญาซื้อขาย</option>
+                                    <option>สัญญาเช่า</option>
+                                    <option>สัญญาบริการ</option>
+                                    <option>สัญญาจ้างที่ปรึกษา</option>
+                                    <option>อื่นๆ</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">คู่สัญญา *</label>
+                                <input type="text" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="ชื่อบริษัท/บุคคล">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">มูลค่าสัญญา (บาท)</label>
+                                <input type="text" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="0.00">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">วันที่เริ่มสัญญา</label>
+                                <input type="date" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">วันที่สิ้นสุดสัญญา</label>
+                                <input type="date" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            </div>
+
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">หมายเหตุ</label>
+                                <textarea rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="ระบุรายละเอียดเพิ่มเติม (ถ้ามี)"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Template Selection -->
+                    <div class="bg-white rounded-lg shadow p-8 mb-6">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-6">เลือก Template อ้างอิง</h3>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <label class="relative flex items-center p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-indigo-500 transition-colors">
+                                <input type="radio" name="template" class="mr-3" checked>
+                                <div>
+                                    <p class="font-medium text-gray-900">Template สัญญาจ้างก่อสร้าง (v2.3)</p>
+                                    <p class="text-xs text-gray-500">อัปเดตล่าสุด: 15 ม.ค. 2026</p>
+                                </div>
+                            </label>
+
+                            <label class="relative flex items-center p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-indigo-500 transition-colors">
+                                <input type="radio" name="template" class="mr-3">
+                                <div>
+                                    <p class="font-medium text-gray-900">Template สัญญาจ้างก่อสร้าง (v2.2)</p>
+                                    <p class="text-xs text-gray-500">อัปเดตล่าสุด: 10 ธ.ค. 2025</p>
+                                </div>
+                            </label>
+
+                            <label class="relative flex items-center p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-indigo-500 transition-colors">
+                                <input type="radio" name="template" class="mr-3">
+                                <div>
+                                    <p class="font-medium text-gray-900">ไม่ใช้ Template</p>
+                                    <p class="text-xs text-gray-500">ตรวจสอบเฉพาะความเสี่ยง</p>
+                                </div>
+                            </label>
+
+                            <label class="relative flex items-center p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-indigo-500 transition-colors">
+                                <input type="radio" name="template" class="mr-3">
+                                <div>
+                                    <p class="font-medium text-gray-900">อัปโหลด Template ใหม่</p>
+                                    <p class="text-xs text-gray-500">ใช้ Template ของคุณเอง</p>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- AI Processing Options -->
+                    <div class="bg-white rounded-lg shadow p-8 mb-6">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-6">ตัวเลือกการประมวลผล AI</h3>
+
+                        <div class="space-y-4">
+                            <label class="flex items-start">
+                                <input type="checkbox" class="mt-1 mr-3" checked>
+                                <div>
+                                    <p class="font-medium text-gray-900">ตรวจสอบความตรงตาม Template</p>
+                                    <p class="text-sm text-gray-500">เปรียบเทียบเนื้อหาสัญญากับ Template มาตรฐาน</p>
+                                </div>
+                            </label>
+
+                            <label class="flex items-start">
+                                <input type="checkbox" class="mt-1 mr-3" checked>
+                                <div>
+                                    <p class="font-medium text-gray-900">วิเคราะห์ความเสี่ยง</p>
+                                    <p class="text-sm text-gray-500">ตรวจหาข้อความที่อาจทำให้บริษัทเสียเปรียบ</p>
+                                </div>
+                            </label>
+
+                            <label class="flex items-start">
+                                <input type="checkbox" class="mt-1 mr-3" checked>
+                                <div>
+                                    <p class="font-medium text-gray-900">แปลภาษาสัญญา</p>
+                                    <p class="text-sm text-gray-500">แปลสัญญาภาษาต่างประเทศเป็นภาษาไทย</p>
+                                </div>
+                            </label>
+
+                            <label class="flex items-start">
+                                <input type="checkbox" class="mt-1 mr-3">
+                                <div>
+                                    <p class="font-medium text-gray-900">สรุปประเด็นสำคัญ</p>
+                                    <p class="text-sm text-gray-500">สร้างสรุปประเด็นสำคัญจากสัญญา</p>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex justify-end gap-4">
+                        <a href="01-dashboard.html" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
+                            ยกเลิก
+                        </a>
+                        <a href="03-template-check.html" class="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
+                            เริ่มตรวจสอบ
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

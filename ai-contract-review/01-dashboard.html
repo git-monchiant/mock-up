@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - AI Contract Review System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Sarabun', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-indigo-900 text-white">
+            <div class="p-4 border-b border-indigo-800">
+                <h1 class="text-xl font-bold">AI Contract Review</h1>
+                <p class="text-sm text-indigo-300">ระบบตรวจสัญญาอัตโนมัติ</p>
+            </div>
+            <nav class="mt-4">
+                <a href="01-dashboard.html" class="flex items-center px-4 py-3 bg-indigo-800 text-white">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                    </svg>
+                    Dashboard
+                </a>
+                <a href="02-upload-contract.html" class="flex items-center px-4 py-3 text-indigo-200 hover:bg-indigo-800 hover:text-white">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                    </svg>
+                    อัปโหลดสัญญา
+                </a>
+                <a href="03-template-check.html" class="flex items-center px-4 py-3 text-indigo-200 hover:bg-indigo-800 hover:text-white">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    ตรวจ Template
+                </a>
+                <a href="04-risk-analysis.html" class="flex items-center px-4 py-3 text-indigo-200 hover:bg-indigo-800 hover:text-white">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                    </svg>
+                    วิเคราะห์ความเสี่ยง
+                </a>
+                <a href="05-legal-review.html" class="flex items-center px-4 py-3 text-indigo-200 hover:bg-indigo-800 hover:text-white">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    ทีมกฎหมายอนุมัติ
+                </a>
+            </nav>
+
+            <div class="absolute bottom-0 w-64 p-4 border-t border-indigo-800">
+                <a href="../index.html" class="flex items-center text-indigo-200 hover:text-white">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                    </svg>
+                    กลับหน้าหลัก
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 overflow-y-auto">
+            <!-- Header -->
+            <header class="bg-white shadow-sm">
+                <div class="px-6 py-4">
+                    <h2 class="text-2xl font-bold text-gray-800">Contract Review Dashboard</h2>
+                    <p class="text-sm text-gray-600 mt-1">ภาพรวมการตรวจสอบสัญญาด้วย AI</p>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <div class="p-6">
+                <!-- KPI Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                    <div class="bg-white rounded-lg shadow p-6 border-l-4 border-blue-500">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-sm font-medium text-gray-600">สัญญาทั้งหมด</h3>
+                            <span class="text-2xl">📄</span>
+                        </div>
+                        <p class="text-3xl font-bold text-gray-900">248</p>
+                        <p class="text-xs text-gray-500 mt-2">เดือนนี้: +32 สัญญา</p>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow p-6 border-l-4 border-yellow-500">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-sm font-medium text-gray-600">รอตรวจสอบ</h3>
+                            <span class="text-2xl">⏳</span>
+                        </div>
+                        <p class="text-3xl font-bold text-gray-900">18</p>
+                        <p class="text-xs text-gray-500 mt-2">รอทีมกฎหมายตรวจ</p>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow p-6 border-l-4 border-red-500">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-sm font-medium text-gray-600">พบความเสี่ยง</h3>
+                            <span class="text-2xl">⚠️</span>
+                        </div>
+                        <p class="text-3xl font-bold text-gray-900">7</p>
+                        <p class="text-xs text-gray-500 mt-2">ต้องแก้ไขด่วน</p>
+                    </div>
+
+                    <div class="bg-white rounded-lg shadow p-6 border-l-4 border-green-500">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="text-sm font-medium text-gray-600">อนุมัติแล้ว</h3>
+                            <span class="text-2xl">✅</span>
+                        </div>
+                        <p class="text-3xl font-bold text-gray-900">223</p>
+                        <p class="text-xs text-gray-500 mt-2">90% ผ่านการตรวจสอบ</p>
+                    </div>
+                </div>
+
+                <!-- Contract Processing Status -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                    <!-- Template Compliance -->
+                    <div class="bg-white rounded-lg shadow">
+                        <div class="px-6 py-4 border-b border-gray-200">
+                            <h3 class="text-lg font-semibold text-gray-800">ความตรงตาม Template</h3>
+                        </div>
+                        <div class="p-6">
+                            <div class="mb-4">
+                                <div class="flex justify-between mb-1">
+                                    <span class="text-sm font-medium text-gray-700">ตรงตาม 100%</span>
+                                    <span class="text-sm font-semibold text-green-600">195 สัญญา (79%)</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="bg-green-500 h-2 rounded-full" style="width: 79%"></div>
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <div class="flex justify-between mb-1">
+                                    <span class="text-sm font-medium text-gray-700">ตรงตาม 80-99%</span>
+                                    <span class="text-sm font-semibold text-yellow-600">38 สัญญา (15%)</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="bg-yellow-500 h-2 rounded-full" style="width: 15%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between mb-1">
+                                    <span class="text-sm font-medium text-gray-700">ต่ำกว่า 80%</span>
+                                    <span class="text-sm font-semibold text-red-600">15 สัญญา (6%)</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="bg-red-500 h-2 rounded-full" style="width: 6%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Risk Level Distribution -->
+                    <div class="bg-white rounded-lg shadow">
+                        <div class="px-6 py-4 border-b border-gray-200">
+                            <h3 class="text-lg font-semibold text-gray-800">ระดับความเสี่ยง</h3>
+                        </div>
+                        <div class="p-6">
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between p-3 bg-green-50 rounded-lg border border-green-200">
+                                    <div class="flex items-center">
+                                        <span class="text-2xl mr-3">🟢</span>
+                                        <span class="font-medium text-gray-800">ความเสี่ยงต่ำ</span>
+                                    </div>
+                                    <span class="text-lg font-bold text-green-600">205</span>
+                                </div>
+                                <div class="flex items-center justify-between p-3 bg-yellow-50 rounded-lg border border-yellow-200">
+                                    <div class="flex items-center">
+                                        <span class="text-2xl mr-3">🟡</span>
+                                        <span class="font-medium text-gray-800">ความเสี่ยงปานกลาง</span>
+                                    </div>
+                                    <span class="text-lg font-bold text-yellow-600">28</span>
+                                </div>
+                                <div class="flex items-center justify-between p-3 bg-red-50 rounded-lg border border-red-200">
+                                    <div class="flex items-center">
+                                        <span class="text-2xl mr-3">🔴</span>
+                                        <span class="font-medium text-gray-800">ความเสี่ยงสูง</span>
+                                    </div>
+                                    <span class="text-lg font-bold text-red-600">15</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Contracts -->
+                <div class="bg-white rounded-lg shadow">
+                    <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+                        <h3 class="text-lg font-semibold text-gray-800">สัญญาล่าสุด</h3>
+                        <a href="02-upload-contract.html" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-sm">
+                            + อัปโหลดสัญญาใหม่
+                        </a>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full">
+                            <thead class="bg-gray-50 border-b border-gray-200">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">รหัสสัญญา</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ชื่อสัญญา</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">คู่สัญญา</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Template</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ความเสี่ยง</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">สถานะ</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">จัดการ</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4">
+                                        <span class="font-mono text-sm text-indigo-600 font-semibold">CTR-2026-001</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="text-sm font-semibold text-gray-900">สัญญาจ้างก่อสร้าง โครงการ A</div>
+                                        <div class="text-xs text-gray-500">วันที่: 2026-01-18</div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="text-sm text-gray-900">บริษัท ABC จำกัด</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="px-3 py-1 bg-green-100 text-green-800 text-xs rounded-full font-semibold">98%</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="px-3 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full font-semibold">ปานกลาง</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="px-3 py-1 bg-blue-100 text-blue-800 text-xs rounded-full font-semibold">รอทีมกฎหมาย</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <a href="04-risk-analysis.html" class="text-indigo-600 hover:text-indigo-800 text-sm font-medium">ดูรายละเอียด</a>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4">
+                                        <span class="font-mono text-sm text-indigo-600 font-semibold">CTR-2026-002</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="text-sm font-semibold text-gray-900">สัญญาซื้อขายวัสดุ</div>
+                                        <div class="text-xs text-gray-500">วันที่: 2026-01-17</div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="text-sm text-gray-900">บริษัท XYZ จำกัด</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="px-3 py-1 bg-green-100 text-green-800 text-xs rounded-full font-semibold">100%</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="px-3 py-1 bg-green-100 text-green-800 text-xs rounded-full font-semibold">ต่ำ</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="px-3 py-1 bg-green-100 text-green-800 text-xs rounded-full font-semibold">อนุมัติแล้ว</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <a href="04-risk-analysis.html" class="text-indigo-600 hover:text-indigo-800 text-sm font-medium">ดูรายละเอียด</a>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4">
+                                        <span class="font-mono text-sm text-indigo-600 font-semibold">CTR-2026-003</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="text-sm font-semibold text-gray-900">สัญญาเช่าที่ดิน</div>
+                                        <div class="text-xs text-gray-500">วันที่: 2026-01-16</div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="text-sm text-gray-900">นาย กรุณา รักดี</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="px-3 py-1 bg-red-100 text-red-800 text-xs rounded-full font-semibold">65%</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="px-3 py-1 bg-red-100 text-red-800 text-xs rounded-full font-semibold">สูง</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <span class="px-3 py-1 bg-red-100 text-red-800 text-xs rounded-full font-semibold">ต้องแก้ไข</span>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <a href="04-risk-analysis.html" class="text-indigo-600 hover:text-indigo-800 text-sm font-medium">ดูรายละเอียด</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

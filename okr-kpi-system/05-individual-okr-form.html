@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My OKR & KPI - OKR & KPI System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Sarabun', sans-serif; }
+    </style>
+    <script>
+        const roles = {
+            employee: {
+                name: 'นางสาวสุดา พรหมชัย',
+                initials: 'สด',
+                position: 'Full-stack Developer',
+                team: 'Development Team',
+                department: 'IT Department',
+                empId: 'EMP-0042',
+                permissions: ['individual-dashboard', 'my-okr', 'alignment', 'evaluation']
+            },
+            manager: {
+                name: 'นายสมศักดิ์ รักษ์ชาติ',
+                initials: 'สศ',
+                position: 'Team Lead',
+                team: 'Development Team',
+                department: 'IT Department',
+                empId: 'MGR-0012',
+                permissions: ['individual-dashboard', 'my-okr', 'alignment', 'team-workspace', 'approval', 'evaluation']
+            },
+            dept_head: {
+                name: 'นางสาวจิราพร วงศ์ไพศาล',
+                initials: 'จว',
+                position: 'IT Director',
+                team: 'IT Management',
+                department: 'IT Department',
+                empId: 'DIR-0003',
+                permissions: ['individual-dashboard', 'my-okr', 'alignment', 'team-workspace', 'dept-workspace', 'approval', 'evaluation', 'reports']
+            },
+            hr_admin: {
+                name: 'นายประสิทธิ์ มั่นคง',
+                initials: 'ปม',
+                position: 'HR Director',
+                team: 'HR Management',
+                department: 'Human Resources',
+                empId: 'HR-0001',
+                permissions: ['individual-dashboard', 'my-okr', 'alignment', 'corporate-strategy', 'approval', 'evaluation', 'reports', 'freeze-control']
+            }
+        };
+
+        let currentRole = 'employee';
+
+        function switchRole(roleKey) {
+            currentRole = roleKey;
+            localStorage.setItem('selectedRole', roleKey);
+            updateUI();
+        }
+
+        function updateUI() {
+            const role = roles[currentRole];
+            document.getElementById('userName').textContent = role.name;
+            document.getElementById('userPosition').textContent = role.position;
+            document.getElementById('userDept').textContent = role.department;
+            document.getElementById('userInitials').textContent = role.initials;
+
+            document.querySelectorAll('[data-permission]').forEach(item => {
+                const perm = item.dataset.permission;
+                item.classList.toggle('hidden', !role.permissions.includes(perm));
+            });
+        }
+
+        function switchTab(tab) {
+            document.getElementById('okrTab').classList.toggle('bg-orange-600', tab === 'okr');
+            document.getElementById('okrTab').classList.toggle('text-white', tab === 'okr');
+            document.getElementById('okrTab').classList.toggle('bg-gray-100', tab !== 'okr');
+            document.getElementById('okrTab').classList.toggle('text-gray-600', tab !== 'okr');
+
+            document.getElementById('kpiTab').classList.toggle('bg-orange-600', tab === 'kpi');
+            document.getElementById('kpiTab').classList.toggle('text-white', tab === 'kpi');
+            document.getElementById('kpiTab').classList.toggle('bg-gray-100', tab !== 'kpi');
+            document.getElementById('kpiTab').classList.toggle('text-gray-600', tab !== 'kpi');
+
+            document.getElementById('okrContent').classList.toggle('hidden', tab !== 'okr');
+            document.getElementById('kpiContent').classList.toggle('hidden', tab !== 'kpi');
+        }
+
+        function openOkrModal() {
+            document.getElementById('okrModal').classList.remove('hidden');
+        }
+
+        function closeOkrModal() {
+            document.getElementById('okrModal').classList.add('hidden');
+        }
+
+        function openKpiModal() {
+            document.getElementById('kpiModal').classList.remove('hidden');
+        }
+
+        function closeKpiModal() {
+            document.getElementById('kpiModal').classList.add('hidden');
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const saved = localStorage.getItem('selectedRole') || 'employee';
+            currentRole = saved;
+            document.getElementById('roleSelector').value = saved;
+            updateUI();
+        });
+    </script>
+</head>
+<body class="bg-white min-h-screen">
+
+    <!-- Sidebar -->
+    <div class="fixed left-0 top-0 h-full w-64 bg-amber-700 shadow-lg z-20">
+        <div class="p-6">
+            <!-- Logo -->
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
+                    <svg class="w-6 h-6 text-amber-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-white font-bold text-lg">OKR & KPI</h1>
+                    <p class="text-amber-100 text-xs">Performance Management</p>
+                </div>
+            </div>
+
+            <!-- User Profile -->
+            <div class="bg-white rounded-xl p-4 mb-6 shadow">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                        <span id="userInitials" class="text-white font-bold">สด</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p id="userName" class="text-gray-800 font-semibold text-sm truncate">นางสาวสุดา พรหมชัย</p>
+                        <p id="userPosition" class="text-gray-600 text-xs truncate">Full-stack Developer</p>
+                        <p id="userDept" class="text-amber-700 text-xs truncate">IT Department</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Role Selector (Demo) -->
+            <div class="mb-6 pb-6 border-b border-amber-600">
+                <label class="text-amber-100 text-xs mb-2 block">Demo: Switch Role</label>
+                <select id="roleSelector" onchange="switchRole(this.value)" class="w-full bg-amber-800 text-white rounded-lg px-3 py-2 text-sm border border-amber-600 focus:outline-none focus:ring-2 focus:ring-white">
+                    <option value="employee">Employee</option>
+                    <option value="manager">Team Head / Manager</option>
+                    <option value="dept_head">Department Head</option>
+                    <option value="hr_admin">Corporate / HR Admin</option>
+                </select>
+            </div>
+
+            <!-- Navigation -->
+            <nav class="space-y-1">
+                <a href="01-individual-dashboard.html" data-permission="individual-dashboard" class="flex items-center gap-3 px-4 py-3 text-white hover:bg-amber-600 rounded-lg transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                    </svg>
+                    <span class="font-medium">My Dashboard</span>
+                </a>
+
+                <a href="05-individual-okr-form.html" data-permission="my-okr" class="flex items-center gap-3 px-4 py-3 bg-amber-800 text-white rounded-lg shadow">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                    </svg>
+                    <span class="font-medium">My OKR & KPI</span>
+                </a>
+
+                <a href="03-alignment-cascade.html" data-permission="alignment" class="flex items-center gap-3 px-4 py-3 text-white hover:bg-amber-600 rounded-lg transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"/>
+                    </svg>
+                    <span class="font-medium">Alignment View</span>
+                </a>
+
+                <div class="border-t border-amber-600 my-3"></div>
+
+                <a href="04-dept-team-workspace.html" data-permission="team-workspace" class="hidden flex items-center gap-3 px-4 py-3 text-white hover:bg-amber-600 rounded-lg transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                    <span class="font-medium">Team Workspace</span>
+                </a>
+
+                <a href="02-corporate-strategy.html" data-permission="corporate-strategy" class="hidden flex items-center gap-3 px-4 py-3 text-white hover:bg-amber-600 rounded-lg transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                    </svg>
+                    <span class="font-medium">Corporate Strategy</span>
+                </a>
+
+                <a href="06-approval-inbox.html" data-permission="approval" class="hidden flex items-center gap-3 px-4 py-3 text-white hover:bg-amber-600 rounded-lg transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <span class="font-medium">Approval Inbox</span>
+                    <span class="ml-auto bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">5</span>
+                </a>
+
+                <a href="08-evaluation.html" data-permission="evaluation" class="flex items-center gap-3 px-4 py-3 text-white hover:bg-amber-600 rounded-lg transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
+                    </svg>
+                    <span class="font-medium">Evaluation</span>
+                </a>
+
+                <a href="07-freeze-control.html" data-permission="freeze-control" class="hidden flex items-center gap-3 px-4 py-3 text-white hover:bg-amber-600 rounded-lg transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                    </svg>
+                    <span class="font-medium">Freeze Control</span>
+                </a>
+
+                <a href="09-reports.html" data-permission="reports" class="hidden flex items-center gap-3 px-4 py-3 text-white hover:bg-amber-600 rounded-lg transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    <span class="font-medium">Reports</span>
+                </a>
+            </nav>
+
+            <div class="mt-6 pt-6 border-t border-amber-600">
+                <a href="../index.html" class="flex items-center gap-3 px-4 py-3 text-amber-100 hover:bg-amber-600 rounded-lg transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                    </svg>
+                    <span class="font-medium">Back to Home</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="ml-64 p-8">
+        <!-- Top Bar -->
+        <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-800">My OKR & KPI</h2>
+                    <p class="text-gray-600">Manage your objectives, key results, and individual KPIs</p>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="bg-gray-50 rounded-lg px-4 py-2 border border-gray-200">
+                        <p class="text-gray-500 text-xs">Current Cycle</p>
+                        <p class="text-gray-800 font-bold">Q4/2025</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="flex items-center gap-2 mb-6">
+            <button id="okrTab" onclick="switchTab('okr')" class="px-6 py-3 bg-orange-600 text-white rounded-lg font-semibold transition-all shadow">
+                My OKRs
+            </button>
+            <button id="kpiTab" onclick="switchTab('kpi')" class="px-6 py-3 bg-gray-100 text-gray-600 hover:bg-gray-200 rounded-lg font-semibold transition-all">
+                Individual KPIs
+            </button>
+        </div>
+
+        <!-- OKR Content -->
+        <div id="okrContent">
+            <!-- OKR Stats -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                <div class="bg-white rounded-lg shadow p-6 border border-gray-200">
+                    <p class="text-gray-500 text-sm">Total OKRs</p>
+                    <p class="text-2xl font-bold text-gray-800">3</p>
+                </div>
+                <div class="bg-white rounded-lg shadow p-6 border border-gray-200">
+                    <p class="text-gray-500 text-sm">Approved</p>
+                    <p class="text-2xl font-bold text-emerald-600">2</p>
+                </div>
+                <div class="bg-white rounded-lg shadow p-6 border border-gray-200">
+                    <p class="text-gray-500 text-sm">Pending</p>
+                    <p class="text-2xl font-bold text-amber-600">1</p>
+                </div>
+                <div class="bg-white rounded-lg shadow p-6 border border-gray-200">
+                    <p class="text-gray-500 text-sm">Overall Progress</p>
+                    <p class="text-2xl font-bold text-gray-800">68%</p>
+                </div>
+            </div>
+
+            <!-- Add OKR Button -->
+            <div class="mb-6">
+                <button onclick="openOkrModal()" class="px-4 py-2 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white rounded-lg font-bold transition-all flex items-center gap-2 shadow">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                    </svg>
+                    Add New OKR
+                </button>
+            </div>
+
+            <!-- OKR List -->
+            <div class="space-y-6">
+                <!-- OKR 1 -->
+                <div class="bg-white rounded-lg shadow p-6 border border-gray-200">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-lg text-sm font-bold">O1</span>
+                                <span class="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-lg text-xs font-bold">Approved</span>
+                                <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs">Weight: 40%</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-800 mb-2">Deliver High-Quality API Endpoints</h3>
+                            <p class="text-gray-600">Build and deploy robust, well-documented API endpoints that meet performance standards</p>
+                            <div class="flex items-center gap-3 mt-3">
+                                <span class="text-gray-500 text-sm flex items-center gap-1">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
+                                    </svg>
+                                    Linked to: T-OKR-1 (API Platform Development)
+                                </span>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-emerald-600 font-bold text-2xl">75%</span>
+                            <div class="w-24 h-3 bg-gray-200 rounded-full overflow-hidden mt-2">
+                                <div class="h-full bg-emerald-500" style="width: 75%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Key Results -->
+                    <div class="border-t border-gray-200 pt-4">
+                        <h4 class="text-sm font-semibold text-gray-600 mb-3">Key Results</h4>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200">
+                                <div class="flex items-center gap-3">
+                                    <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs font-bold">KR1</span>
+                                    <div>
+                                        <p class="text-gray-800">Deliver 15 new API endpoints</p>
+                                        <p class="text-gray-500 text-xs">Baseline: 5 | Target: 15</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-emerald-600 font-semibold">12/15 (80%)</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200">
+                                <div class="flex items-center gap-3">
+                                    <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs font-bold">KR2</span>
+                                    <div>
+                                        <p class="text-gray-800">Achieve 100% API documentation coverage</p>
+                                        <p class="text-gray-500 text-xs">Baseline: 60% | Target: 100%</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-amber-600 font-semibold">85% (62%)</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200">
+                                <div class="flex items-center gap-3">
+                                    <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs font-bold">KR3</span>
+                                    <div>
+                                        <p class="text-gray-800">API response time under 200ms</p>
+                                        <p class="text-gray-500 text-xs">Baseline: 450ms | Target: &lt;200ms</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-emerald-600 font-semibold">180ms (100%)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-end gap-2 mt-4 pt-4 border-t border-gray-200">
+                        <button class="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-all flex items-center gap-1">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                            </svg>
+                            Edit
+                        </button>
+                        <button class="px-4 py-2 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg transition-all flex items-center gap-1">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+                            </svg>
+                            Update Progress
+                        </button>
+                    </div>
+                </div>
+
+                <!-- OKR 2 -->
+                <div class="bg-white rounded-lg shadow p-6 border border-gray-200">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-lg text-sm font-bold">O2</span>
+                                <span class="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-lg text-xs font-bold">Approved</span>
+                                <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs">Weight: 35%</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-800 mb-2">Improve Code Quality & Test Coverage</h3>
+                            <p class="text-gray-600">Enhance code maintainability through better testing practices</p>
+                            <div class="flex items-center gap-3 mt-3">
+                                <span class="text-gray-500 text-sm flex items-center gap-1">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
+                                    </svg>
+                                    Linked to: D-OKR-1 (IT Excellence & Innovation)
+                                </span>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-amber-600 font-bold text-2xl">58%</span>
+                            <div class="w-24 h-3 bg-gray-200 rounded-full overflow-hidden mt-2">
+                                <div class="h-full bg-amber-500" style="width: 58%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-gray-200 pt-4">
+                        <h4 class="text-sm font-semibold text-gray-600 mb-3">Key Results</h4>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200">
+                                <div class="flex items-center gap-3">
+                                    <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs font-bold">KR1</span>
+                                    <p class="text-gray-800">Achieve 90% unit test coverage</p>
+                                </div>
+                                <span class="text-amber-600 font-semibold">78% (87%)</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200">
+                                <div class="flex items-center gap-3">
+                                    <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs font-bold">KR2</span>
+                                    <p class="text-gray-800">Zero critical bugs in production</p>
+                                </div>
+                                <span class="text-red-600 font-semibold">2 bugs (0%)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-end gap-2 mt-4 pt-4 border-t border-gray-200">
+                        <button class="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-all flex items-center gap-1">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                            </svg>
+                            Edit
+                        </button>
+                        <button class="px-4 py-2 bg-blue-50 text-blue-600 hover:bg-blue-100 rounded-lg transition-all flex items-center gap-1">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+                            </svg>
+                            Update Progress
+                        </button>
+                    </div>
+                </div>
+
+                <!-- OKR 3 - Pending -->
+                <div class="bg-amber-50 rounded-lg shadow p-6 border-2 border-amber-300">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-lg text-sm font-bold">O3</span>
+                                <span class="px-3 py-1 bg-amber-100 text-amber-700 rounded-lg text-xs font-bold">Pending Approval</span>
+                                <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs">Weight: 25%</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-800 mb-2">Knowledge Sharing & Documentation</h3>
+                            <p class="text-gray-600">Contribute to team knowledge base and mentor junior developers</p>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-gray-500 font-bold text-2xl">0%</span>
+                            <p class="text-amber-600 text-sm mt-2">Awaiting approval</p>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-amber-200 pt-4">
+                        <h4 class="text-sm font-semibold text-gray-600 mb-3">Key Results</h4>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between p-3 bg-white rounded-lg border border-gray-200">
+                                <div class="flex items-center gap-3">
+                                    <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs font-bold">KR1</span>
+                                    <p class="text-gray-800">Write 10 technical documentation articles</p>
+                                </div>
+                                <span class="text-gray-500">-</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-white rounded-lg border border-gray-200">
+                                <div class="flex items-center gap-3">
+                                    <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs font-bold">KR2</span>
+                                    <p class="text-gray-800">Conduct 4 knowledge sharing sessions</p>
+                                </div>
+                                <span class="text-gray-500">-</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-end gap-2 mt-4 pt-4 border-t border-amber-200">
+                        <button class="px-4 py-2 text-gray-600 hover:bg-white rounded-lg transition-all flex items-center gap-1">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                            </svg>
+                            Edit
+                        </button>
+                        <button class="px-4 py-2 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg transition-all flex items-center gap-1">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                            </svg>
+                            Delete
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- KPI Content -->
+        <div id="kpiContent" class="hidden">
+            <!-- KPI Stats -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                <div class="bg-white rounded-lg shadow p-6 border border-gray-200">
+                    <p class="text-gray-500 text-sm">Total KPIs</p>
+                    <p class="text-2xl font-bold text-gray-800">5</p>
+                </div>
+                <div class="bg-white rounded-lg shadow p-6 border border-gray-200">
+                    <p class="text-gray-500 text-sm">Approved</p>
+                    <p class="text-2xl font-bold text-amber-600">0</p>
+                </div>
+                <div class="bg-white rounded-lg shadow p-6 border border-gray-200">
+                    <p class="text-gray-500 text-sm">Pending</p>
+                    <p class="text-2xl font-bold text-amber-600">5</p>
+                </div>
+                <div class="bg-white rounded-lg shadow p-6 border border-gray-200">
+                    <p class="text-gray-500 text-sm">Total Weight</p>
+                    <p class="text-2xl font-bold text-gray-800">100%</p>
+                </div>
+            </div>
+
+            <!-- Add KPI Button -->
+            <div class="mb-6">
+                <button onclick="openKpiModal()" class="px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-lg font-bold transition-all flex items-center gap-2 shadow">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                    </svg>
+                    Add New KPI
+                </button>
+            </div>
+
+            <!-- KPI Table -->
+            <div class="bg-white rounded-lg shadow p-6 border border-gray-200">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-lg font-bold text-gray-800">Individual KPIs - Q4/2025</h3>
+                    <span class="px-3 py-1 bg-amber-100 text-amber-700 rounded-full text-xs font-bold">Pending Approval</span>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="text-left text-gray-600 text-sm border-b border-gray-200">
+                                <th class="pb-3 font-medium">KPI</th>
+                                <th class="pb-3 font-medium">Type</th>
+                                <th class="pb-3 font-medium">Baseline</th>
+                                <th class="pb-3 font-medium">Target</th>
+                                <th class="pb-3 font-medium">Actual</th>
+                                <th class="pb-3 font-medium">Progress</th>
+                                <th class="pb-3 font-medium">Weight</th>
+                                <th class="pb-3 font-medium">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-gray-800 text-sm">
+                            <tr class="border-b border-gray-100">
+                                <td class="py-4">
+                                    <div>
+                                        <p class="font-medium">API Endpoints Delivered</p>
+                                        <p class="text-gray-500 text-xs">Number of endpoints completed</p>
+                                    </div>
+                                </td>
+                                <td class="py-4"><span class="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">Number</span></td>
+                                <td class="py-4">5</td>
+                                <td class="py-4">15</td>
+                                <td class="py-4">12</td>
+                                <td class="py-4">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-16 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                            <div class="h-full bg-emerald-500" style="width: 80%"></div>
+                                        </div>
+                                        <span>80%</span>
+                                    </div>
+                                </td>
+                                <td class="py-4">25%</td>
+                                <td class="py-4">
+                                    <button class="p-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-all">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                        </svg>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr class="border-b border-gray-100">
+                                <td class="py-4">
+                                    <div>
+                                        <p class="font-medium">Unit Test Coverage</p>
+                                        <p class="text-gray-500 text-xs">Code coverage percentage</p>
+                                    </div>
+                                </td>
+                                <td class="py-4"><span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs">Percentage</span></td>
+                                <td class="py-4">60%</td>
+                                <td class="py-4">90%</td>
+                                <td class="py-4">78%</td>
+                                <td class="py-4">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-16 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                            <div class="h-full bg-amber-500" style="width: 60%"></div>
+                                        </div>
+                                        <span>60%</span>
+                                    </div>
+                                </td>
+                                <td class="py-4">20%</td>
+                                <td class="py-4">
+                                    <button class="p-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-all">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                        </svg>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr class="border-b border-gray-100">
+                                <td class="py-4">
+                                    <div>
+                                        <p class="font-medium">Bug Fix Response Time</p>
+                                        <p class="text-gray-500 text-xs">Average response time in hours</p>
+                                    </div>
+                                </td>
+                                <td class="py-4"><span class="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">Number</span></td>
+                                <td class="py-4">8 hrs</td>
+                                <td class="py-4">&lt;4 hrs</td>
+                                <td class="py-4">3.2 hrs</td>
+                                <td class="py-4">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-16 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                            <div class="h-full bg-emerald-500" style="width: 100%"></div>
+                                        </div>
+                                        <span>100%</span>
+                                    </div>
+                                </td>
+                                <td class="py-4">15%</td>
+                                <td class="py-4">
+                                    <button class="p-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-all">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                        </svg>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr class="border-b border-gray-100">
+                                <td class="py-4">
+                                    <div>
+                                        <p class="font-medium">Code Review Quality</p>
+                                        <p class="text-gray-500 text-xs">Quality assessment score</p>
+                                    </div>
+                                </td>
+                                <td class="py-4"><span class="px-2 py-1 bg-teal-100 text-teal-700 rounded text-xs">Qualitative</span></td>
+                                <td class="py-4">Good</td>
+                                <td class="py-4">Excellent</td>
+                                <td class="py-4">Very Good</td>
+                                <td class="py-4">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-16 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                            <div class="h-full bg-emerald-500" style="width: 75%"></div>
+                                        </div>
+                                        <span>75%</span>
+                                    </div>
+                                </td>
+                                <td class="py-4">20%</td>
+                                <td class="py-4">
+                                    <button class="p-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-all">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                        </svg>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="py-4">
+                                    <div>
+                                        <p class="font-medium">Team Collaboration Score</p>
+                                        <p class="text-gray-500 text-xs">Peer review assessment</p>
+                                    </div>
+                                </td>
+                                <td class="py-4"><span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs">Percentage</span></td>
+                                <td class="py-4">70%</td>
+                                <td class="py-4">90%</td>
+                                <td class="py-4">85%</td>
+                                <td class="py-4">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-16 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                            <div class="h-full bg-emerald-500" style="width: 75%"></div>
+                                        </div>
+                                        <span>75%</span>
+                                    </div>
+                                </td>
+                                <td class="py-4">20%</td>
+                                <td class="py-4">
+                                    <button class="p-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-all">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                        </svg>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="mt-6 pt-4 border-t border-gray-200 flex items-center justify-end">
+                    <button class="px-6 py-3 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white rounded-lg font-bold transition-all shadow">
+                        Submit for Approval
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add OKR Modal -->
+    <div id="okrModal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl border border-gray-200">
+            <div class="p-6 border-b border-gray-200 flex items-center justify-between">
+                <h3 class="text-xl font-bold text-gray-800">Create New OKR</h3>
+                <button onclick="closeOkrModal()" class="p-2 hover:bg-gray-100 rounded-lg transition-all">
+                    <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="p-6 space-y-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Objective Title</label>
+                    <input type="text" placeholder="What do you want to achieve?" class="w-full bg-white text-gray-800 rounded-lg px-4 py-3 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-500">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                    <textarea rows="2" placeholder="Describe your objective" class="w-full bg-white text-gray-800 rounded-lg px-4 py-3 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-500"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Link to Upper-Level OKR</label>
+                    <select class="w-full bg-white text-gray-800 rounded-lg px-4 py-3 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-500">
+                        <option>Select parent OKR...</option>
+                        <option>C-OKR-1: Digital Transformation Excellence</option>
+                        <option>D-OKR-1: IT Excellence & Innovation</option>
+                        <option>T-OKR-1: API Platform Development</option>
+                        <option>T-OKR-2: Cloud Migration & DevOps</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Weight (%)</label>
+                    <input type="number" placeholder="e.g., 30" class="w-full bg-white text-gray-800 rounded-lg px-4 py-3 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-500">
+                </div>
+
+                <!-- Key Results -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Key Results</label>
+                    <div class="space-y-3">
+                        <div class="p-4 bg-gray-50 rounded-lg border border-gray-300">
+                            <div class="grid grid-cols-2 gap-3 mb-3">
+                                <input type="text" placeholder="KR1: Measurable result" class="bg-white text-gray-800 rounded-lg px-3 py-2 border border-gray-300 col-span-2">
+                                <input type="text" placeholder="Baseline" class="bg-white text-gray-800 rounded-lg px-3 py-2 border border-gray-300">
+                                <input type="text" placeholder="Target" class="bg-white text-gray-800 rounded-lg px-3 py-2 border border-gray-300">
+                            </div>
+                        </div>
+                        <div class="p-4 bg-gray-50 rounded-lg border border-gray-300">
+                            <div class="grid grid-cols-2 gap-3 mb-3">
+                                <input type="text" placeholder="KR2: Measurable result" class="bg-white text-gray-800 rounded-lg px-3 py-2 border border-gray-300 col-span-2">
+                                <input type="text" placeholder="Baseline" class="bg-white text-gray-800 rounded-lg px-3 py-2 border border-gray-300">
+                                <input type="text" placeholder="Target" class="bg-white text-gray-800 rounded-lg px-3 py-2 border border-gray-300">
+                            </div>
+                        </div>
+                    </div>
+                    <button class="mt-3 text-orange-600 text-sm hover:text-orange-700 flex items-center gap-1">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                        </svg>
+                        Add Key Result
+                    </button>
+                </div>
+            </div>
+
+            <div class="p-6 border-t border-gray-200 flex items-center justify-end gap-3">
+                <button onclick="closeOkrModal()" class="px-6 py-3 text-gray-600 hover:bg-gray-100 rounded-lg font-semibold transition-all">
+                    Cancel
+                </button>
+                <button class="px-6 py-3 bg-gray-500 hover:bg-gray-600 text-white rounded-lg font-semibold transition-all">
+                    Save Draft
+                </button>
+                <button class="px-6 py-3 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white rounded-lg font-bold transition-all shadow">
+                    Submit for Approval
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add KPI Modal -->
+    <div id="kpiModal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto shadow-2xl border border-gray-200">
+            <div class="p-6 border-b border-gray-200 flex items-center justify-between">
+                <h3 class="text-xl font-bold text-gray-800">Create New KPI</h3>
+                <button onclick="closeKpiModal()" class="p-2 hover:bg-gray-100 rounded-lg transition-all">
+                    <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="p-6 space-y-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">KPI Title</label>
+                    <input type="text" placeholder="e.g., API Endpoints Delivered" class="w-full bg-white text-gray-800 rounded-lg px-4 py-3 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                    <textarea rows="2" placeholder="Describe this KPI" class="w-full bg-white text-gray-800 rounded-lg px-4 py-3 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Metric Type</label>
+                    <div class="grid grid-cols-3 gap-3">
+                        <label class="flex items-center justify-center gap-2 p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-all border border-gray-300 has-[:checked]:border-purple-500 has-[:checked]:bg-purple-50">
+                            <input type="radio" name="metricType" value="number" class="hidden">
+                            <span class="text-gray-800 text-sm">Number</span>
+                        </label>
+                        <label class="flex items-center justify-center gap-2 p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-all border border-gray-300 has-[:checked]:border-purple-500 has-[:checked]:bg-purple-50">
+                            <input type="radio" name="metricType" value="percentage" class="hidden">
+                            <span class="text-gray-800 text-sm">Percentage</span>
+                        </label>
+                        <label class="flex items-center justify-center gap-2 p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-all border border-gray-300 has-[:checked]:border-purple-500 has-[:checked]:bg-purple-50">
+                            <input type="radio" name="metricType" value="qualitative" class="hidden">
+                            <span class="text-gray-800 text-sm">Qualitative</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Baseline</label>
+                        <input type="text" placeholder="Starting value" class="w-full bg-white text-gray-800 rounded-lg px-4 py-3 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Target</label>
+                        <input type="text" placeholder="Goal value" class="w-full bg-white text-gray-800 rounded-lg px-4 py-3 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Weight (%)</label>
+                        <input type="number" placeholder="e.g., 20" class="w-full bg-white text-gray-800 rounded-lg px-4 py-3 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Link to OKR (Optional)</label>
+                    <select class="w-full bg-white text-gray-800 rounded-lg px-4 py-3 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                        <option>None</option>
+                        <option>O1: Deliver High-Quality API Endpoints</option>
+                        <option>O2: Improve Code Quality & Test Coverage</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Attachment / Evidence</label>
+                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-purple-500 transition-all cursor-pointer">
+                        <svg class="w-10 h-10 text-gray-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                        </svg>
+                        <p class="text-gray-600 text-sm">Drop files here or click to upload</p>
+                        <p class="text-gray-500 text-xs mt-1">PDF, DOC, XLS, Images (max 10MB)</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-6 border-t border-gray-200 flex items-center justify-end gap-3">
+                <button onclick="closeKpiModal()" class="px-6 py-3 text-gray-600 hover:bg-gray-100 rounded-lg font-semibold transition-all">
+                    Cancel
+                </button>
+                <button class="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-lg font-bold transition-all shadow">
+                    Add KPI
+                </button>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

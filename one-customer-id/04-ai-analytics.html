@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Analytics - One Customer ID</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Sarabun', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="flex h-screen">
+        <aside class="w-64 bg-teal-800 text-white">
+            <div class="p-4 border-b border-teal-700">
+                <h1 class="text-xl font-bold">One Customer ID</h1>
+                <p class="text-sm text-teal-300">ระบบรวมข้อมูลลูกค้า 360°</p>
+            </div>
+            <nav class="mt-4">
+                <a href="01-dashboard.html" class="flex items-center px-4 py-3 text-teal-200 hover:bg-teal-700"><svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>Dashboard</a>
+                <a href="02-customer-list.html" class="flex items-center px-4 py-3 text-teal-200 hover:bg-teal-700"><svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>Master Customer List</a>
+                <a href="03-customer-360.html" class="flex items-center px-4 py-3 text-teal-200 hover:bg-teal-700"><svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>Customer 360° View</a>
+                <a href="04-ai-analytics.html" class="flex items-center px-4 py-3 bg-teal-700 text-white"><svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>AI Analytics</a>
+                <a href="05-data-integration.html" class="flex items-center px-4 py-3 text-teal-200 hover:bg-teal-700"><svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"/></svg>Data Integration</a>
+            </nav>
+            <div class="absolute bottom-0 w-64 p-4 border-t border-teal-700">
+                <a href="../index.html" class="flex items-center text-teal-200 hover:text-white"><svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>กลับหน้าหลัก</a>
+            </div>
+        </aside>
+
+        <main class="flex-1 overflow-y-auto">
+            <header class="bg-white shadow-sm px-6 py-4">
+                <h2 class="text-2xl font-bold text-gray-800">AI Customer Analytics</h2>
+                <p class="text-sm text-gray-600 mt-1">การวิเคราะห์ลูกค้าด้วย AI (Q2/2026)</p>
+            </header>
+
+            <div class="p-6">
+                <div class="grid grid-cols-3 gap-6">
+                    <!-- Channel Performance -->
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <h3 class="font-bold text-lg mb-4">Channel Performance</h3>
+                        <div class="space-y-4">
+                            <div><div class="flex justify-between mb-2"><span class="text-sm">Walk-in</span><span class="text-sm font-bold">45%</span></div><div class="w-full bg-gray-200 rounded h-6"><div class="bg-teal-500 h-6 rounded" style="width:45%"></div></div></div>
+                            <div><div class="flex justify-between mb-2"><span class="text-sm">LINE</span><span class="text-sm font-bold">30%</span></div><div class="w-full bg-gray-200 rounded h-6"><div class="bg-green-500 h-6 rounded" style="width:30%"></div></div></div>
+                            <div><div class="flex justify-between mb-2"><span class="text-sm">Facebook</span><span class="text-sm font-bold">20%</span></div><div class="w-full bg-gray-200 rounded h-6"><div class="bg-blue-500 h-6 rounded" style="width:20%"></div></div></div>
+                            <div><div class="flex justify-between mb-2"><span class="text-sm">Email</span><span class="text-sm font-bold">5%</span></div><div class="w-full bg-gray-200 rounded h-6"><div class="bg-purple-500 h-6 rounded" style="width:5%"></div></div></div>
+                        </div>
+                    </div>
+
+                    <!-- Customer Journey Insights -->
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <h3 class="font-bold text-lg mb-4">Customer Journey Insights</h3>
+                        <div class="space-y-4">
+                            <div class="text-center p-4 bg-teal-50 rounded">
+                                <div class="text-3xl font-bold text-teal-600">2.5</div>
+                                <div class="text-sm text-gray-600 mt-1">Average touchpoints ก่อนตัดสินใจ</div>
+                            </div>
+                            <div class="text-center p-4 bg-blue-50 rounded">
+                                <div class="text-3xl font-bold text-blue-600">14 วัน</div>
+                                <div class="text-sm text-gray-600 mt-1">Average decision time</div>
+                            </div>
+                            <div class="text-center p-4 bg-purple-50 rounded">
+                                <div class="text-3xl font-bold text-purple-600">35%</div>
+                                <div class="text-sm text-gray-600 mt-1">Cross-project interest rate</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AI Predictions -->
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <h3 class="font-bold text-lg mb-4">AI Predictions</h3>
+                        <div class="space-y-4">
+                            <div class="border-l-4 border-green-500 bg-green-50 p-4 rounded">
+                                <div class="text-xs text-gray-600 mb-1">High conversion probability (next 7 days)</div>
+                                <div class="text-2xl font-bold text-green-600">12 ลูกค้า</div>
+                            </div>
+                            <div class="border-l-4 border-blue-500 bg-blue-50 p-4 rounded">
+                                <div class="text-xs text-gray-600 mb-1">Recommended for follow-up</div>
+                                <div class="text-2xl font-bold text-blue-600">8 ลูกค้า</div>
+                            </div>
+                            <div class="border-l-4 border-red-500 bg-red-50 p-4 rounded">
+                                <div class="text-xs text-gray-600 mb-1">At risk of churn</div>
+                                <div class="text-2xl font-bold text-red-600">3 ลูกค้า</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

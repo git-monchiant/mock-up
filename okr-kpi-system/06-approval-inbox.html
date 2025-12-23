@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Approval Inbox - OKR & KPI System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Sarabun', sans-serif; }
+        .pulse-dot { animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+    </style>
+    <script>
+        const roles = {
+            employee: {
+                name: 'นางสาวสุดา พรหมชัย',
+                initials: 'สด',
+                position: 'Full-stack Developer',
+                team: 'Development Team',
+                department: 'IT Department',
+                empId: 'EMP-0042',
+                permissions: ['individual-dashboard', 'my-okr', 'alignment', 'evaluation']
+            },
+            manager: {
+                name: 'นายสมศักดิ์ รักษ์ชาติ',
+                initials: 'สศ',
+                position: 'Team Lead',
+                team: 'Development Team',
+                department: 'IT Department',
+                empId: 'MGR-0012',
+                permissions: ['individual-dashboard', 'my-okr', 'alignment', 'team-workspace', 'approval', 'evaluation']
+            },
+            dept_head: {
+                name: 'นางสาวจิราพร วงศ์ไพศาล',
+                initials: 'จว',
+                position: 'IT Director',
+                team: 'IT Management',
+                department: 'IT Department',
+                empId: 'DIR-0003',
+                permissions: ['individual-dashboard', 'my-okr', 'alignment', 'team-workspace', 'dept-workspace', 'approval', 'evaluation', 'reports']
+            },
+            hr_admin: {
+                name: 'นายประสิทธิ์ มั่นคง',
+                initials: 'ปม',
+                position: 'HR Director',
+                team: 'HR Management',
+                department: 'Human Resources',
+                empId: 'HR-0001',
+                permissions: ['individual-dashboard', 'my-okr', 'alignment', 'corporate-strategy', 'approval', 'evaluation', 'reports', 'freeze-control']
+            }
+        };
+
+        let currentRole = 'manager';
+
+        function switchRole(roleKey) {
+            currentRole = roleKey;
+            localStorage.setItem('selectedRole', roleKey);
+            updateUI();
+        }
+
+        function updateUI() {
+            const role = roles[currentRole];
+            document.getElementById('userName').textContent = role.name;
+            document.getElementById('userPosition').textContent = role.position;
+            document.getElementById('userDept').textContent = role.department;
+            document.getElementById('userInitials').textContent = role.initials;
+
+            document.querySelectorAll('[data-permission]').forEach(item => {
+                const perm = item.dataset.permission;
+                item.classList.toggle('hidden', !role.permissions.includes(perm));
+            });
+
+            // Access check
+            if (!role.permissions.includes('approval')) {
+                document.getElementById('accessDenied').classList.remove('hidden');
+                document.getElementById('mainContent').classList.add('hidden');
+            } else {
+                document.getElementById('accessDenied').classList.add('hidden');
+                document.getElementById('mainContent').classList.remove('hidden');
+            }
+        }
+
+        function openApprovalModal(type) {
+            document.getElementById('approvalModal').classList.remove('hidden');
+        }
+
+        function closeApprovalModal() {
+            document.getElementById('approvalModal').classList.add('hidden');
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const saved = localStorage.getItem('selectedRole') || 'manager';
+            currentRole = saved;
+            document.getElementById('roleSelector').value = saved;
+            updateUI();
+        });
+    </script>
+</head>
+<body class="bg-white min-h-screen">
+
+    <!-- Sidebar -->
+    <div class="fixed left-0 top-0 h-full w-64 bg-amber-700 shadow-lg z-20">
+        <div class="p-6">
+            <!-- Logo -->
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
+                    <svg class="w-6 h-6 text-amber-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-white font-bold text-lg">OKR & KPI</h1>
+                    <p class="text-amber-200 text-xs">Performance Management</p>
+                </div>
+            </div>
+
+            <!-- User Profile -->
+            <div class="bg-amber-800 rounded-xl p-4 mb-6 border border-amber-600">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                        <span id="userInitials" class="text-white font-bold">สศ</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p id="userName" class="text-white font-semibold text-sm truncate">นายสมศักดิ์ รักษ์ชาติ</p>
+                        <p id="userPosition" class="text-amber-200 text-xs truncate">Team Lead</p>
+                        <p id="userDept" class="text-amber-100 text-xs truncate">IT Department</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Role Selector (Demo) -->
+            <div class="mb-6 pb-6 border-b border-amber-600">
+                <label class="text-amber-100 text-xs mb-2 block">Demo: Switch Role</label>
+                <select id="roleSelector" onchange="switchRole(this.value)" class="w-full bg-amber-800 text-white rounded-lg px-3 py-2 text-sm border border-amber-600 focus:outline-none focus:ring-2 focus:ring-white">
+                    <option value="employee">Employee</option>
+                    <option value="manager">Team Head / Manager</option>
+                    <option value="dept_head">Department Head</option>
+                    <option value="hr_admin">Corporate / HR Admin</option>
+                </select>
+            </div>
+
+            <!-- Navigation -->
+            <nav class="space-y-1">
+                <a href="01-individual-dashboard.html" data-permission="individual-dashboard" class="flex items-center gap-3 px-4 py-3 text-white hover:bg-amber-800 rounded-lg transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                    </svg>
+                    <span class="font-medium">My Dashboard</span>
+                </a>
+
+                <a href="05-individual-okr-form.html" data-permission="my-okr" class="flex items-center gap-3 px-4 py-3 text-white hover:bg-amber-800 rounded-lg transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                    </svg>
+                    <span class="font-medium">My OKR & KPI</span>
+                </a>
+
+                <a href="03-alignment-cascade.html" data-permission="alignment" class="flex items-center gap-3 px-4 py-3 text-white hover:bg-amber-800 rounded-lg transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"/>
+                    </svg>
+                    <span class="font-medium">Alignment View</span>
+                </a>
+
+                <div class="border-t border-amber-600 my-3"></div>
+
+                <a href="04-dept-team-workspace.html" data-permission="team-workspace" class="flex items-center gap-3 px-4 py-3 text-white hover:bg-amber-800 rounded-lg transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                    <span class="font-medium">Team Workspace</span>
+                </a>
+
+                <a href="02-corporate-strategy.html" data-permission="corporate-strategy" class="hidden flex items-center gap-3 px-4 py-3 text-white hover:bg-amber-800 rounded-lg transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5"/>
+                    </svg>
+                    <span class="font-medium">Corporate Strategy</span>
+                </a>
+
+                <a href="06-approval-inbox.html" data-permission="approval" class="flex items-center gap-3 px-4 py-3 bg-white text-amber-700 rounded-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <span class="font-medium">Approval Inbox</span>
+                    <span class="ml-auto bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">5</span>
+                </a>
+
+                <a href="08-evaluation.html" data-permission="evaluation" class="flex items-center gap-3 px-4 py-3 text-white hover:bg-amber-800 rounded-lg transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
+                    </svg>
+                    <span class="font-medium">Evaluation</span>
+                </a>
+
+                <a href="07-freeze-control.html" data-permission="freeze-control" class="hidden flex items-center gap-3 px-4 py-3 text-white hover:bg-amber-800 rounded-lg transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                    </svg>
+                    <span class="font-medium">Freeze Control</span>
+                </a>
+
+                <a href="09-reports.html" data-permission="reports" class="hidden flex items-center gap-3 px-4 py-3 text-white hover:bg-amber-800 rounded-lg transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    <span class="font-medium">Reports</span>
+                </a>
+            </nav>
+
+            <div class="mt-6 pt-6 border-t border-amber-600">
+                <a href="../index.html" class="flex items-center gap-3 px-4 py-3 text-amber-100 hover:bg-amber-800 rounded-lg transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                    </svg>
+                    <span class="font-medium">Back to Home</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="ml-64 p-8">
+        <!-- Access Denied -->
+        <div id="accessDenied" class="hidden">
+            <div class="bg-red-50 border-2 border-red-200 rounded-xl p-8 text-center max-w-md mx-auto mt-20">
+                <div class="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-10 h-10 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                    </svg>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-800 mb-2">Access Denied</h2>
+                <p class="text-gray-600 mb-6">This page is only available for managers and above.</p>
+                <a href="01-individual-dashboard.html" class="inline-block px-6 py-3 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-bold transition-all">
+                    Go to Dashboard
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div id="mainContent">
+            <!-- Top Bar -->
+            <div class="bg-white shadow-sm rounded-lg p-6 mb-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-800">Approval Inbox</h2>
+                        <p class="text-gray-600">Review and approve team members' OKRs and KPIs</p>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="bg-amber-50 rounded-lg px-4 py-2 border border-amber-200">
+                            <p class="text-gray-600 text-xs">Current Cycle</p>
+                            <p class="text-gray-800 font-bold">Q4/2025</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                <div class="bg-white rounded-lg shadow p-6 border-2 border-amber-300">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-amber-700 text-sm font-semibold">Pending</p>
+                            <p class="text-3xl font-bold text-gray-800">5</p>
+                        </div>
+                        <div class="w-12 h-12 bg-amber-100 rounded-lg flex items-center justify-center">
+                            <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow p-6">
+                    <p class="text-gray-600 text-sm">Approved Today</p>
+                    <p class="text-2xl font-bold text-emerald-500">3</p>
+                </div>
+
+                <div class="bg-white rounded-lg shadow p-6">
+                    <p class="text-gray-600 text-sm">Rejected</p>
+                    <p class="text-2xl font-bold text-red-500">1</p>
+                </div>
+
+                <div class="bg-white rounded-lg shadow p-6">
+                    <p class="text-gray-600 text-sm">Total Reviewed</p>
+                    <p class="text-2xl font-bold text-gray-800">24</p>
+                </div>
+            </div>
+
+            <!-- Filter Tabs -->
+            <div class="flex items-center gap-2 mb-6">
+                <button class="px-4 py-2 bg-amber-600 text-white rounded-lg font-semibold transition-all">
+                    All (5)
+                </button>
+                <button class="px-4 py-2 bg-white text-gray-700 hover:bg-gray-50 rounded-lg font-semibold transition-all shadow">
+                    OKRs (3)
+                </button>
+                <button class="px-4 py-2 bg-white text-gray-700 hover:bg-gray-50 rounded-lg font-semibold transition-all shadow">
+                    KPIs (2)
+                </button>
+            </div>
+
+            <!-- Approval List -->
+            <div class="space-y-4">
+                <!-- Approval Item 1 - OKR -->
+                <div class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-all border border-gray-200 hover:border-amber-300">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-full flex items-center justify-center text-white font-bold">
+                                วร
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span class="px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs font-bold">OKR</span>
+                                    <span class="px-2 py-0.5 bg-amber-100 text-amber-700 rounded text-xs">New Submission</span>
+                                </div>
+                                <h3 class="text-lg font-bold text-gray-800">วรพล สุขใจ</h3>
+                                <p class="text-gray-600 text-sm">Backend Developer • Development Team</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-gray-500 text-sm">Submitted</p>
+                            <p class="text-gray-800 font-semibold">2 hours ago</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-50 rounded-lg p-4 mb-4 border border-gray-200">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs font-bold">O1</span>
+                            <span class="text-gray-500 text-xs">Linked to: T-OKR-1 (API Platform Development)</span>
+                        </div>
+                        <h4 class="text-gray-800 font-semibold mb-2">Backend Service Optimization</h4>
+                        <p class="text-gray-600 text-sm mb-3">Optimize backend services to improve performance and reduce response time</p>
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="text-gray-600">KR1: Reduce API response time to &lt;100ms</span>
+                                <span class="text-gray-800">Weight: 40%</span>
+                            </div>
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="text-gray-600">KR2: Achieve 99.99% uptime</span>
+                                <span class="text-gray-800">Weight: 35%</span>
+                            </div>
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="text-gray-600">KR3: Optimize database queries by 50%</span>
+                                <span class="text-gray-800">Weight: 25%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-end gap-3">
+                        <button onclick="openApprovalModal('reject')" class="px-4 py-2 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg font-semibold transition-all flex items-center gap-2 border border-red-200">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                            Reject
+                        </button>
+                        <button onclick="openApprovalModal('revise')" class="px-4 py-2 bg-amber-50 text-amber-700 hover:bg-amber-100 rounded-lg font-semibold transition-all flex items-center gap-2 border border-amber-200">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                            </svg>
+                            Request Change
+                        </button>
+                        <button class="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg font-semibold transition-all flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                            </svg>
+                            Approve
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Approval Item 2 - KPI -->
+                <div class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-all border border-gray-200 hover:border-amber-300">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-gradient-to-br from-pink-500 to-rose-600 rounded-full flex items-center justify-center text-white font-bold">
+                                มน
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span class="px-2 py-0.5 bg-purple-100 text-purple-700 rounded text-xs font-bold">KPI</span>
+                                    <span class="px-2 py-0.5 bg-amber-100 text-amber-700 rounded text-xs">Revision</span>
+                                </div>
+                                <h3 class="text-lg font-bold text-gray-800">มณีรัตน์ แก้วใส</h3>
+                                <p class="text-gray-600 text-sm">Frontend Developer • Development Team</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-gray-500 text-sm">Submitted</p>
+                            <p class="text-gray-800 font-semibold">5 hours ago</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-50 rounded-lg p-4 mb-4 border border-gray-200">
+                        <h4 class="text-gray-800 font-semibold mb-3">Individual KPIs (5 items)</h4>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm">
+                                <thead>
+                                    <tr class="text-gray-600 border-b border-gray-200">
+                                        <th class="text-left pb-2">KPI</th>
+                                        <th class="text-left pb-2">Target</th>
+                                        <th class="text-left pb-2">Weight</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-gray-800">
+                                    <tr class="border-b border-gray-100">
+                                        <td class="py-2">UI Components Delivered</td>
+                                        <td class="py-2">20</td>
+                                        <td class="py-2">25%</td>
+                                    </tr>
+                                    <tr class="border-b border-gray-100">
+                                        <td class="py-2">Page Load Time</td>
+                                        <td class="py-2">&lt;2s</td>
+                                        <td class="py-2">20%</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-2">User Satisfaction Score</td>
+                                        <td class="py-2">4.5/5</td>
+                                        <td class="py-2">20%</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="text-gray-500 text-xs mt-2">+ 2 more KPIs</p>
+                    </div>
+
+                    <div class="bg-amber-50 rounded-lg p-3 mb-4 border border-amber-200">
+                        <p class="text-amber-800 text-sm font-semibold mb-1">Previous Feedback:</p>
+                        <p class="text-amber-700 text-sm">"Please add more specific metrics for accessibility compliance testing."</p>
+                    </div>
+
+                    <div class="flex items-center justify-end gap-3">
+                        <button class="px-4 py-2 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg font-semibold transition-all flex items-center gap-2 border border-red-200">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                            Reject
+                        </button>
+                        <button class="px-4 py-2 bg-amber-50 text-amber-700 hover:bg-amber-100 rounded-lg font-semibold transition-all flex items-center gap-2 border border-amber-200">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                            </svg>
+                            Request Change
+                        </button>
+                        <button class="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg font-semibold transition-all flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                            </svg>
+                            Approve
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Approval Item 3 - OKR -->
+                <div class="bg-white rounded-lg shadow p-6 hover:shadow-lg transition-all border border-gray-200 hover:border-amber-300">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold">
+                                สด
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-2 mb-1">
+                                    <span class="px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs font-bold">OKR</span>
+                                    <span class="px-2 py-0.5 bg-amber-100 text-amber-700 rounded text-xs">New Submission</span>
+                                </div>
+                                <h3 class="text-lg font-bold text-gray-800">สุดา พรหมชัย</h3>
+                                <p class="text-gray-600 text-sm">Full-stack Developer • Development Team</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-gray-500 text-sm">Submitted</p>
+                            <p class="text-gray-800 font-semibold">1 day ago</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-50 rounded-lg p-4 mb-4 border border-gray-200">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs font-bold">O3</span>
+                        </div>
+                        <h4 class="text-gray-800 font-semibold mb-2">Knowledge Sharing & Documentation</h4>
+                        <p class="text-gray-600 text-sm">Contribute to team knowledge base and mentor junior developers</p>
+                    </div>
+
+                    <div class="flex items-center justify-end gap-3">
+                        <button class="px-4 py-2 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg font-semibold transition-all border border-red-200">
+                            Reject
+                        </button>
+                        <button class="px-4 py-2 bg-amber-50 text-amber-700 hover:bg-amber-100 rounded-lg font-semibold transition-all border border-amber-200">
+                            Request Change
+                        </button>
+                        <button class="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg font-semibold transition-all">
+                            Approve
+                        </button>
+                    </div>
+                </div>
+
+                <!-- More items... -->
+                <div class="text-center py-4">
+                    <button class="text-amber-700 hover:text-amber-800 font-semibold">Load More (2 remaining)</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Approval Modal -->
+    <div id="approvalModal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl w-full max-w-md shadow-xl">
+            <div class="p-6 border-b border-gray-200">
+                <h3 class="text-xl font-bold text-gray-800">Request Changes</h3>
+            </div>
+
+            <div class="p-6">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Feedback / Comments</label>
+                    <textarea rows="4" placeholder="Provide feedback on what needs to be changed..." class="w-full bg-white text-gray-800 rounded-lg px-4 py-3 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"></textarea>
+                </div>
+
+                <div class="bg-amber-50 rounded-lg p-3 border border-amber-200">
+                    <p class="text-amber-800 text-sm">
+                        <strong>Note:</strong> The employee will be notified and asked to revise their submission based on your feedback.
+                    </p>
+                </div>
+            </div>
+
+            <div class="p-6 border-t border-gray-200 flex items-center justify-end gap-3">
+                <button onclick="closeApprovalModal()" class="px-6 py-3 text-gray-700 hover:bg-gray-100 rounded-lg font-semibold transition-all">
+                    Cancel
+                </button>
+                <button class="px-6 py-3 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-bold transition-all">
+                    Send Feedback
+                </button>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

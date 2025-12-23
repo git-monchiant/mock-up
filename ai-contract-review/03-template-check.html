@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Template Check - AI Contract Review System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Sarabun', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-indigo-900 text-white">
+            <div class="p-4 border-b border-indigo-800">
+                <h1 class="text-xl font-bold">AI Contract Review</h1>
+                <p class="text-sm text-indigo-300">ระบบตรวจสัญญาอัตโนมัติ</p>
+            </div>
+            <nav class="mt-4">
+                <a href="01-dashboard.html" class="flex items-center px-4 py-3 text-indigo-200 hover:bg-indigo-800 hover:text-white">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                    </svg>
+                    Dashboard
+                </a>
+                <a href="02-upload-contract.html" class="flex items-center px-4 py-3 text-indigo-200 hover:bg-indigo-800 hover:text-white">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                    </svg>
+                    อัปโหลดสัญญา
+                </a>
+                <a href="03-template-check.html" class="flex items-center px-4 py-3 bg-indigo-800 text-white">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    ตรวจ Template
+                </a>
+                <a href="04-risk-analysis.html" class="flex items-center px-4 py-3 text-indigo-200 hover:bg-indigo-800 hover:text-white">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                    </svg>
+                    วิเคราะห์ความเสี่ยง
+                </a>
+                <a href="05-legal-review.html" class="flex items-center px-4 py-3 text-indigo-200 hover:bg-indigo-800 hover:text-white">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    ทีมกฎหมายอนุมัติ
+                </a>
+            </nav>
+
+            <div class="absolute bottom-0 w-64 p-4 border-t border-indigo-800">
+                <a href="../index.html" class="flex items-center text-indigo-200 hover:text-white">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                    </svg>
+                    กลับหน้าหลัก
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 overflow-y-auto">
+            <!-- Header -->
+            <header class="bg-white shadow-sm">
+                <div class="px-6 py-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-800">ผลการตรวจสอบ Template</h2>
+                            <p class="text-sm text-gray-600 mt-1">สัญญาจ้างก่อสร้าง โครงการ A - CTR-2026-001</p>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-3xl font-bold text-green-600">98%</div>
+                            <div class="text-xs text-gray-500">ความตรงตาม Template</div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Progress Steps -->
+            <div class="bg-white border-b border-gray-200">
+                <div class="px-6 py-4">
+                    <div class="flex items-center justify-between max-w-3xl mx-auto">
+                        <div class="flex-1 flex items-center">
+                            <div class="flex items-center justify-center w-10 h-10 rounded-full bg-green-500 text-white font-bold">
+                                ✓
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm font-semibold text-gray-900">ตรวจ Template</p>
+                                <p class="text-xs text-gray-500">เสร็จสิ้น</p>
+                            </div>
+                        </div>
+                        <div class="flex-shrink-0 w-16 h-1 bg-gray-300 mx-2"></div>
+                        <div class="flex-1 flex items-center">
+                            <div class="flex items-center justify-center w-10 h-10 rounded-full bg-indigo-500 text-white font-bold">
+                                2
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm font-semibold text-gray-900">วิเคราะห์ความเสี่ยง</p>
+                                <p class="text-xs text-gray-500">กำลังดำเนินการ</p>
+                            </div>
+                        </div>
+                        <div class="flex-shrink-0 w-16 h-1 bg-gray-300 mx-2"></div>
+                        <div class="flex-1 flex items-center">
+                            <div class="flex items-center justify-center w-10 h-10 rounded-full bg-gray-300 text-white font-bold">
+                                3
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm font-semibold text-gray-500">ทีมกฎหมายตรวจสอบ</p>
+                                <p class="text-xs text-gray-400">รอดำเนินการ</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div class="p-6">
+                <!-- Overall Score -->
+                <div class="bg-gradient-to-r from-green-50 to-teal-50 rounded-lg shadow-lg p-6 mb-6 border-2 border-green-200">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-800 mb-2">คะแนนความตรงตาม Template</h3>
+                            <p class="text-gray-600">เปรียบเทียบกับ Template สัญญาจ้างก่อสร้าง v2.3</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-6xl font-bold text-green-600">98%</div>
+                            <div class="mt-2 px-4 py-2 bg-green-500 text-white rounded-full text-sm font-semibold">
+                                ผ่านเกณฑ์
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section Breakdown -->
+                <div class="bg-white rounded-lg shadow mb-6">
+                    <div class="px-6 py-4 border-b border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-800">รายละเอียดแต่ละมาตรา</h3>
+                        <p class="text-sm text-gray-600">การเปรียบเทียบแต่ละส่วนของสัญญา</p>
+                    </div>
+                    <div class="p-6">
+                        <div class="space-y-4">
+                            <!-- Section 1 -->
+                            <div class="border-l-4 border-green-500 bg-green-50 p-4 rounded">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h4 class="font-semibold text-gray-800">มาตรา 1: คู่สัญญาและนิยาม</h4>
+                                    <span class="px-3 py-1 bg-green-500 text-white text-sm rounded-full font-semibold">100%</span>
+                                </div>
+                                <p class="text-sm text-gray-600 mb-2">✓ มีการระบุคู่สัญญาครบถ้วน</p>
+                                <p class="text-sm text-gray-600">✓ นิยามศัพท์ครบถ้วนตาม Template</p>
+                            </div>
+
+                            <!-- Section 2 -->
+                            <div class="border-l-4 border-green-500 bg-green-50 p-4 rounded">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h4 class="font-semibold text-gray-800">มาตรา 2: ขอบเขตงาน</h4>
+                                    <span class="px-3 py-1 bg-green-500 text-white text-sm rounded-full font-semibold">100%</span>
+                                </div>
+                                <p class="text-sm text-gray-600 mb-2">✓ ระบุขอบเขตงานชัดเจน</p>
+                                <p class="text-sm text-gray-600">✓ มีการอ้างอิงแบบแปลนครบถ้วน</p>
+                            </div>
+
+                            <!-- Section 3 -->
+                            <div class="border-l-4 border-green-500 bg-green-50 p-4 rounded">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h4 class="font-semibold text-gray-800">มาตรา 3: ระยะเวลาดำเนินการ</h4>
+                                    <span class="px-3 py-1 bg-green-500 text-white text-sm rounded-full font-semibold">100%</span>
+                                </div>
+                                <p class="text-sm text-gray-600 mb-2">✓ ระบุวันเริ่มต้นและสิ้นสุดชัดเจน</p>
+                                <p class="text-sm text-gray-600">✓ มีเงื่อนไขการขยายระยะเวลา</p>
+                            </div>
+
+                            <!-- Section 4 -->
+                            <div class="border-l-4 border-green-500 bg-green-50 p-4 rounded">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h4 class="font-semibold text-gray-800">มาตรา 4: ค่าจ้างและการชำระเงิน</h4>
+                                    <span class="px-3 py-1 bg-green-500 text-white text-sm rounded-full font-semibold">100%</span>
+                                </div>
+                                <p class="text-sm text-gray-600 mb-2">✓ ระบุมูลค่าสัญญาชัดเจน</p>
+                                <p class="text-sm text-gray-600">✓ มีเงื่อนไขการชำระเงินตาม Template</p>
+                            </div>
+
+                            <!-- Section 5 -->
+                            <div class="border-l-4 border-yellow-500 bg-yellow-50 p-4 rounded">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h4 class="font-semibold text-gray-800">มาตรา 5: หลักประกัน</h4>
+                                    <span class="px-3 py-1 bg-yellow-500 text-white text-sm rounded-full font-semibold">85%</span>
+                                </div>
+                                <p class="text-sm text-gray-600 mb-2">✓ มีการระบุหลักประกันสัญญา</p>
+                                <p class="text-sm text-orange-600">⚠ ขาดรายละเอียดหลักประกันผลงาน</p>
+                            </div>
+
+                            <!-- Section 6 -->
+                            <div class="border-l-4 border-green-500 bg-green-50 p-4 rounded">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h4 class="font-semibold text-gray-800">มาตรา 6: เงื่อนไขการยกเลิก</h4>
+                                    <span class="px-3 py-1 bg-green-500 text-white text-sm rounded-full font-semibold">100%</span>
+                                </div>
+                                <p class="text-sm text-gray-600 mb-2">✓ เงื่อนไขการยกเลิกครบถ้วน</p>
+                                <p class="text-sm text-gray-600">✓ ค่าปรับตาม Template</p>
+                            </div>
+
+                            <!-- Section 7 -->
+                            <div class="border-l-4 border-green-500 bg-green-50 p-4 rounded">
+                                <div class="flex items-center justify-between mb-2">
+                                    <h4 class="font-semibold text-gray-800">มาตรา 7: การระงับข้อพิพาท</h4>
+                                    <span class="px-3 py-1 bg-green-500 text-white text-sm rounded-full font-semibold">100%</span>
+                                </div>
+                                <p class="text-sm text-gray-600 mb-2">✓ มีเงื่อนไขการอนุญาโตตุลาการ</p>
+                                <p class="text-sm text-gray-600">✓ ระบุเขตอำนาจศาลชัดเจน</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Missing/Deviation Items -->
+                <div class="bg-white rounded-lg shadow mb-6">
+                    <div class="px-6 py-4 border-b border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-800">รายการที่ต้องแก้ไข/เพิ่มเติม</h3>
+                        <p class="text-sm text-gray-600">ส่วนที่แตกต่างจาก Template มาตรฐาน</p>
+                    </div>
+                    <div class="p-6">
+                        <div class="space-y-3">
+                            <div class="flex items-start p-3 bg-orange-50 border-l-4 border-orange-500 rounded">
+                                <svg class="w-5 h-5 text-orange-500 mt-0.5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                                </svg>
+                                <div>
+                                    <p class="font-medium text-gray-800">มาตรา 5: ขาดหลักประกันผลงาน</p>
+                                    <p class="text-sm text-gray-600 mt-1">Template กำหนดให้มีหลักประกันผลงาน 5% ของมูลค่าสัญญา แต่ในสัญญาฉบับนี้ไม่ได้ระบุไว้</p>
+                                    <p class="text-xs text-orange-600 mt-2">
+                                        <strong>แนะนำ:</strong> เพิ่มข้อความ "ผู้รับจ้างจะต้องวางหลักประกันผลงานเป็นเงิน 5% ของมูลค่าสัญญา"
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                            <div class="flex items-start">
+                                <svg class="w-5 h-5 text-blue-500 mt-0.5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                <div class="text-sm text-gray-700">
+                                    <strong>หมายเหตุ:</strong> สัญญาฉบับนี้มีความตรงตาม Template สูง (98%)
+                                    แนะนำให้เพิ่มเติมเฉพาะส่วนหลักประกันผลงานเพื่อให้ครบถ้วนตาม Template
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex justify-between">
+                    <a href="02-upload-contract.html" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
+                        ← กลับไปแก้ไข
+                    </a>
+                    <a href="04-risk-analysis.html" class="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
+                        ไปขั้นตอนถัดไป: วิเคราะห์ความเสี่ยง →
+                    </a>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

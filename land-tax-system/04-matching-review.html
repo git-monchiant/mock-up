@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ตรวจสอบ Matching - ระบบภาษีที่ดินและสิ่งปลูกสร้าง</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Sarabun', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <!-- Sidebar -->
+    <div class="flex h-screen">
+        <aside class="w-64 bg-slate-800 text-white flex-shrink-0">
+            <div class="p-4 border-b border-slate-700">
+                <h1 class="text-xl font-bold">Land Tax System</h1>
+                <p class="text-sm text-slate-400">ระบบภาษีที่ดินและสิ่งปลูกสร้าง</p>
+            </div>
+            <nav class="mt-4">
+                <a href="01-dashboard.html" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-white">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                    </svg>
+                    Dashboard
+                </a>
+                <a href="02-unit-management.html" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-white">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                    </svg>
+                    จัดการข้อมูล Unit
+                </a>
+                <a href="03-tax-notice-upload.html" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-white">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                    </svg>
+                    Upload ใบแจ้งภาษี
+                </a>
+                <a href="04-matching-review.html" class="flex items-center px-4 py-3 bg-slate-700 text-white">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+                    </svg>
+                    ตรวจสอบ Matching
+                </a>
+                <a href="05-reconciliation.html" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-700 hover:text-white">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                    </svg>
+                    เปรียบเทียบภาษี
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 overflow-y-auto">
+            <!-- Header -->
+            <header class="bg-white shadow-sm border-b border-gray-200">
+                <div class="flex items-center justify-between px-6 py-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-800">ตรวจสอบ Matching</h2>
+                        <p class="text-gray-500">ตรวจสอบและยืนยันการจับคู่ข้อมูลจากใบแจ้งภาษี</p>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="flex items-center gap-2 bg-gray-100 rounded-lg px-3 py-2">
+                            <label class="text-sm text-gray-600">ปีภาษี:</label>
+                            <select class="bg-white border border-gray-300 rounded px-3 py-1 text-sm font-medium">
+                                <option>2568</option>
+                                <option>2567</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="p-6">
+                <!-- Summary Cards -->
+                <div class="grid grid-cols-4 gap-4 mb-6">
+                    <div class="bg-white rounded-lg shadow-sm p-4">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-gray-500">ทั้งหมด</p>
+                                <p class="text-2xl font-bold text-gray-800">1,954</p>
+                            </div>
+                            <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
+                                <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-sm p-4 border-l-4 border-green-500">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-gray-500">Match สำเร็จ</p>
+                                <p class="text-2xl font-bold text-green-600">1,842</p>
+                            </div>
+                            <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                                <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-sm p-4 border-l-4 border-yellow-500">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-gray-500">รอตรวจสอบ</p>
+                                <p class="text-2xl font-bold text-yellow-600">89</p>
+                            </div>
+                            <div class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
+                                <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-sm p-4 border-l-4 border-red-500">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-gray-500">ไม่พบข้อมูล</p>
+                                <p class="text-2xl font-bold text-red-600">23</p>
+                            </div>
+                            <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
+                                <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filter -->
+                <div class="bg-white rounded-lg shadow-sm p-4 mb-6">
+                    <div class="flex flex-wrap items-center gap-4">
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">ไฟล์</label>
+                            <select class="border border-gray-300 rounded-lg px-3 py-2 text-sm min-w-[200px]">
+                                <option>ทุกไฟล์</option>
+                                <option>tax_notice_bangkhen_nov2567.pdf</option>
+                                <option>tax_notice_ladprao_dec2567.pdf</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">สถานะ</label>
+                            <select class="border border-gray-300 rounded-lg px-3 py-2 text-sm min-w-[150px]">
+                                <option>รอตรวจสอบ</option>
+                                <option>ทั้งหมด</option>
+                                <option>Match สำเร็จ</option>
+                                <option>ไม่พบข้อมูล</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-500 mb-1">ค้นหา</label>
+                            <input type="text" placeholder="เลขโฉนด, ที่อยู่..." class="border border-gray-300 rounded-lg px-3 py-2 text-sm w-48">
+                        </div>
+                        <div class="ml-auto">
+                            <button class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-green-700 flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                </svg>
+                                ยืนยันทั้งหมดที่เลือก
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Matching Items -->
+                <div class="space-y-4">
+                    <!-- Item 1 - Multiple Candidates -->
+                    <div class="bg-white rounded-xl shadow-sm overflow-hidden border-l-4 border-yellow-500">
+                        <div class="p-4 bg-yellow-50 border-b border-yellow-100">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <input type="checkbox" class="rounded">
+                                    <span class="inline-flex items-center gap-1 px-2 py-1 bg-yellow-200 text-yellow-800 text-xs rounded-full font-medium">
+                                        MULTIPLE_CANDIDATES
+                                    </span>
+                                    <span class="text-sm text-gray-600">รายการ #1 จาก tax_notice_bangkhen_nov2567.pdf</span>
+                                </div>
+                                <span class="text-xs text-gray-500">ภาษีในเอกสาร: <span class="font-bold text-gray-800">5,250 บาท</span></span>
+                            </div>
+                        </div>
+
+                        <div class="p-4">
+                            <div class="grid grid-cols-2 gap-6">
+                                <!-- OCR Data -->
+                                <div>
+                                    <h4 class="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+                                        <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                        </svg>
+                                        ข้อมูลจากเอกสาร (OCR)
+                                    </h4>
+                                    <div class="bg-gray-50 rounded-lg p-4 space-y-2">
+                                        <div class="flex">
+                                            <span class="text-xs text-gray-500 w-24">เลขโฉนด:</span>
+                                            <span class="text-sm font-medium">12345</span>
+                                        </div>
+                                        <div class="flex">
+                                            <span class="text-xs text-gray-500 w-24">เลขที่ดิน:</span>
+                                            <span class="text-sm font-medium">100</span>
+                                        </div>
+                                        <div class="flex">
+                                            <span class="text-xs text-gray-500 w-24">ที่อยู่:</span>
+                                            <span class="text-sm font-medium">99/1 ม.5 บางเขน กทม.</span>
+                                        </div>
+                                        <div class="flex">
+                                            <span class="text-xs text-gray-500 w-24">ประเภท:</span>
+                                            <span class="text-sm font-medium">ที่อยู่อาศัย</span>
+                                        </div>
+                                        <div class="flex">
+                                            <span class="text-xs text-gray-500 w-24">ราคาประเมิน:</span>
+                                            <span class="text-sm font-medium">5,250,000 บาท</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Candidates -->
+                                <div>
+                                    <h4 class="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+                                        <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                                        </svg>
+                                        ตัวเลือกที่พบในระบบ
+                                    </h4>
+                                    <div class="space-y-2">
+                                        <!-- Candidate 1 -->
+                                        <label class="block p-3 border-2 border-blue-500 bg-blue-50 rounded-lg cursor-pointer hover:bg-blue-100">
+                                            <div class="flex items-start gap-3">
+                                                <input type="radio" name="match1" class="mt-1" checked>
+                                                <div class="flex-1">
+                                                    <div class="flex items-center justify-between">
+                                                        <span class="text-sm font-medium text-gray-800">SPG-0001</span>
+                                                        <span class="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">95% match</span>
+                                                    </div>
+                                                    <p class="text-xs text-gray-600 mt-1">โฉนด: 12345 • ที่ดิน: 100 • 99/1 ม.5 บางเขน</p>
+                                                    <p class="text-xs text-blue-600 mt-1">ภาษีคำนวณ: 2,625 บาท</p>
+                                                </div>
+                                            </div>
+                                        </label>
+
+                                        <!-- Candidate 2 -->
+                                        <label class="block p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
+                                            <div class="flex items-start gap-3">
+                                                <input type="radio" name="match1" class="mt-1">
+                                                <div class="flex-1">
+                                                    <div class="flex items-center justify-between">
+                                                        <span class="text-sm font-medium text-gray-800">SPG-0002</span>
+                                                        <span class="text-xs bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full">72% match</span>
+                                                    </div>
+                                                    <p class="text-xs text-gray-600 mt-1">โฉนด: 12346 • ที่ดิน: 101 • 99/2 ม.5 บางเขน</p>
+                                                    <p class="text-xs text-blue-600 mt-1">ภาษีคำนวณ: 11,250 บาท</p>
+                                                </div>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 pt-4 border-t border-gray-200 flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <input type="text" placeholder="หมายเหตุ (ถ้ามี)" class="border border-gray-300 rounded px-3 py-1.5 text-sm w-64">
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <button class="px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 hover:bg-gray-50">ข้าม</button>
+                                    <button class="px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700">ยืนยัน Match</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Item 2 - No Match -->
+                    <div class="bg-white rounded-xl shadow-sm overflow-hidden border-l-4 border-red-500">
+                        <div class="p-4 bg-red-50 border-b border-red-100">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <input type="checkbox" class="rounded">
+                                    <span class="inline-flex items-center gap-1 px-2 py-1 bg-red-200 text-red-800 text-xs rounded-full font-medium">
+                                        NO_MATCH
+                                    </span>
+                                    <span class="text-sm text-gray-600">รายการ #15 จาก tax_notice_bangkhen_nov2567.pdf</span>
+                                </div>
+                                <span class="text-xs text-gray-500">ภาษีในเอกสาร: <span class="font-bold text-gray-800">3,450 บาท</span></span>
+                            </div>
+                        </div>
+
+                        <div class="p-4">
+                            <div class="grid grid-cols-2 gap-6">
+                                <!-- OCR Data -->
+                                <div>
+                                    <h4 class="text-sm font-semibold text-gray-700 mb-3">ข้อมูลจากเอกสาร (OCR)</h4>
+                                    <div class="bg-gray-50 rounded-lg p-4 space-y-2">
+                                        <div class="flex">
+                                            <span class="text-xs text-gray-500 w-24">เลขโฉนด:</span>
+                                            <span class="text-sm font-medium">99999</span>
+                                        </div>
+                                        <div class="flex">
+                                            <span class="text-xs text-gray-500 w-24">เลขที่ดิน:</span>
+                                            <span class="text-sm font-medium">555</span>
+                                        </div>
+                                        <div class="flex">
+                                            <span class="text-xs text-gray-500 w-24">ที่อยู่:</span>
+                                            <span class="text-sm font-medium">123/45 ม.10 บางเขน กทม.</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Manual Search -->
+                                <div>
+                                    <h4 class="text-sm font-semibold text-gray-700 mb-3">ค้นหา Unit ด้วยตนเอง</h4>
+                                    <div class="space-y-3">
+                                        <div class="flex gap-2">
+                                            <input type="text" placeholder="ค้นหาเลขโฉนด, รหัส Unit..." class="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                                            <button class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700">ค้นหา</button>
+                                        </div>
+                                        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-3 text-sm text-yellow-800">
+                                            <p class="font-medium">ไม่พบข้อมูลในระบบ</p>
+                                            <p class="text-xs mt-1">อาจเป็นแปลงใหม่ที่ยังไม่ได้ sync หรือข้อมูล OCR ผิดพลาด</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 pt-4 border-t border-gray-200 flex items-center justify-between">
+                                <div class="flex items-center gap-4">
+                                    <label class="flex items-center gap-2 text-sm">
+                                        <input type="checkbox">
+                                        <span>ไม่ใช่ทรัพย์สินของบริษัท</span>
+                                    </label>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <button class="px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 hover:bg-gray-50">ข้ามรายการนี้</button>
+                                    <button class="px-4 py-2 bg-orange-600 text-white rounded-lg text-sm font-medium hover:bg-orange-700">สร้าง Unit ใหม่</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Item 3 - Auto Matched (for review) -->
+                    <div class="bg-white rounded-xl shadow-sm overflow-hidden border-l-4 border-green-500">
+                        <div class="p-4 bg-green-50 border-b border-green-100">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <input type="checkbox" class="rounded" checked>
+                                    <span class="inline-flex items-center gap-1 px-2 py-1 bg-green-200 text-green-800 text-xs rounded-full font-medium">
+                                        AUTO_MATCHED
+                                    </span>
+                                    <span class="text-sm text-gray-600">รายการ #3 จาก tax_notice_ladprao_dec2567.pdf</span>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <span class="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">98% match</span>
+                                    <span class="text-xs text-gray-500">ภาษีในเอกสาร: <span class="font-bold text-gray-800">8,500 บาท</span></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-4">
+                            <div class="grid grid-cols-3 gap-6">
+                                <div class="bg-gray-50 rounded-lg p-3">
+                                    <p class="text-xs text-gray-500 mb-1">เอกสาร</p>
+                                    <p class="text-sm font-medium">โฉนด: 55678</p>
+                                    <p class="text-sm text-gray-600">ม.8 บางนา</p>
+                                </div>
+                                <div class="bg-green-50 rounded-lg p-3">
+                                    <p class="text-xs text-gray-500 mb-1">Match กับ</p>
+                                    <p class="text-sm font-medium text-green-700">STB-0050</p>
+                                    <p class="text-sm text-gray-600">SENA Town บางนา</p>
+                                </div>
+                                <div class="bg-blue-50 rounded-lg p-3">
+                                    <p class="text-xs text-gray-500 mb-1">เปรียบเทียบภาษี</p>
+                                    <p class="text-sm">ระบบ: <span class="font-medium">8,500 บาท</span></p>
+                                    <p class="text-sm text-green-600">ตรงกัน</p>
+                                </div>
+                            </div>
+
+                            <div class="mt-4 pt-4 border-t border-gray-200 flex items-center justify-end gap-2">
+                                <button class="px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 hover:bg-gray-50">แก้ไข Match</button>
+                                <button class="px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 flex items-center gap-1">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                    </svg>
+                                    ยืนยัน
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                <div class="mt-6 flex items-center justify-between">
+                    <div class="text-sm text-gray-500">
+                        แสดง 1-3 จาก 89 รายการรอตรวจสอบ
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button class="px-3 py-1 border border-gray-300 rounded text-sm text-gray-600 hover:bg-gray-50 disabled:opacity-50" disabled>ก่อนหน้า</button>
+                        <button class="px-3 py-1 bg-blue-600 text-white rounded text-sm">1</button>
+                        <button class="px-3 py-1 border border-gray-300 rounded text-sm text-gray-600 hover:bg-gray-50">2</button>
+                        <button class="px-3 py-1 border border-gray-300 rounded text-sm text-gray-600 hover:bg-gray-50">3</button>
+                        <span class="text-gray-400">...</span>
+                        <button class="px-3 py-1 border border-gray-300 rounded text-sm text-gray-600 hover:bg-gray-50">30</button>
+                        <button class="px-3 py-1 border border-gray-300 rounded text-sm text-gray-600 hover:bg-gray-50">ถัดไป</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

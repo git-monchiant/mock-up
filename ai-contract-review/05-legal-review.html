@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legal Review - AI Contract Review System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Sarabun', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-indigo-900 text-white">
+            <div class="p-4 border-b border-indigo-800">
+                <h1 class="text-xl font-bold">AI Contract Review</h1>
+                <p class="text-sm text-indigo-300">ระบบตรวจสัญญาอัตโนมัติ</p>
+            </div>
+            <nav class="mt-4">
+                <a href="01-dashboard.html" class="flex items-center px-4 py-3 text-indigo-200 hover:bg-indigo-800 hover:text-white">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                    </svg>
+                    Dashboard
+                </a>
+                <a href="02-upload-contract.html" class="flex items-center px-4 py-3 text-indigo-200 hover:bg-indigo-800 hover:text-white">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                    </svg>
+                    อัปโหลดสัญญา
+                </a>
+                <a href="03-template-check.html" class="flex items-center px-4 py-3 text-indigo-200 hover:bg-indigo-800 hover:text-white">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    ตรวจ Template
+                </a>
+                <a href="04-risk-analysis.html" class="flex items-center px-4 py-3 text-indigo-200 hover:bg-indigo-800 hover:text-white">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                    </svg>
+                    วิเคราะห์ความเสี่ยง
+                </a>
+                <a href="05-legal-review.html" class="flex items-center px-4 py-3 bg-indigo-800 text-white">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    ทีมกฎหมายอนุมัติ
+                </a>
+            </nav>
+
+            <div class="absolute bottom-0 w-64 p-4 border-t border-indigo-800">
+                <a href="../index.html" class="flex items-center text-indigo-200 hover:text-white">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                    </svg>
+                    กลับหน้าหลัก
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 overflow-y-auto">
+            <!-- Header -->
+            <header class="bg-white shadow-sm">
+                <div class="px-6 py-4">
+                    <h2 class="text-2xl font-bold text-gray-800">การตรวจสอบและอนุมัติโดยทีมกฎหมาย</h2>
+                    <p class="text-sm text-gray-600 mt-1">สัญญาจ้างก่อสร้าง โครงการ A - CTR-2026-001</p>
+                </div>
+            </header>
+
+            <!-- Progress Steps -->
+            <div class="bg-white border-b border-gray-200">
+                <div class="px-6 py-4">
+                    <div class="flex items-center justify-between max-w-3xl mx-auto">
+                        <div class="flex-1 flex items-center">
+                            <div class="flex items-center justify-center w-10 h-10 rounded-full bg-green-500 text-white font-bold">
+                                ✓
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm font-semibold text-gray-900">ตรวจ Template</p>
+                                <p class="text-xs text-gray-500">98% ตรงตาม</p>
+                            </div>
+                        </div>
+                        <div class="flex-shrink-0 w-16 h-1 bg-green-500 mx-2"></div>
+                        <div class="flex-1 flex items-center">
+                            <div class="flex items-center justify-center w-10 h-10 rounded-full bg-green-500 text-white font-bold">
+                                ✓
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm font-semibold text-gray-900">วิเคราะห์ความเสี่ยง</p>
+                                <p class="text-xs text-gray-500">ความเสี่ยงปานกลาง</p>
+                            </div>
+                        </div>
+                        <div class="flex-shrink-0 w-16 h-1 bg-green-500 mx-2"></div>
+                        <div class="flex-1 flex items-center">
+                            <div class="flex items-center justify-center w-10 h-10 rounded-full bg-indigo-500 text-white font-bold">
+                                3
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm font-semibold text-gray-900">ทีมกฎหมายตรวจสอบ</p>
+                                <p class="text-xs text-gray-500">กำลังดำเนินการ</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div class="p-6">
+                <div class="grid grid-cols-3 gap-6">
+                    <!-- Left Column - Contract Details -->
+                    <div class="col-span-2 space-y-6">
+                        <!-- Contract Summary -->
+                        <div class="bg-white rounded-lg shadow">
+                            <div class="px-6 py-4 border-b border-gray-200">
+                                <h3 class="text-lg font-semibold text-gray-800">สรุปข้อมูลสัญญา</h3>
+                            </div>
+                            <div class="p-6">
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <p class="text-sm text-gray-600">รหัสสัญญา</p>
+                                        <p class="font-semibold text-gray-900">CTR-2026-001</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm text-gray-600">ประเภทสัญญา</p>
+                                        <p class="font-semibold text-gray-900">สัญญาจ้างก่อสร้าง</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm text-gray-600">คู่สัญญา</p>
+                                        <p class="font-semibold text-gray-900">บริษัท ABC จำกัด</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm text-gray-600">มูลค่าสัญญา</p>
+                                        <p class="font-semibold text-gray-900">12,500,000 บาท</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm text-gray-600">วันที่เริ่มสัญญา</p>
+                                        <p class="font-semibold text-gray-900">1 ก.พ. 2026</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm text-gray-600">วันที่สิ้นสุด</p>
+                                        <p class="font-semibold text-gray-900">31 ธ.ค. 2026</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- AI Analysis Summary -->
+                        <div class="bg-white rounded-lg shadow">
+                            <div class="px-6 py-4 border-b border-gray-200">
+                                <h3 class="text-lg font-semibold text-gray-800">สรุปผลการวิเคราะห์ AI</h3>
+                            </div>
+                            <div class="p-6">
+                                <div class="grid grid-cols-2 gap-4 mb-4">
+                                    <div class="bg-green-50 p-4 rounded-lg border border-green-200">
+                                        <p class="text-sm text-gray-600 mb-1">Template Score</p>
+                                        <p class="text-3xl font-bold text-green-600">98%</p>
+                                    </div>
+                                    <div class="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
+                                        <p class="text-sm text-gray-600 mb-1">ระดับความเสี่ยง</p>
+                                        <p class="text-2xl font-bold text-yellow-600">ปานกลาง</p>
+                                    </div>
+                                </div>
+
+                                <div class="space-y-2">
+                                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded">
+                                        <span class="text-sm text-gray-700">ความเสี่ยงปานกลาง</span>
+                                        <span class="font-semibold text-yellow-600">3 รายการ</span>
+                                    </div>
+                                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded">
+                                        <span class="text-sm text-gray-700">ความเสี่ยงต่ำ</span>
+                                        <span class="font-semibold text-green-600">2 รายการ</span>
+                                    </div>
+                                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded">
+                                        <span class="text-sm text-gray-700">ข้อแก้ไขที่แนะนำ</span>
+                                        <span class="font-semibold text-orange-600">1 รายการ</span>
+                                    </div>
+                                </div>
+
+                                <div class="mt-4">
+                                    <a href="04-risk-analysis.html" class="text-sm text-indigo-600 hover:text-indigo-800 font-medium">
+                                        ดูรายละเอียดการวิเคราะห์ความเสี่ยง →
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Document Viewer -->
+                        <div class="bg-white rounded-lg shadow">
+                            <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+                                <h3 class="text-lg font-semibold text-gray-800">เอกสารสัญญา</h3>
+                                <button class="px-4 py-2 border border-gray-300 rounded-lg text-sm hover:bg-gray-50">
+                                    📥 ดาวน์โหลด PDF
+                                </button>
+                            </div>
+                            <div class="p-6">
+                                <div class="border-2 border-gray-300 rounded-lg p-8 bg-gray-50 text-center">
+                                    <svg class="mx-auto h-16 w-16 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                    </svg>
+                                    <p class="text-gray-600 mb-2">สัญญาจ้างก่อสร้างโครงการA.pdf</p>
+                                    <p class="text-sm text-gray-500">24 หน้า | 2.4 MB</p>
+                                    <button class="mt-4 px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
+                                        เปิดดูเอกสาร
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Review Comments -->
+                        <div class="bg-white rounded-lg shadow">
+                            <div class="px-6 py-4 border-b border-gray-200">
+                                <h3 class="text-lg font-semibold text-gray-800">ความเห็นจากทีมกฎหมาย</h3>
+                            </div>
+                            <div class="p-6">
+                                <div class="space-y-4">
+                                    <!-- Comment Input -->
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">เพิ่มความเห็น</label>
+                                        <textarea rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="ระบุความเห็น คำแนะนำ หรือข้อควรระวัง..."></textarea>
+                                    </div>
+
+                                    <!-- Existing Comments -->
+                                    <div class="border-t pt-4">
+                                        <h4 class="text-sm font-semibold text-gray-700 mb-3">ประวัติความเห็น</h4>
+                                        <div class="space-y-3">
+                                            <div class="bg-gray-50 p-4 rounded-lg">
+                                                <div class="flex items-center mb-2">
+                                                    <div class="w-8 h-8 bg-indigo-500 text-white rounded-full flex items-center justify-center font-bold text-sm mr-3">
+                                                        ส
+                                                    </div>
+                                                    <div>
+                                                        <p class="font-semibold text-sm text-gray-900">สมชาย ทนายความ</p>
+                                                        <p class="text-xs text-gray-500">18 ม.ค. 2026 14:32</p>
+                                                    </div>
+                                                </div>
+                                                <p class="text-sm text-gray-700 ml-11">
+                                                    ตรวจสอบสัญญาเรียบร้อยแล้ว พบว่าสัญญาโดยรวมมีความเหมาะสม แต่แนะนำให้ปรับอัตราค่าปรับจาก 0.05% เป็น 0.1% ตามมาตรฐานตลาด
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column - Action Panel -->
+                    <div class="col-span-1 space-y-6">
+                        <!-- Status Card -->
+                        <div class="bg-white rounded-lg shadow">
+                            <div class="px-6 py-4 border-b border-gray-200">
+                                <h3 class="text-lg font-semibold text-gray-800">สถานะการตรวจสอบ</h3>
+                            </div>
+                            <div class="p-6">
+                                <div class="text-center mb-4">
+                                    <div class="text-6xl mb-2">⏳</div>
+                                    <div class="px-4 py-2 bg-blue-100 text-blue-800 rounded-full text-sm font-semibold inline-block">
+                                        รอการอนุมัติ
+                                    </div>
+                                </div>
+
+                                <div class="space-y-2 mb-4">
+                                    <div class="flex items-center text-sm">
+                                        <svg class="w-4 h-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                        </svg>
+                                        <span class="text-gray-700">AI ตรวจสอบเสร็จสิ้น</span>
+                                    </div>
+                                    <div class="flex items-center text-sm">
+                                        <svg class="w-4 h-4 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                        </svg>
+                                        <span class="text-gray-700">ส่งให้ทีมกฎหมาย</span>
+                                    </div>
+                                    <div class="flex items-center text-sm">
+                                        <svg class="w-4 h-4 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <circle cx="12" cy="12" r="10" stroke-width="2"/>
+                                        </svg>
+                                        <span class="text-gray-500">รออนุมัติ</span>
+                                    </div>
+                                </div>
+
+                                <div class="text-sm text-gray-600">
+                                    <p>ส่งตรวจสอบเมื่อ: <strong>18 ม.ค. 2026 10:15</strong></p>
+                                    <p>ผู้ส่ง: <strong>วิชัย การเงิน</strong></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Review Decision -->
+                        <div class="bg-white rounded-lg shadow">
+                            <div class="px-6 py-4 border-b border-gray-200">
+                                <h3 class="text-lg font-semibold text-gray-800">ตัดสินใจ</h3>
+                            </div>
+                            <div class="p-6 space-y-4">
+                                <!-- Approve -->
+                                <button class="w-full px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center justify-center font-semibold">
+                                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                    </svg>
+                                    อนุมัติสัญญา
+                                </button>
+
+                                <!-- Approve with Conditions -->
+                                <button class="w-full px-6 py-3 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 flex items-center justify-center font-semibold">
+                                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                                    </svg>
+                                    อนุมัติแบบมีเงื่อนไข
+                                </button>
+
+                                <!-- Request Revision -->
+                                <button class="w-full px-6 py-3 bg-orange-600 text-white rounded-lg hover:bg-orange-700 flex items-center justify-center font-semibold">
+                                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                                    </svg>
+                                    ขอแก้ไข
+                                </button>
+
+                                <!-- Reject -->
+                                <button class="w-full px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 flex items-center justify-center font-semibold">
+                                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                    </svg>
+                                    ไม่อนุมัติ
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Quick Actions -->
+                        <div class="bg-white rounded-lg shadow">
+                            <div class="px-6 py-4 border-b border-gray-200">
+                                <h3 class="text-lg font-semibold text-gray-800">เครื่องมือ</h3>
+                            </div>
+                            <div class="p-6 space-y-3">
+                                <button class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm hover:bg-gray-50 flex items-center">
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"/>
+                                    </svg>
+                                    ทำสำเนาสัญญา
+                                </button>
+
+                                <button class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm hover:bg-gray-50 flex items-center">
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/>
+                                    </svg>
+                                    แชร์ให้ทีม
+                                </button>
+
+                                <button class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm hover:bg-gray-50 flex items-center">
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                    </svg>
+                                    ส่งออกรายงาน
+                                </button>
+
+                                <button class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm hover:bg-gray-50 flex items-center">
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    </svg>
+                                    ดูประวัติการแก้ไข
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Reviewer Info -->
+                        <div class="bg-white rounded-lg shadow">
+                            <div class="px-6 py-4 border-b border-gray-200">
+                                <h3 class="text-lg font-semibold text-gray-800">ผู้ตรวจสอบ</h3>
+                            </div>
+                            <div class="p-6">
+                                <div class="flex items-center mb-4">
+                                    <div class="w-12 h-12 bg-indigo-500 text-white rounded-full flex items-center justify-center font-bold text-lg mr-3">
+                                        ส
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold text-gray-900">สมชาย ทนายความ</p>
+                                        <p class="text-sm text-gray-500">ทีมกฎหมาย</p>
+                                    </div>
+                                </div>
+                                <div class="text-sm text-gray-600 space-y-1">
+                                    <p>📧 somchai@company.com</p>
+                                    <p>📱 081-234-5678</p>
+                                    <p>🏢 ฝ่ายกฎหมาย - Legal Dept.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
