@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบแจ้งซ่อม & ร้องเรียน - Dashboard v3</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Sarabun', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen">
+    <!-- Sidebar -->
+    <aside class="fixed left-0 top-0 h-full w-64 bg-gradient-to-b from-cyan-800 to-cyan-900 text-white shadow-xl z-10">
+        <div class="p-6 border-b border-cyan-700">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight">ระบบแจ้งซ่อม</h1>
+                    <p class="text-cyan-200 text-xs">& ร้องเรียน</p>
+                </div>
+            </div>
+        </div>
+
+        <nav class="p-4 space-y-2">
+            <a href="01-dashboard.html" class="flex items-center gap-3 px-4 py-3 hover:bg-white/10 rounded-lg text-cyan-100 transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
+                </svg>
+                <span>Dashboard v1</span>
+            </a>
+            <a href="01-dashboard-v2.html" class="flex items-center gap-3 px-4 py-3 hover:bg-white/10 rounded-lg text-cyan-100 transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
+                </svg>
+                <span>Dashboard v2</span>
+            </a>
+            <a href="01-dashboard-v3.html" class="flex items-center gap-3 px-4 py-3 bg-white/20 rounded-lg text-white">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
+                </svg>
+                <span class="font-medium">Dashboard v3</span>
+            </a>
+            <a href="06-executive-summary.html" class="flex items-center gap-3 px-4 py-3 hover:bg-white/10 rounded-lg text-cyan-100 transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                <span>Executive Summary</span>
+            </a>
+            <a href="07-annual-report.html" class="flex items-center gap-3 px-4 py-3 hover:bg-white/10 rounded-lg text-cyan-100 transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                </svg>
+                <span>Annual Report</span>
+            </a>
+            <a href="02-request-list.html" class="flex items-center gap-3 px-4 py-3 hover:bg-white/10 rounded-lg text-cyan-100 transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                </svg>
+                <span>รายการแจ้งซ่อม</span>
+            </a>
+            <a href="04-new-request.html" class="flex items-center gap-3 px-4 py-3 hover:bg-white/10 rounded-lg text-cyan-100 transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                </svg>
+                <span>เปิดเรื่องใหม่</span>
+            </a>
+            <a href="05-resident-portal.html" class="flex items-center gap-3 px-4 py-3 hover:bg-white/10 rounded-lg text-cyan-100 transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                </svg>
+                <span>Resident Portal</span>
+            </a>
+
+            <div class="border-t border-cyan-700 my-4"></div>
+
+            <a href="../index.html" class="flex items-center gap-3 px-4 py-3 hover:bg-white/10 rounded-lg text-cyan-100 transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 17l-5-5m0 0l5-5m-5 5h12"/>
+                </svg>
+                <span>กลับหน้าหลัก</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="ml-64 p-8">
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-6">
+            <div>
+                <h1 class="text-2xl font-bold text-slate-800">Dashboard v3 - Kanban View</h1>
+                <p class="text-slate-500">มุมมองแบบ Kanban สำหรับติดตามงาน</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <select class="px-4 py-2 border border-slate-300 rounded-lg bg-white text-slate-700 focus:outline-none focus:ring-2 focus:ring-cyan-500">
+                    <option>ทุกโครงการ</option>
+                    <option>Sena Park Grand Rama 9</option>
+                    <option>Sena Kith Lam Luk Ka</option>
+                    <option>Sena Ville Bangna</option>
+                </select>
+                <a href="04-new-request.html" class="px-4 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700 transition flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                    </svg>
+                    เปิดเรื่องใหม่
+                </a>
+            </div>
+        </div>
+
+        <!-- Summary Stats -->
+        <div class="grid grid-cols-6 gap-4 mb-6">
+            <div class="bg-white rounded-xl p-4 shadow-sm border-l-4 border-slate-400">
+                <p class="text-2xl font-bold text-slate-800">1,248</p>
+                <p class="text-sm text-slate-500">ทั้งหมด</p>
+            </div>
+            <div class="bg-white rounded-xl p-4 shadow-sm border-l-4 border-amber-500">
+                <p class="text-2xl font-bold text-amber-600">156</p>
+                <p class="text-sm text-slate-500">รอดำเนินการ</p>
+            </div>
+            <div class="bg-white rounded-xl p-4 shadow-sm border-l-4 border-blue-500">
+                <p class="text-2xl font-bold text-blue-600">89</p>
+                <p class="text-sm text-slate-500">กำลังดำเนินการ</p>
+            </div>
+            <div class="bg-white rounded-xl p-4 shadow-sm border-l-4 border-purple-500">
+                <p class="text-2xl font-bold text-purple-600">45</p>
+                <p class="text-sm text-slate-500">รอตรวจรับ</p>
+            </div>
+            <div class="bg-white rounded-xl p-4 shadow-sm border-l-4 border-emerald-500">
+                <p class="text-2xl font-bold text-emerald-600">933</p>
+                <p class="text-sm text-slate-500">เสร็จสิ้น</p>
+            </div>
+            <div class="bg-white rounded-xl p-4 shadow-sm border-l-4 border-red-500">
+                <p class="text-2xl font-bold text-red-600">25</p>
+                <p class="text-sm text-slate-500">เกินกำหนด</p>
+            </div>
+        </div>
+
+        <!-- Kanban Board -->
+        <div class="grid grid-cols-5 gap-4 mb-6" style="min-height: 500px;">
+            <!-- Column 1: รอดำเนินการ -->
+            <div class="bg-amber-50 rounded-xl p-4">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-2">
+                        <div class="w-3 h-3 bg-amber-500 rounded-full"></div>
+                        <h3 class="font-semibold text-slate-800">รอดำเนินการ</h3>
+                    </div>
+                    <span class="bg-amber-200 text-amber-800 text-xs font-medium px-2 py-1 rounded-full">156</span>
+                </div>
+                <div class="space-y-3">
+                    <a href="03-request-detail.html" class="block bg-white rounded-lg p-3 shadow-sm hover:shadow-md transition border-l-4 border-red-500">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-medium text-cyan-600">#REQ-1248</span>
+                            <span class="px-1.5 py-0.5 bg-red-100 text-red-700 text-[10px] rounded">สูง</span>
+                        </div>
+                        <p class="text-sm font-medium text-slate-800 mb-1">น้ำรั่วจากเพดาน</p>
+                        <p class="text-xs text-slate-500 mb-2">ห้อง 1205 • Sena Park</p>
+                        <div class="flex items-center justify-between text-xs text-slate-400">
+                            <span>5 นาทีที่แล้ว</span>
+                            <span class="text-red-500">SLA: 47:55</span>
+                        </div>
+                    </a>
+                    <a href="03-request-detail.html" class="block bg-white rounded-lg p-3 shadow-sm hover:shadow-md transition border-l-4 border-amber-500">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-medium text-cyan-600">#REQ-1245</span>
+                            <span class="px-1.5 py-0.5 bg-amber-100 text-amber-700 text-[10px] rounded">ปานกลาง</span>
+                        </div>
+                        <p class="text-sm font-medium text-slate-800 mb-1">เสียงดังรบกวน</p>
+                        <p class="text-xs text-slate-500 mb-2">ห้อง 1105 • Sena Az</p>
+                        <div class="flex items-center justify-between text-xs text-slate-400">
+                            <span>2 ชม.ที่แล้ว</span>
+                            <span>SLA: 46:00</span>
+                        </div>
+                    </a>
+                    <a href="03-request-detail.html" class="block bg-white rounded-lg p-3 shadow-sm hover:shadow-md transition border-l-4 border-slate-300">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-medium text-cyan-600">#REQ-1243</span>
+                            <span class="px-1.5 py-0.5 bg-slate-100 text-slate-600 text-[10px] rounded">ต่ำ</span>
+                        </div>
+                        <p class="text-sm font-medium text-slate-800 mb-1">ขอเปลี่ยนหลอดไฟ</p>
+                        <p class="text-xs text-slate-500 mb-2">ห้อง 902 • Sena Kith</p>
+                        <div class="flex items-center justify-between text-xs text-slate-400">
+                            <span>5 ชม.ที่แล้ว</span>
+                            <span>SLA: 43:00</span>
+                        </div>
+                    </a>
+                    <div class="text-center py-2">
+                        <a href="02-request-list.html?status=pending" class="text-xs text-amber-600 hover:underline">ดูเพิ่มเติม +153</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Column 2: กำลังดำเนินการ -->
+            <div class="bg-blue-50 rounded-xl p-4">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-2">
+                        <div class="w-3 h-3 bg-blue-500 rounded-full"></div>
+                        <h3 class="font-semibold text-slate-800">กำลังดำเนินการ</h3>
+                    </div>
+                    <span class="bg-blue-200 text-blue-800 text-xs font-medium px-2 py-1 rounded-full">89</span>
+                </div>
+                <div class="space-y-3">
+                    <a href="03-request-detail.html" class="block bg-white rounded-lg p-3 shadow-sm hover:shadow-md transition">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-medium text-cyan-600">#REQ-1247</span>
+                            <span class="px-1.5 py-0.5 bg-amber-100 text-amber-700 text-[10px] rounded">ปานกลาง</span>
+                        </div>
+                        <p class="text-sm font-medium text-slate-800 mb-1">แอร์ไม่เย็น</p>
+                        <p class="text-xs text-slate-500 mb-2">ห้อง 803 • Sena Kith</p>
+                        <div class="flex items-center gap-2 mb-2">
+                            <div class="w-6 h-6 bg-cyan-100 rounded-full flex items-center justify-center">
+                                <span class="text-cyan-700 text-[10px] font-medium">ส.ช.</span>
+                            </div>
+                            <span class="text-xs text-slate-600">ช่างสมชาย</span>
+                        </div>
+                        <div class="w-full bg-slate-200 rounded-full h-1.5">
+                            <div class="bg-blue-500 h-1.5 rounded-full" style="width: 60%"></div>
+                        </div>
+                    </a>
+                    <a href="03-request-detail.html" class="block bg-white rounded-lg p-3 shadow-sm hover:shadow-md transition">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-medium text-cyan-600">#REQ-1240</span>
+                            <span class="px-1.5 py-0.5 bg-red-100 text-red-700 text-[10px] rounded">สูง</span>
+                        </div>
+                        <p class="text-sm font-medium text-slate-800 mb-1">ท่อน้ำตัน</p>
+                        <p class="text-xs text-slate-500 mb-2">ห้อง 1501 • Sena Ville</p>
+                        <div class="flex items-center gap-2 mb-2">
+                            <div class="w-6 h-6 bg-emerald-100 rounded-full flex items-center justify-center">
+                                <span class="text-emerald-700 text-[10px] font-medium">ท.ป.</span>
+                            </div>
+                            <span class="text-xs text-slate-600">ทีมประปา</span>
+                        </div>
+                        <div class="w-full bg-slate-200 rounded-full h-1.5">
+                            <div class="bg-blue-500 h-1.5 rounded-full" style="width: 80%"></div>
+                        </div>
+                    </a>
+                    <a href="03-request-detail.html" class="block bg-white rounded-lg p-3 shadow-sm hover:shadow-md transition">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-medium text-cyan-600">#REQ-1238</span>
+                            <span class="px-1.5 py-0.5 bg-amber-100 text-amber-700 text-[10px] rounded">ปานกลาง</span>
+                        </div>
+                        <p class="text-sm font-medium text-slate-800 mb-1">ประตูห้องปิดไม่สนิท</p>
+                        <p class="text-xs text-slate-500 mb-2">ห้อง 708 • Sena Park</p>
+                        <div class="flex items-center gap-2 mb-2">
+                            <div class="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center">
+                                <span class="text-blue-700 text-[10px] font-medium">ป.ย.</span>
+                            </div>
+                            <span class="text-xs text-slate-600">ช่างประยุทธ์</span>
+                        </div>
+                        <div class="w-full bg-slate-200 rounded-full h-1.5">
+                            <div class="bg-blue-500 h-1.5 rounded-full" style="width: 30%"></div>
+                        </div>
+                    </a>
+                    <div class="text-center py-2">
+                        <a href="02-request-list.html?status=in-progress" class="text-xs text-blue-600 hover:underline">ดูเพิ่มเติม +86</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Column 3: รอตรวจรับ -->
+            <div class="bg-purple-50 rounded-xl p-4">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-2">
+                        <div class="w-3 h-3 bg-purple-500 rounded-full"></div>
+                        <h3 class="font-semibold text-slate-800">รอตรวจรับ</h3>
+                    </div>
+                    <span class="bg-purple-200 text-purple-800 text-xs font-medium px-2 py-1 rounded-full">45</span>
+                </div>
+                <div class="space-y-3">
+                    <a href="03-request-detail.html" class="block bg-white rounded-lg p-3 shadow-sm hover:shadow-md transition">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-medium text-cyan-600">#REQ-1232</span>
+                        </div>
+                        <p class="text-sm font-medium text-slate-800 mb-1">ซ่อมสวิตช์ไฟ</p>
+                        <p class="text-xs text-slate-500 mb-2">ห้อง 1205 • Sena Park</p>
+                        <div class="flex items-center gap-2 mb-2">
+                            <div class="w-6 h-6 bg-cyan-100 rounded-full flex items-center justify-center">
+                                <span class="text-cyan-700 text-[10px] font-medium">ส.ช.</span>
+                            </div>
+                            <span class="text-xs text-slate-600">ช่างสมชาย</span>
+                        </div>
+                        <p class="text-xs text-purple-600">รอลูกบ้านตรวจรับ</p>
+                    </a>
+                    <a href="03-request-detail.html" class="block bg-white rounded-lg p-3 shadow-sm hover:shadow-md transition">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-medium text-cyan-600">#REQ-1230</span>
+                        </div>
+                        <p class="text-sm font-medium text-slate-800 mb-1">ซ่อมก๊อกน้ำรั่ว</p>
+                        <p class="text-xs text-slate-500 mb-2">ห้อง 605 • Sena Kith</p>
+                        <div class="flex items-center gap-2 mb-2">
+                            <div class="w-6 h-6 bg-emerald-100 rounded-full flex items-center justify-center">
+                                <span class="text-emerald-700 text-[10px] font-medium">ท.ป.</span>
+                            </div>
+                            <span class="text-xs text-slate-600">ทีมประปา</span>
+                        </div>
+                        <p class="text-xs text-purple-600">รอลูกบ้านตรวจรับ</p>
+                    </a>
+                    <div class="text-center py-2">
+                        <a href="02-request-list.html?status=review" class="text-xs text-purple-600 hover:underline">ดูเพิ่มเติม +43</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Column 4: เสร็จสิ้น -->
+            <div class="bg-emerald-50 rounded-xl p-4">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-2">
+                        <div class="w-3 h-3 bg-emerald-500 rounded-full"></div>
+                        <h3 class="font-semibold text-slate-800">เสร็จสิ้น</h3>
+                    </div>
+                    <span class="bg-emerald-200 text-emerald-800 text-xs font-medium px-2 py-1 rounded-full">933</span>
+                </div>
+                <div class="space-y-3">
+                    <a href="03-request-detail.html" class="block bg-white rounded-lg p-3 shadow-sm hover:shadow-md transition">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-medium text-cyan-600">#REQ-1246</span>
+                            <span class="text-yellow-500 text-xs">5.0</span>
+                        </div>
+                        <p class="text-sm font-medium text-slate-800 mb-1">ไฟดับบ่อย</p>
+                        <p class="text-xs text-slate-500 mb-2">ห้อง 1502 • Sena Ville</p>
+                        <div class="flex items-center gap-2">
+                            <div class="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center">
+                                <span class="text-blue-700 text-[10px] font-medium">ป.ย.</span>
+                            </div>
+                            <span class="text-xs text-slate-600">ช่างประยุทธ์</span>
+                        </div>
+                    </a>
+                    <a href="03-request-detail.html" class="block bg-white rounded-lg p-3 shadow-sm hover:shadow-md transition">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-medium text-cyan-600">#REQ-1244</span>
+                            <span class="text-yellow-500 text-xs">4.5</span>
+                        </div>
+                        <p class="text-sm font-medium text-slate-800 mb-1">สระว่ายน้ำไม่สะอาด</p>
+                        <p class="text-xs text-slate-500 mb-2">ส่วนกลาง • Sena Kith</p>
+                        <div class="flex items-center gap-2">
+                            <div class="w-6 h-6 bg-amber-100 rounded-full flex items-center justify-center">
+                                <span class="text-amber-700 text-[10px] font-medium">ท.ส.</span>
+                            </div>
+                            <span class="text-xs text-slate-600">ทีมส่วนกลาง</span>
+                        </div>
+                    </a>
+                    <div class="text-center py-2">
+                        <a href="02-request-list.html?status=completed" class="text-xs text-emerald-600 hover:underline">ดูเพิ่มเติม +931</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Column 5: เกินกำหนด -->
+            <div class="bg-red-50 rounded-xl p-4 border-2 border-red-200">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-2">
+                        <div class="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
+                        <h3 class="font-semibold text-red-700">เกินกำหนด</h3>
+                    </div>
+                    <span class="bg-red-200 text-red-800 text-xs font-medium px-2 py-1 rounded-full">25</span>
+                </div>
+                <div class="space-y-3">
+                    <a href="03-request-detail.html" class="block bg-white rounded-lg p-3 shadow-sm hover:shadow-md transition border border-red-200">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-medium text-cyan-600">#REQ-1189</span>
+                            <span class="px-1.5 py-0.5 bg-red-200 text-red-800 text-[10px] rounded font-medium">เกิน 5 วัน</span>
+                        </div>
+                        <p class="text-sm font-medium text-slate-800 mb-1">ลิฟต์ชั้น 23 เสีย</p>
+                        <p class="text-xs text-slate-500 mb-2">ห้อง 2301 • Sena Park</p>
+                        <div class="flex items-center gap-2">
+                            <div class="w-6 h-6 bg-amber-100 rounded-full flex items-center justify-center">
+                                <span class="text-amber-700 text-[10px] font-medium">ส.ศ.</span>
+                            </div>
+                            <span class="text-xs text-red-600">ช่างสมศักดิ์</span>
+                        </div>
+                    </a>
+                    <a href="03-request-detail.html" class="block bg-white rounded-lg p-3 shadow-sm hover:shadow-md transition border border-red-200">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-medium text-cyan-600">#REQ-1201</span>
+                            <span class="px-1.5 py-0.5 bg-red-200 text-red-800 text-[10px] rounded font-medium">เกิน 3 วัน</span>
+                        </div>
+                        <p class="text-sm font-medium text-slate-800 mb-1">ปั๊มน้ำดับ</p>
+                        <p class="text-xs text-slate-500 mb-2">ส่วนกลาง • Sena Ville</p>
+                        <div class="flex items-center gap-2">
+                            <div class="w-6 h-6 bg-emerald-100 rounded-full flex items-center justify-center">
+                                <span class="text-emerald-700 text-[10px] font-medium">ท.ป.</span>
+                            </div>
+                            <span class="text-xs text-red-600">ทีมประปา</span>
+                        </div>
+                    </a>
+                    <a href="03-request-detail.html" class="block bg-white rounded-lg p-3 shadow-sm hover:shadow-md transition border border-red-200">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-medium text-cyan-600">#REQ-1215</span>
+                            <span class="px-1.5 py-0.5 bg-red-200 text-red-800 text-[10px] rounded font-medium">เกิน 2 วัน</span>
+                        </div>
+                        <p class="text-sm font-medium text-slate-800 mb-1">รอยร้าวผนัง</p>
+                        <p class="text-xs text-slate-500 mb-2">ห้อง 1808 • Sena Kith</p>
+                        <div class="flex items-center gap-2">
+                            <div class="w-6 h-6 bg-slate-100 rounded-full flex items-center justify-center">
+                                <span class="text-slate-700 text-[10px] font-medium">ช.ค.</span>
+                            </div>
+                            <span class="text-xs text-red-600">ช่างโครงสร้าง</span>
+                        </div>
+                    </a>
+                    <div class="text-center py-2">
+                        <a href="02-request-list.html?status=overdue" class="text-xs text-red-600 hover:underline">ดูเพิ่มเติม +22</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Section: Team & Stats -->
+        <div class="grid grid-cols-3 gap-6">
+            <!-- Team Workload -->
+            <div class="bg-white rounded-xl shadow-sm p-6">
+                <h3 class="font-semibold text-slate-800 mb-4">Workload ทีมช่าง</h3>
+                <div class="space-y-4">
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="flex items-center gap-2">
+                                <div class="w-8 h-8 bg-cyan-100 rounded-full flex items-center justify-center">
+                                    <span class="text-cyan-700 text-xs font-medium">ส.ช.</span>
+                                </div>
+                                <span class="text-sm text-slate-700">ช่างสมชาย</span>
+                            </div>
+                            <span class="text-sm font-medium">8/10</span>
+                        </div>
+                        <div class="w-full bg-slate-200 rounded-full h-2">
+                            <div class="bg-cyan-500 h-2 rounded-full" style="width: 80%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="flex items-center gap-2">
+                                <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                                    <span class="text-blue-700 text-xs font-medium">ป.ย.</span>
+                                </div>
+                                <span class="text-sm text-slate-700">ช่างประยุทธ์</span>
+                            </div>
+                            <span class="text-sm font-medium">6/10</span>
+                        </div>
+                        <div class="w-full bg-slate-200 rounded-full h-2">
+                            <div class="bg-blue-500 h-2 rounded-full" style="width: 60%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="flex items-center gap-2">
+                                <div class="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center">
+                                    <span class="text-amber-700 text-xs font-medium">ส.ศ.</span>
+                                </div>
+                                <span class="text-sm text-slate-700">ช่างสมศักดิ์</span>
+                            </div>
+                            <span class="text-sm font-medium text-red-600">10/10</span>
+                        </div>
+                        <div class="w-full bg-slate-200 rounded-full h-2">
+                            <div class="bg-red-500 h-2 rounded-full" style="width: 100%"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="flex items-center gap-2">
+                                <div class="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center">
+                                    <span class="text-emerald-700 text-xs font-medium">ว.น.</span>
+                                </div>
+                                <span class="text-sm text-slate-700">ช่างวินัย</span>
+                            </div>
+                            <span class="text-sm font-medium">4/10</span>
+                        </div>
+                        <div class="w-full bg-slate-200 rounded-full h-2">
+                            <div class="bg-emerald-500 h-2 rounded-full" style="width: 40%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SLA Summary -->
+            <div class="bg-white rounded-xl shadow-sm p-6">
+                <h3 class="font-semibold text-slate-800 mb-4">SLA Performance</h3>
+                <div class="flex items-center gap-6 mb-6">
+                    <div class="relative w-28 h-28">
+                        <svg class="w-28 h-28 transform -rotate-90">
+                            <circle cx="56" cy="56" r="48" stroke="#e2e8f0" stroke-width="10" fill="none"/>
+                            <circle cx="56" cy="56" r="48" stroke="#10b981" stroke-width="10" fill="none"
+                                stroke-dasharray="301.6" stroke-dashoffset="60" stroke-linecap="round"/>
+                        </svg>
+                        <div class="absolute inset-0 flex flex-col items-center justify-center">
+                            <span class="text-2xl font-bold text-emerald-600">80%</span>
+                            <span class="text-xs text-slate-500">On-time</span>
+                        </div>
+                    </div>
+                    <div class="flex-1 space-y-3">
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span class="text-slate-600">ตอบรับ &lt; 4 ชม.</span>
+                                <span class="font-medium text-emerald-600">92%</span>
+                            </div>
+                            <div class="w-full bg-slate-200 rounded-full h-1.5">
+                                <div class="bg-emerald-500 h-1.5 rounded-full" style="width: 92%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span class="text-slate-600">แก้ไข &lt; 48 ชม.</span>
+                                <span class="font-medium text-amber-600">78%</span>
+                            </div>
+                            <div class="w-full bg-slate-200 rounded-full h-1.5">
+                                <div class="bg-amber-500 h-1.5 rounded-full" style="width: 78%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span class="text-slate-600">ความพึงพอใจ</span>
+                                <span class="font-medium text-cyan-600">4.2/5.0</span>
+                            </div>
+                            <div class="w-full bg-slate-200 rounded-full h-1.5">
+                                <div class="bg-cyan-500 h-1.5 rounded-full" style="width: 84%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Request by Project -->
+            <div class="bg-white rounded-xl shadow-sm p-6">
+                <h3 class="font-semibold text-slate-800 mb-4">รายการตามโครงการ</h3>
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg hover:bg-slate-100 transition cursor-pointer">
+                        <div class="flex items-center gap-3">
+                            <div class="w-2 h-8 bg-cyan-500 rounded-full"></div>
+                            <div>
+                                <p class="text-sm font-medium text-slate-800">Sena Park Grand Rama 9</p>
+                                <p class="text-xs text-slate-500">412 รายการ</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="px-2 py-0.5 bg-amber-100 text-amber-700 text-xs rounded">45 รอ</span>
+                            <span class="px-2 py-0.5 bg-red-100 text-red-700 text-xs rounded">8 เกิน</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg hover:bg-slate-100 transition cursor-pointer">
+                        <div class="flex items-center gap-3">
+                            <div class="w-2 h-8 bg-blue-500 rounded-full"></div>
+                            <div>
+                                <p class="text-sm font-medium text-slate-800">Sena Kith Lam Luk Ka</p>
+                                <p class="text-xs text-slate-500">356 รายการ</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="px-2 py-0.5 bg-amber-100 text-amber-700 text-xs rounded">38 รอ</span>
+                            <span class="px-2 py-0.5 bg-red-100 text-red-700 text-xs rounded">5 เกิน</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg hover:bg-slate-100 transition cursor-pointer">
+                        <div class="flex items-center gap-3">
+                            <div class="w-2 h-8 bg-emerald-500 rounded-full"></div>
+                            <div>
+                                <p class="text-sm font-medium text-slate-800">Sena Ville Bangna</p>
+                                <p class="text-xs text-slate-500">289 รายการ</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="px-2 py-0.5 bg-amber-100 text-amber-700 text-xs rounded">42 รอ</span>
+                            <span class="px-2 py-0.5 bg-red-100 text-red-700 text-xs rounded">7 เกิน</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg hover:bg-slate-100 transition cursor-pointer">
+                        <div class="flex items-center gap-3">
+                            <div class="w-2 h-8 bg-purple-500 rounded-full"></div>
+                            <div>
+                                <p class="text-sm font-medium text-slate-800">Sena Az Ratchada</p>
+                                <p class="text-xs text-slate-500">191 รายการ</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="px-2 py-0.5 bg-amber-100 text-amber-700 text-xs rounded">31 รอ</span>
+                            <span class="px-2 py-0.5 bg-red-100 text-red-700 text-xs rounded">5 เกิน</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

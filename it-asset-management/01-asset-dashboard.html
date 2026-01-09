@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - IT Asset Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Sarabun', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-slate-900 text-white flex-shrink-0 flex flex-col">
+            <div class="p-4 border-b border-slate-700">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-cyan-600 rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-white font-bold text-lg">IT Asset</h1>
+                        <p class="text-slate-400 text-xs">Management System</p>
+                    </div>
+                </div>
+            </div>
+            <nav class="mt-4 flex-1">
+                <a href="01-asset-dashboard.html" class="flex items-center px-4 py-3 bg-slate-800 text-white border-r-4 border-cyan-500">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                    </svg>
+                    Dashboard
+                </a>
+                <a href="02-asset-list.html" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 hover:text-white">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
+                    </svg>
+                    Asset List
+                </a>
+                <a href="04-asset-form.html" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 hover:text-white">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                    </svg>
+                    Add Asset
+                </a>
+                <div class="px-4 py-3 mt-4">
+                    <p class="text-slate-500 text-xs uppercase tracking-wider">Reports</p>
+                </div>
+                <a href="#" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 hover:text-white">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    Depreciation Report
+                </a>
+                <a href="#" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 hover:text-white">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    Warranty Expiry
+                </a>
+            </nav>
+
+            <div class="p-4 border-t border-slate-700">
+                <a href="../index.html" class="flex items-center text-slate-300 hover:text-white">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                    </svg>
+                    กลับหน้าหลัก
+                </a>
+            </div>
+
+            <div class="p-4 border-t border-slate-700">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 bg-cyan-600 rounded-full flex items-center justify-center text-white text-sm font-medium">IT</div>
+                    <div class="flex-1">
+                        <p class="text-sm text-white">IT Admin</p>
+                        <p class="text-xs text-slate-400">Administrator</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 overflow-y-auto">
+            <!-- Header -->
+            <header class="bg-white shadow-sm border-b border-gray-200">
+                <div class="flex items-center justify-between px-6 py-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-800">Dashboard</h2>
+                        <p class="text-gray-500">ภาพรวมทรัพย์สิน IT ขององค์กร</p>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <a href="04-asset-form.html" class="flex items-center gap-2 bg-cyan-600 text-white px-4 py-2 rounded-lg hover:bg-cyan-700 transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                            </svg>
+                            เพิ่ม Asset
+                        </a>
+                    </div>
+                </div>
+            </header>
+
+            <div class="p-6">
+                <!-- Summary Cards -->
+                <div class="grid grid-cols-4 gap-6 mb-6">
+                    <!-- Total Assets -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="w-12 h-12 bg-cyan-100 rounded-lg flex items-center justify-center">
+                                <svg class="w-6 h-6 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/>
+                                </svg>
+                            </div>
+                            <span class="text-green-500 text-xs font-medium bg-green-50 px-2 py-1 rounded">+12 เดือนนี้</span>
+                        </div>
+                        <p class="text-3xl font-bold text-gray-800">487</p>
+                        <p class="text-gray-500 text-sm">Total Assets</p>
+                    </div>
+
+                    <!-- Total Value -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                                <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <p class="text-3xl font-bold text-gray-800">18.5<span class="text-xl">M</span></p>
+                        <p class="text-gray-500 text-sm">มูลค่าซื้อรวม (บาท)</p>
+                    </div>
+
+                    <!-- Net Book Value -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                                <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <p class="text-3xl font-bold text-gray-800">12.3<span class="text-xl">M</span></p>
+                        <p class="text-gray-500 text-sm">มูลค่าตามบัญชี (NBV)</p>
+                    </div>
+
+                    <!-- Utilization Rate -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                                <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <p class="text-3xl font-bold text-green-600">94.3%</p>
+                        <p class="text-gray-500 text-sm">Utilization Rate</p>
+                    </div>
+                </div>
+
+                <!-- Main Content Grid -->
+                <div class="grid grid-cols-3 gap-6">
+                    <!-- Left Column (2/3) -->
+                    <div class="col-span-2 space-y-6">
+                        <!-- Assets by Category -->
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="font-bold text-gray-800">Assets by Category</h3>
+                                <a href="02-asset-list.html" class="text-cyan-600 text-sm hover:underline">ดูทั้งหมด</a>
+                            </div>
+                            <div class="grid grid-cols-5 gap-4">
+                                <!-- Computer -->
+                                <div class="text-center p-4 bg-gray-50 rounded-xl hover:bg-cyan-50 transition-colors cursor-pointer">
+                                    <div class="w-12 h-12 bg-cyan-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+                                        <svg class="w-6 h-6 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                                        </svg>
+                                    </div>
+                                    <p class="text-2xl font-bold text-gray-800">245</p>
+                                    <p class="text-xs text-gray-500">Computer</p>
+                                </div>
+                                <!-- Server -->
+                                <div class="text-center p-4 bg-gray-50 rounded-xl hover:bg-blue-50 transition-colors cursor-pointer">
+                                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+                                        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"/>
+                                        </svg>
+                                    </div>
+                                    <p class="text-2xl font-bold text-gray-800">18</p>
+                                    <p class="text-xs text-gray-500">Server</p>
+                                </div>
+                                <!-- Network -->
+                                <div class="text-center p-4 bg-gray-50 rounded-xl hover:bg-purple-50 transition-colors cursor-pointer">
+                                    <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+                                        <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"/>
+                                        </svg>
+                                    </div>
+                                    <p class="text-2xl font-bold text-gray-800">67</p>
+                                    <p class="text-xs text-gray-500">Network</p>
+                                </div>
+                                <!-- Peripheral -->
+                                <div class="text-center p-4 bg-gray-50 rounded-xl hover:bg-orange-50 transition-colors cursor-pointer">
+                                    <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+                                        <svg class="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
+                                        </svg>
+                                    </div>
+                                    <p class="text-2xl font-bold text-gray-800">128</p>
+                                    <p class="text-xs text-gray-500">Peripheral</p>
+                                </div>
+                                <!-- License -->
+                                <div class="text-center p-4 bg-gray-50 rounded-xl hover:bg-green-50 transition-colors cursor-pointer">
+                                    <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mx-auto mb-3">
+                                        <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
+                                        </svg>
+                                    </div>
+                                    <p class="text-2xl font-bold text-gray-800">29</p>
+                                    <p class="text-xs text-gray-500">License</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Assets by Status -->
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                            <h3 class="font-bold text-gray-800 mb-4">Assets by Status</h3>
+                            <div class="grid grid-cols-4 gap-4">
+                                <!-- Active -->
+                                <div class="bg-green-50 border border-green-200 rounded-xl p-4">
+                                    <div class="flex items-center gap-2 mb-2">
+                                        <span class="w-3 h-3 bg-green-500 rounded-full"></span>
+                                        <span class="text-sm font-medium text-green-700">Active</span>
+                                    </div>
+                                    <p class="text-3xl font-bold text-green-700">459</p>
+                                    <p class="text-xs text-green-600">94.3% of total</p>
+                                </div>
+                                <!-- Maintenance -->
+                                <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-4">
+                                    <div class="flex items-center gap-2 mb-2">
+                                        <span class="w-3 h-3 bg-yellow-500 rounded-full"></span>
+                                        <span class="text-sm font-medium text-yellow-700">Maintenance</span>
+                                    </div>
+                                    <p class="text-3xl font-bold text-yellow-700">15</p>
+                                    <p class="text-xs text-yellow-600">3.1% of total</p>
+                                </div>
+                                <!-- Retired -->
+                                <div class="bg-gray-50 border border-gray-200 rounded-xl p-4">
+                                    <div class="flex items-center gap-2 mb-2">
+                                        <span class="w-3 h-3 bg-gray-400 rounded-full"></span>
+                                        <span class="text-sm font-medium text-gray-600">Retired</span>
+                                    </div>
+                                    <p class="text-3xl font-bold text-gray-600">11</p>
+                                    <p class="text-xs text-gray-500">2.3% of total</p>
+                                </div>
+                                <!-- Lost -->
+                                <div class="bg-red-50 border border-red-200 rounded-xl p-4">
+                                    <div class="flex items-center gap-2 mb-2">
+                                        <span class="w-3 h-3 bg-red-500 rounded-full"></span>
+                                        <span class="text-sm font-medium text-red-700">Lost</span>
+                                    </div>
+                                    <p class="text-3xl font-bold text-red-700">2</p>
+                                    <p class="text-xs text-red-600">0.4% of total</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Recent Assets -->
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="font-bold text-gray-800">Recently Added Assets</h3>
+                                <a href="02-asset-list.html" class="text-cyan-600 text-sm hover:underline">ดูทั้งหมด</a>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="w-full">
+                                    <thead>
+                                        <tr class="border-b border-gray-200">
+                                            <th class="text-left py-3 px-2 text-sm font-semibold text-gray-600">Asset ID</th>
+                                            <th class="text-left py-3 px-2 text-sm font-semibold text-gray-600">Name</th>
+                                            <th class="text-left py-3 px-2 text-sm font-semibold text-gray-600">Category</th>
+                                            <th class="text-left py-3 px-2 text-sm font-semibold text-gray-600">Assigned To</th>
+                                            <th class="text-right py-3 px-2 text-sm font-semibold text-gray-600">Value</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-100">
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="py-3 px-2">
+                                                <a href="03-asset-detail.html" class="text-cyan-600 font-medium hover:underline">IT-2567-0485</a>
+                                            </td>
+                                            <td class="py-3 px-2 text-gray-800">MacBook Pro 14" M3</td>
+                                            <td class="py-3 px-2">
+                                                <span class="bg-cyan-100 text-cyan-700 px-2 py-1 rounded text-xs">Computer</span>
+                                            </td>
+                                            <td class="py-3 px-2 text-gray-600">สมชาย ใจดี</td>
+                                            <td class="py-3 px-2 text-right font-medium text-gray-800">89,900</td>
+                                        </tr>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="py-3 px-2">
+                                                <a href="03-asset-detail.html" class="text-cyan-600 font-medium hover:underline">IT-2567-0484</a>
+                                            </td>
+                                            <td class="py-3 px-2 text-gray-800">Dell Monitor U2723QE</td>
+                                            <td class="py-3 px-2">
+                                                <span class="bg-orange-100 text-orange-700 px-2 py-1 rounded text-xs">Peripheral</span>
+                                            </td>
+                                            <td class="py-3 px-2 text-gray-600">วิภา สุขใจ</td>
+                                            <td class="py-3 px-2 text-right font-medium text-gray-800">25,900</td>
+                                        </tr>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="py-3 px-2">
+                                                <a href="03-asset-detail.html" class="text-cyan-600 font-medium hover:underline">IT-2567-0483</a>
+                                            </td>
+                                            <td class="py-3 px-2 text-gray-800">Cisco Switch 24-Port</td>
+                                            <td class="py-3 px-2">
+                                                <span class="bg-purple-100 text-purple-700 px-2 py-1 rounded text-xs">Network</span>
+                                            </td>
+                                            <td class="py-3 px-2 text-gray-600">Server Room B2</td>
+                                            <td class="py-3 px-2 text-right font-medium text-gray-800">45,000</td>
+                                        </tr>
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="py-3 px-2">
+                                                <a href="03-asset-detail.html" class="text-cyan-600 font-medium hover:underline">IT-2567-0482</a>
+                                            </td>
+                                            <td class="py-3 px-2 text-gray-800">Microsoft 365 E3 (50 seats)</td>
+                                            <td class="py-3 px-2">
+                                                <span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs">License</span>
+                                            </td>
+                                            <td class="py-3 px-2 text-gray-600">IT Department</td>
+                                            <td class="py-3 px-2 text-right font-medium text-gray-800">540,000</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column (1/3) -->
+                    <div class="space-y-6">
+                        <!-- Warranty Expiring Soon -->
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="font-bold text-gray-800">Warranty Expiring</h3>
+                                <span class="bg-red-100 text-red-700 px-2 py-1 rounded text-xs font-medium">8 items</span>
+                            </div>
+                            <div class="space-y-3">
+                                <!-- Item 1 -->
+                                <div class="flex items-center justify-between p-3 bg-red-50 rounded-lg border border-red-100">
+                                    <div>
+                                        <p class="font-medium text-gray-800 text-sm">Dell Latitude 5540</p>
+                                        <p class="text-xs text-gray-500">IT-2565-0312</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-red-600 font-bold text-sm">5 วัน</p>
+                                        <p class="text-xs text-gray-500">25 ธ.ค. 67</p>
+                                    </div>
+                                </div>
+                                <!-- Item 2 -->
+                                <div class="flex items-center justify-between p-3 bg-yellow-50 rounded-lg border border-yellow-100">
+                                    <div>
+                                        <p class="font-medium text-gray-800 text-sm">HP LaserJet Pro</p>
+                                        <p class="text-xs text-gray-500">IT-2565-0298</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-yellow-600 font-bold text-sm">15 วัน</p>
+                                        <p class="text-xs text-gray-500">4 ม.ค. 68</p>
+                                    </div>
+                                </div>
+                                <!-- Item 3 -->
+                                <div class="flex items-center justify-between p-3 bg-yellow-50 rounded-lg border border-yellow-100">
+                                    <div>
+                                        <p class="font-medium text-gray-800 text-sm">Synology NAS DS920+</p>
+                                        <p class="text-xs text-gray-500">IT-2565-0156</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-yellow-600 font-bold text-sm">28 วัน</p>
+                                        <p class="text-xs text-gray-500">17 ม.ค. 68</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <a href="#" class="block text-center text-cyan-600 text-sm mt-4 hover:underline">ดูทั้งหมด</a>
+                        </div>
+
+                        <!-- Maintenance Required -->
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="font-bold text-gray-800">Maintenance Required</h3>
+                                <span class="bg-yellow-100 text-yellow-700 px-2 py-1 rounded text-xs font-medium">15 items</span>
+                            </div>
+                            <div class="space-y-3">
+                                <!-- Item 1 -->
+                                <div class="flex items-center gap-3 p-3 bg-yellow-50 rounded-lg border border-yellow-100">
+                                    <div class="w-10 h-10 bg-yellow-200 rounded-lg flex items-center justify-center">
+                                        <svg class="w-5 h-5 text-yellow-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="font-medium text-gray-800 text-sm">เปลี่ยน Battery</p>
+                                        <p class="text-xs text-gray-500">MacBook Pro (IT-2564-0089)</p>
+                                    </div>
+                                </div>
+                                <!-- Item 2 -->
+                                <div class="flex items-center gap-3 p-3 bg-yellow-50 rounded-lg border border-yellow-100">
+                                    <div class="w-10 h-10 bg-yellow-200 rounded-lg flex items-center justify-center">
+                                        <svg class="w-5 h-5 text-yellow-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="font-medium text-gray-800 text-sm">ซ่อม Display</p>
+                                        <p class="text-xs text-gray-500">Dell Monitor (IT-2565-0234)</p>
+                                    </div>
+                                </div>
+                                <!-- Item 3 -->
+                                <div class="flex items-center gap-3 p-3 bg-yellow-50 rounded-lg border border-yellow-100">
+                                    <div class="w-10 h-10 bg-yellow-200 rounded-lg flex items-center justify-center">
+                                        <svg class="w-5 h-5 text-yellow-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="font-medium text-gray-800 text-sm">อัพเกรด RAM</p>
+                                        <p class="text-xs text-gray-500">Lenovo ThinkPad (IT-2563-0045)</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <a href="#" class="block text-center text-cyan-600 text-sm mt-4 hover:underline">ดูทั้งหมด</a>
+                        </div>
+
+                        <!-- Quick Stats -->
+                        <div class="bg-gradient-to-br from-cyan-600 to-cyan-700 rounded-xl p-6 text-white">
+                            <h3 class="font-bold mb-4">Depreciation Summary</h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <div class="flex justify-between text-sm mb-1">
+                                        <span class="text-cyan-100">ค่าเสื่อมราคาสะสม</span>
+                                        <span class="font-bold">6.2M</span>
+                                    </div>
+                                    <div class="w-full bg-white/20 rounded-full h-2">
+                                        <div class="bg-white h-2 rounded-full" style="width: 33.5%"></div>
+                                    </div>
+                                    <p class="text-xs text-cyan-200 mt-1">33.5% of total value</p>
+                                </div>
+                                <div class="pt-4 border-t border-white/20">
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-cyan-100">ค่าเสื่อมเดือนนี้</span>
+                                        <span class="font-bold">185,000</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

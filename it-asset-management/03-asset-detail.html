@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asset Detail - IT Asset Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Sarabun', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-slate-900 text-white flex-shrink-0 flex flex-col">
+            <div class="p-4 border-b border-slate-700">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-cyan-600 rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-white font-bold text-lg">IT Asset</h1>
+                        <p class="text-slate-400 text-xs">Management System</p>
+                    </div>
+                </div>
+            </div>
+            <nav class="mt-4 flex-1">
+                <a href="01-asset-dashboard.html" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 hover:text-white">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                    </svg>
+                    Dashboard
+                </a>
+                <a href="02-asset-list.html" class="flex items-center px-4 py-3 bg-slate-800 text-white border-r-4 border-cyan-500">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
+                    </svg>
+                    Asset List
+                </a>
+                <a href="04-asset-form.html" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 hover:text-white">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                    </svg>
+                    Add Asset
+                </a>
+            </nav>
+
+            <div class="p-4 border-t border-slate-700">
+                <a href="../index.html" class="flex items-center text-slate-300 hover:text-white">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                    </svg>
+                    กลับหน้าหลัก
+                </a>
+            </div>
+
+            <div class="p-4 border-t border-slate-700">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 bg-cyan-600 rounded-full flex items-center justify-center text-white text-sm font-medium">IT</div>
+                    <div class="flex-1">
+                        <p class="text-sm text-white">IT Admin</p>
+                        <p class="text-xs text-slate-400">Administrator</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 overflow-y-auto">
+            <!-- Header -->
+            <header class="bg-white shadow-sm border-b border-gray-200">
+                <div class="flex items-center justify-between px-6 py-4">
+                    <div class="flex items-center gap-4">
+                        <a href="02-asset-list.html" class="text-gray-400 hover:text-gray-600">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                            </svg>
+                        </a>
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-800">Asset Detail</h2>
+                            <p class="text-gray-500">IT-2567-0485 - MacBook Pro 14" M3</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <button class="flex items-center gap-2 px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
+                            </svg>
+                            Print
+                        </button>
+                        <a href="04-asset-form.html" class="flex items-center gap-2 px-4 py-2 text-white bg-cyan-600 rounded-lg hover:bg-cyan-700">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                            </svg>
+                            Edit
+                        </a>
+                    </div>
+                </div>
+            </header>
+
+            <div class="p-6">
+                <div class="grid grid-cols-3 gap-6">
+                    <!-- Left Column (2/3) -->
+                    <div class="col-span-2 space-y-6">
+                        <!-- Asset Info Card -->
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                            <div class="bg-gradient-to-r from-cyan-600 to-cyan-700 px-6 py-4">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center gap-4">
+                                        <div class="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center">
+                                            <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                                            </svg>
+                                        </div>
+                                        <div class="text-white">
+                                            <h3 class="text-2xl font-bold">MacBook Pro 14" M3</h3>
+                                            <p class="text-cyan-100">Apple | Computer - Laptop</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-3">
+                                        <span class="bg-green-500 text-white px-4 py-1.5 rounded-full text-sm font-medium">Active</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="p-6">
+                                <div class="grid grid-cols-2 gap-6">
+                                    <!-- Left Info -->
+                                    <div class="space-y-4">
+                                        <div>
+                                            <p class="text-xs text-gray-500 uppercase tracking-wider mb-1">Asset ID</p>
+                                            <p class="font-bold text-gray-800 text-lg">IT-2567-0485</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-xs text-gray-500 uppercase tracking-wider mb-1">Serial Number</p>
+                                            <p class="font-medium text-gray-800">C02FP1XKMD6T</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-xs text-gray-500 uppercase tracking-wider mb-1">Brand / Model</p>
+                                            <p class="font-medium text-gray-800">Apple / MacBook Pro 14" M3 Pro</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-xs text-gray-500 uppercase tracking-wider mb-1">Specifications</p>
+                                            <p class="font-medium text-gray-800">M3 Pro, 18GB RAM, 512GB SSD</p>
+                                        </div>
+                                    </div>
+                                    <!-- Right Info -->
+                                    <div class="space-y-4">
+                                        <div>
+                                            <p class="text-xs text-gray-500 uppercase tracking-wider mb-1">Purchase Date</p>
+                                            <p class="font-medium text-gray-800">15 ธันวาคม 2567</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-xs text-gray-500 uppercase tracking-wider mb-1">Purchase Price</p>
+                                            <p class="font-bold text-gray-800 text-lg">89,900 บาท</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-xs text-gray-500 uppercase tracking-wider mb-1">Warranty Expiry</p>
+                                            <p class="font-medium text-green-600">15 ธันวาคม 2570 (3 ปี)</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-xs text-gray-500 uppercase tracking-wider mb-1">Supplier</p>
+                                            <p class="font-medium text-gray-800">iStudio by SPVi</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Assignment Info -->
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                            <h3 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
+                                <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                                </svg>
+                                ข้อมูลการใช้งาน
+                            </h3>
+                            <div class="grid grid-cols-2 gap-6">
+                                <div class="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
+                                    <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold">SC</div>
+                                    <div>
+                                        <p class="text-xs text-gray-500 uppercase tracking-wider">Assigned To</p>
+                                        <p class="font-semibold text-gray-800">สมชาย ใจดี</p>
+                                        <p class="text-sm text-gray-500">Software Engineer</p>
+                                    </div>
+                                </div>
+                                <div class="space-y-3">
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-500 text-sm">Department</span>
+                                        <span class="font-medium text-gray-800">IT Development</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-500 text-sm">Location</span>
+                                        <span class="font-medium text-gray-800">อาคาร A ชั้น 5</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-500 text-sm">Assigned Date</span>
+                                        <span class="font-medium text-gray-800">20 ธันวาคม 2567</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Depreciation -->
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                            <h3 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
+                                <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                                </svg>
+                                ค่าเสื่อมราคา
+                            </h3>
+                            <div class="grid grid-cols-4 gap-4">
+                                <div class="bg-gray-50 rounded-lg p-4 text-center">
+                                    <p class="text-xs text-gray-500 mb-1">ราคาซื้อ</p>
+                                    <p class="text-lg font-bold text-gray-800">89,900</p>
+                                </div>
+                                <div class="bg-gray-50 rounded-lg p-4 text-center">
+                                    <p class="text-xs text-gray-500 mb-1">อายุใช้งาน</p>
+                                    <p class="text-lg font-bold text-gray-800">5 ปี</p>
+                                </div>
+                                <div class="bg-gray-50 rounded-lg p-4 text-center">
+                                    <p class="text-xs text-gray-500 mb-1">ค่าเสื่อมสะสม</p>
+                                    <p class="text-lg font-bold text-orange-600">0</p>
+                                </div>
+                                <div class="bg-cyan-50 rounded-lg p-4 text-center border border-cyan-200">
+                                    <p class="text-xs text-cyan-600 mb-1">มูลค่าตามบัญชี (NBV)</p>
+                                    <p class="text-lg font-bold text-cyan-700">89,900</p>
+                                </div>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-3">* วิธีคิดค่าเสื่อม: Straight-line | มูลค่าซาก: 1 บาท | ค่าเสื่อมต่อเดือน: 1,498 บาท</p>
+                        </div>
+
+                        <!-- History -->
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                            <h3 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
+                                <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                ประวัติการเปลี่ยนแปลง
+                            </h3>
+                            <div class="relative">
+                                <div class="absolute left-4 top-0 h-full w-0.5 bg-gray-200"></div>
+                                <div class="space-y-6">
+                                    <!-- Event 1 -->
+                                    <div class="relative flex items-start gap-4 pl-10">
+                                        <div class="absolute left-2 w-5 h-5 bg-green-500 rounded-full border-4 border-white"></div>
+                                        <div class="flex-1 bg-gray-50 rounded-lg p-4">
+                                            <div class="flex items-center justify-between mb-2">
+                                                <span class="font-semibold text-gray-800">มอบหมายให้ สมชาย ใจดี</span>
+                                                <span class="text-sm text-gray-500">20 ธ.ค. 67 10:30</span>
+                                            </div>
+                                            <p class="text-sm text-gray-600">มอบหมายเครื่องใหม่ให้พนักงาน</p>
+                                            <p class="text-xs text-gray-400 mt-1">โดย: IT Admin</p>
+                                        </div>
+                                    </div>
+                                    <!-- Event 2 -->
+                                    <div class="relative flex items-start gap-4 pl-10">
+                                        <div class="absolute left-2 w-5 h-5 bg-blue-500 rounded-full border-4 border-white"></div>
+                                        <div class="flex-1 bg-gray-50 rounded-lg p-4">
+                                            <div class="flex items-center justify-between mb-2">
+                                                <span class="font-semibold text-gray-800">บันทึก Asset ใหม่</span>
+                                                <span class="text-sm text-gray-500">15 ธ.ค. 67 14:20</span>
+                                            </div>
+                                            <p class="text-sm text-gray-600">สร้างรายการ Asset ID: IT-2567-0485</p>
+                                            <p class="text-xs text-gray-400 mt-1">โดย: IT Admin</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column (1/3) -->
+                    <div class="space-y-6">
+                        <!-- Quick Actions -->
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                            <h3 class="font-bold text-gray-800 mb-4">Quick Actions</h3>
+                            <div class="space-y-3">
+                                <a href="../it-service-v2/04-create-ticket.html" class="w-full flex items-center gap-3 px-4 py-3 text-left text-white bg-indigo-600 rounded-lg hover:bg-indigo-700">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                                    </svg>
+                                    Report Issue
+                                </a>
+                                <button class="w-full flex items-center gap-3 px-4 py-3 text-left text-gray-700 bg-gray-50 rounded-lg hover:bg-gray-100">
+                                    <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+                                    </svg>
+                                    Transfer Asset
+                                </button>
+                                <button class="w-full flex items-center gap-3 px-4 py-3 text-left text-gray-700 bg-gray-50 rounded-lg hover:bg-gray-100">
+                                    <svg class="w-5 h-5 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                    </svg>
+                                    Send to Maintenance
+                                </button>
+                                <button class="w-full flex items-center gap-3 px-4 py-3 text-left text-gray-700 bg-gray-50 rounded-lg hover:bg-gray-100">
+                                    <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
+                                    </svg>
+                                    Retire Asset
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Warranty Status -->
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                            <h3 class="font-bold text-gray-800 mb-4">Warranty Status</h3>
+                            <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                                <div class="flex items-center gap-3 mb-2">
+                                    <span class="w-3 h-3 bg-green-500 rounded-full"></span>
+                                    <span class="font-semibold text-green-700">Under Warranty</span>
+                                </div>
+                                <p class="text-sm text-green-600">หมดประกัน: 15 ธันวาคม 2570</p>
+                                <p class="text-sm text-green-600">เหลืออีก: 1,096 วัน</p>
+                            </div>
+                            <div class="mt-4 pt-4 border-t border-gray-100">
+                                <p class="text-xs text-gray-500 mb-2">Warranty Type</p>
+                                <p class="font-medium text-gray-800">AppleCare+ (3 Years)</p>
+                            </div>
+                        </div>
+
+                        <!-- Documents -->
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                            <h3 class="font-bold text-gray-800 mb-4">เอกสารแนบ</h3>
+                            <div class="space-y-3">
+                                <a href="#" class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100">
+                                    <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
+                                        <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="font-medium text-gray-800 text-sm">ใบเสร็จรับเงิน.pdf</p>
+                                        <p class="text-xs text-gray-500">245 KB</p>
+                                    </div>
+                                </a>
+                                <a href="#" class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg hover:bg-gray-100">
+                                    <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                        </svg>
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="font-medium text-gray-800 text-sm">รูปเครื่อง.jpg</p>
+                                        <p class="text-xs text-gray-500">1.2 MB</p>
+                                    </div>
+                                </a>
+                            </div>
+                            <button class="w-full mt-4 py-2 text-cyan-600 text-sm font-medium border border-cyan-200 rounded-lg hover:bg-cyan-50">
+                                + Upload Document
+                            </button>
+                        </div>
+
+                        <!-- QR Code -->
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 text-center">
+                            <h3 class="font-bold text-gray-800 mb-4">Asset QR Code</h3>
+                            <div class="w-32 h-32 bg-gray-100 mx-auto rounded-lg flex items-center justify-center border-2 border-dashed border-gray-300">
+                                <div class="text-center">
+                                    <svg class="w-12 h-12 text-gray-400 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/>
+                                    </svg>
+                                    <p class="text-xs text-gray-400 mt-2">QR Code</p>
+                                </div>
+                            </div>
+                            <button class="mt-4 text-cyan-600 text-sm font-medium hover:underline">Download QR</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Annual Report 2567 - ระบบแจ้งซ่อม & ร้องเรียน</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Sarabun', sans-serif; }
+        @media print {
+            .no-print { display: none !important; }
+            .page-break { page-break-before: always; }
+            body { background: white !important; }
+            .print-shadow { box-shadow: none !important; }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen">
+    <!-- Sidebar -->
+    <aside class="fixed left-0 top-0 h-full w-64 bg-gradient-to-b from-cyan-800 to-cyan-900 text-white shadow-xl z-10 no-print">
+        <div class="p-6 border-b border-cyan-700">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight">ระบบแจ้งซ่อม</h1>
+                    <p class="text-cyan-200 text-xs">& ร้องเรียน</p>
+                </div>
+            </div>
+        </div>
+
+        <nav class="p-4 space-y-2">
+            <a href="01-dashboard.html" class="flex items-center gap-3 px-4 py-3 hover:bg-white/10 rounded-lg text-cyan-100 transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
+                </svg>
+                <span>Dashboard v1</span>
+            </a>
+            <a href="01-dashboard-v2.html" class="flex items-center gap-3 px-4 py-3 hover:bg-white/10 rounded-lg text-cyan-100 transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
+                </svg>
+                <span>Dashboard v2</span>
+            </a>
+            <a href="01-dashboard-v3.html" class="flex items-center gap-3 px-4 py-3 hover:bg-white/10 rounded-lg text-cyan-100 transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
+                </svg>
+                <span>Dashboard v3</span>
+            </a>
+            <a href="06-executive-summary.html" class="flex items-center gap-3 px-4 py-3 hover:bg-white/10 rounded-lg text-cyan-100 transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                <span>Executive Summary</span>
+            </a>
+            <a href="07-annual-report.html" class="flex items-center gap-3 px-4 py-3 bg-white/20 rounded-lg text-white">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                </svg>
+                <span class="font-medium">Annual Report</span>
+            </a>
+            <a href="02-request-list.html" class="flex items-center gap-3 px-4 py-3 hover:bg-white/10 rounded-lg text-cyan-100 transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                </svg>
+                <span>รายการแจ้งซ่อม</span>
+            </a>
+            <a href="04-new-request.html" class="flex items-center gap-3 px-4 py-3 hover:bg-white/10 rounded-lg text-cyan-100 transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                </svg>
+                <span>เปิดเรื่องใหม่</span>
+            </a>
+            <a href="05-resident-portal.html" class="flex items-center gap-3 px-4 py-3 hover:bg-white/10 rounded-lg text-cyan-100 transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                </svg>
+                <span>Resident Portal</span>
+            </a>
+
+            <div class="border-t border-cyan-700 my-4"></div>
+
+            <a href="../index.html" class="flex items-center gap-3 px-4 py-3 hover:bg-white/10 rounded-lg text-cyan-100 transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 17l-5-5m0 0l5-5m-5 5h12"/>
+                </svg>
+                <span>กลับหน้าหลัก</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="ml-64 p-8 print:ml-0">
+        <!-- Report Header -->
+        <div class="bg-gradient-to-r from-cyan-700 to-cyan-800 rounded-2xl p-8 mb-8 text-white print-shadow">
+            <div class="flex justify-between items-start">
+                <div>
+                    <div class="flex items-center gap-3 mb-2">
+                        <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                        </svg>
+                        <div>
+                            <h1 class="text-2xl font-bold">Annual Performance Report</h1>
+                            <p class="text-cyan-200">รายงานผลการดำเนินงานประจำปี 2567</p>
+                        </div>
+                    </div>
+                    <p class="text-cyan-100 mt-4">ระบบแจ้งซ่อม & ร้องเรียน - SENA Development</p>
+                </div>
+                <div class="text-right no-print">
+                    <p class="text-cyan-200 text-sm mb-3">จัดทำเมื่อ: 8 มกราคม 2568</p>
+                    <div class="flex gap-2">
+                        <button onclick="window.print()" class="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg transition flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
+                            </svg>
+                            พิมพ์รายงาน
+                        </button>
+                        <button class="px-4 py-2 bg-white text-cyan-700 rounded-lg hover:bg-cyan-50 transition flex items-center gap-2 font-medium">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                            </svg>
+                            Export PDF
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Year Overview KPIs -->
+        <div class="grid grid-cols-5 gap-4 mb-8">
+            <div class="bg-white rounded-xl shadow-sm p-5">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="w-10 h-10 bg-cyan-100 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                        </svg>
+                    </div>
+                    <span class="text-xs text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full">+18% YoY</span>
+                </div>
+                <p class="text-3xl font-bold text-slate-800">2,847</p>
+                <p class="text-sm text-slate-500">Total Requests</p>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm p-5">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                        </svg>
+                    </div>
+                    <span class="text-xs text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full">+5% YoY</span>
+                </div>
+                <p class="text-3xl font-bold text-slate-800">2,695</p>
+                <p class="text-sm text-slate-500">Completed (94.7%)</p>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm p-5">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <span class="text-xs text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full">+8% YoY</span>
+                </div>
+                <p class="text-3xl font-bold text-slate-800">91.2%</p>
+                <p class="text-sm text-slate-500">SLA Achievement</p>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm p-5">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
+                        </svg>
+                    </div>
+                    <span class="text-xs text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full">+0.3 YoY</span>
+                </div>
+                <p class="text-3xl font-bold text-slate-800">4.6</p>
+                <p class="text-sm text-slate-500">Avg. Satisfaction</p>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm p-5">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+                        </svg>
+                    </div>
+                    <span class="text-xs text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full">-15% YoY</span>
+                </div>
+                <p class="text-3xl font-bold text-slate-800">18.5 ชม.</p>
+                <p class="text-sm text-slate-500">Avg. Resolution Time</p>
+            </div>
+        </div>
+
+        <!-- Year Comparison -->
+        <div class="bg-white rounded-xl shadow-sm p-6 mb-8">
+            <h3 class="font-semibold text-slate-800 mb-6 flex items-center gap-2">
+                <svg class="w-5 h-5 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                </svg>
+                Year-over-Year Comparison (2566 vs 2567)
+            </h3>
+            <div class="grid grid-cols-2 gap-8">
+                <div>
+                    <table class="w-full">
+                        <thead>
+                            <tr class="border-b border-slate-200">
+                                <th class="text-left py-3 text-sm font-semibold text-slate-600">Metric</th>
+                                <th class="text-center py-3 text-sm font-semibold text-slate-600">2566</th>
+                                <th class="text-center py-3 text-sm font-semibold text-slate-600">2567</th>
+                                <th class="text-center py-3 text-sm font-semibold text-slate-600">Change</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            <tr>
+                                <td class="py-3 text-slate-700">Total Requests</td>
+                                <td class="py-3 text-center text-slate-600">2,413</td>
+                                <td class="py-3 text-center font-medium text-slate-800">2,847</td>
+                                <td class="py-3 text-center">
+                                    <span class="text-emerald-600 text-sm">+18%</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="py-3 text-slate-700">Completion Rate</td>
+                                <td class="py-3 text-center text-slate-600">89.8%</td>
+                                <td class="py-3 text-center font-medium text-slate-800">94.7%</td>
+                                <td class="py-3 text-center">
+                                    <span class="text-emerald-600 text-sm">+4.9%</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="py-3 text-slate-700">SLA Achievement</td>
+                                <td class="py-3 text-center text-slate-600">83.2%</td>
+                                <td class="py-3 text-center font-medium text-slate-800">91.2%</td>
+                                <td class="py-3 text-center">
+                                    <span class="text-emerald-600 text-sm">+8%</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="py-3 text-slate-700">Avg. Resolution Time</td>
+                                <td class="py-3 text-center text-slate-600">21.8 ชม.</td>
+                                <td class="py-3 text-center font-medium text-slate-800">18.5 ชม.</td>
+                                <td class="py-3 text-center">
+                                    <span class="text-emerald-600 text-sm">-15%</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="py-3 text-slate-700">Customer Satisfaction</td>
+                                <td class="py-3 text-center text-slate-600">4.3</td>
+                                <td class="py-3 text-center font-medium text-slate-800">4.6</td>
+                                <td class="py-3 text-center">
+                                    <span class="text-emerald-600 text-sm">+0.3</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="py-3 text-slate-700">Overdue Requests</td>
+                                <td class="py-3 text-center text-slate-600">405</td>
+                                <td class="py-3 text-center font-medium text-slate-800">250</td>
+                                <td class="py-3 text-center">
+                                    <span class="text-emerald-600 text-sm">-38%</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="flex items-center justify-center">
+                    <!-- Visual comparison bars -->
+                    <div class="w-full space-y-4">
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span class="text-slate-600">Total Requests</span>
+                                <span class="text-slate-500">2567: 2,847</span>
+                            </div>
+                            <div class="h-8 bg-slate-100 rounded-lg overflow-hidden flex">
+                                <div class="bg-slate-400 h-full flex items-center justify-end pr-2" style="width: 85%">
+                                    <span class="text-xs text-white">2566: 2,413</span>
+                                </div>
+                            </div>
+                            <div class="h-8 bg-cyan-100 rounded-lg overflow-hidden flex mt-1">
+                                <div class="bg-cyan-500 h-full flex items-center justify-end pr-2" style="width: 100%">
+                                    <span class="text-xs text-white">2567: 2,847</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-sm mb-1">
+                                <span class="text-slate-600">SLA Achievement</span>
+                            </div>
+                            <div class="h-8 bg-slate-100 rounded-lg overflow-hidden flex">
+                                <div class="bg-slate-400 h-full flex items-center justify-end pr-2" style="width: 83%">
+                                    <span class="text-xs text-white">2566: 83.2%</span>
+                                </div>
+                            </div>
+                            <div class="h-8 bg-emerald-100 rounded-lg overflow-hidden flex mt-1">
+                                <div class="bg-emerald-500 h-full flex items-center justify-end pr-2" style="width: 91%">
+                                    <span class="text-xs text-white">2567: 91.2%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Monthly Breakdown Chart -->
+        <div class="bg-white rounded-xl shadow-sm p-6 mb-8">
+            <h3 class="font-semibold text-slate-800 mb-6 flex items-center gap-2">
+                <svg class="w-5 h-5 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+                Monthly Breakdown - ปี 2567
+            </h3>
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="border-b border-slate-200">
+                            <th class="text-left py-3 px-2 text-xs font-semibold text-slate-600">เดือน</th>
+                            <th class="text-center py-3 px-2 text-xs font-semibold text-slate-600">รับเรื่อง</th>
+                            <th class="text-center py-3 px-2 text-xs font-semibold text-slate-600">เสร็จสิ้น</th>
+                            <th class="text-center py-3 px-2 text-xs font-semibold text-slate-600">SLA %</th>
+                            <th class="text-center py-3 px-2 text-xs font-semibold text-slate-600">เกินกำหนด</th>
+                            <th class="text-center py-3 px-2 text-xs font-semibold text-slate-600">Satisfaction</th>
+                            <th class="text-center py-3 px-2 text-xs font-semibold text-slate-600">Trend</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
+                        <tr class="hover:bg-slate-50">
+                            <td class="py-3 px-2 font-medium text-slate-700">มกราคม</td>
+                            <td class="py-3 px-2 text-center">215</td>
+                            <td class="py-3 px-2 text-center">198</td>
+                            <td class="py-3 px-2 text-center"><span class="px-2 py-1 bg-amber-100 text-amber-700 text-xs rounded-full">85%</span></td>
+                            <td class="py-3 px-2 text-center text-red-600">32</td>
+                            <td class="py-3 px-2 text-center">4.2</td>
+                            <td class="py-3 px-2 text-center">
+                                <div class="w-16 h-4 bg-slate-200 rounded-full overflow-hidden mx-auto">
+                                    <div class="bg-amber-400 h-full" style="width: 85%"></div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-slate-50">
+                            <td class="py-3 px-2 font-medium text-slate-700">กุมภาพันธ์</td>
+                            <td class="py-3 px-2 text-center">198</td>
+                            <td class="py-3 px-2 text-center">185</td>
+                            <td class="py-3 px-2 text-center"><span class="px-2 py-1 bg-amber-100 text-amber-700 text-xs rounded-full">87%</span></td>
+                            <td class="py-3 px-2 text-center text-red-600">26</td>
+                            <td class="py-3 px-2 text-center">4.3</td>
+                            <td class="py-3 px-2 text-center">
+                                <div class="w-16 h-4 bg-slate-200 rounded-full overflow-hidden mx-auto">
+                                    <div class="bg-amber-400 h-full" style="width: 87%"></div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-slate-50">
+                            <td class="py-3 px-2 font-medium text-slate-700">มีนาคม</td>
+                            <td class="py-3 px-2 text-center">245</td>
+                            <td class="py-3 px-2 text-center">230</td>
+                            <td class="py-3 px-2 text-center"><span class="px-2 py-1 bg-emerald-100 text-emerald-700 text-xs rounded-full">89%</span></td>
+                            <td class="py-3 px-2 text-center text-red-600">27</td>
+                            <td class="py-3 px-2 text-center">4.4</td>
+                            <td class="py-3 px-2 text-center">
+                                <div class="w-16 h-4 bg-slate-200 rounded-full overflow-hidden mx-auto">
+                                    <div class="bg-emerald-400 h-full" style="width: 89%"></div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-slate-50">
+                            <td class="py-3 px-2 font-medium text-slate-700">เมษายน</td>
+                            <td class="py-3 px-2 text-center">189</td>
+                            <td class="py-3 px-2 text-center">180</td>
+                            <td class="py-3 px-2 text-center"><span class="px-2 py-1 bg-emerald-100 text-emerald-700 text-xs rounded-full">90%</span></td>
+                            <td class="py-3 px-2 text-center text-red-600">19</td>
+                            <td class="py-3 px-2 text-center">4.5</td>
+                            <td class="py-3 px-2 text-center">
+                                <div class="w-16 h-4 bg-slate-200 rounded-full overflow-hidden mx-auto">
+                                    <div class="bg-emerald-400 h-full" style="width: 90%"></div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-slate-50">
+                            <td class="py-3 px-2 font-medium text-slate-700">พฤษภาคม</td>
+                            <td class="py-3 px-2 text-center">267</td>
+                            <td class="py-3 px-2 text-center">252</td>
+                            <td class="py-3 px-2 text-center"><span class="px-2 py-1 bg-emerald-100 text-emerald-700 text-xs rounded-full">90%</span></td>
+                            <td class="py-3 px-2 text-center text-red-600">27</td>
+                            <td class="py-3 px-2 text-center">4.5</td>
+                            <td class="py-3 px-2 text-center">
+                                <div class="w-16 h-4 bg-slate-200 rounded-full overflow-hidden mx-auto">
+                                    <div class="bg-emerald-400 h-full" style="width: 90%"></div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-slate-50">
+                            <td class="py-3 px-2 font-medium text-slate-700">มิถุนายน</td>
+                            <td class="py-3 px-2 text-center">278</td>
+                            <td class="py-3 px-2 text-center">265</td>
+                            <td class="py-3 px-2 text-center"><span class="px-2 py-1 bg-emerald-100 text-emerald-700 text-xs rounded-full">91%</span></td>
+                            <td class="py-3 px-2 text-center text-red-600">25</td>
+                            <td class="py-3 px-2 text-center">4.6</td>
+                            <td class="py-3 px-2 text-center">
+                                <div class="w-16 h-4 bg-slate-200 rounded-full overflow-hidden mx-auto">
+                                    <div class="bg-emerald-400 h-full" style="width: 91%"></div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-slate-50">
+                            <td class="py-3 px-2 font-medium text-slate-700">กรกฎาคม</td>
+                            <td class="py-3 px-2 text-center">298</td>
+                            <td class="py-3 px-2 text-center">285</td>
+                            <td class="py-3 px-2 text-center"><span class="px-2 py-1 bg-emerald-100 text-emerald-700 text-xs rounded-full">92%</span></td>
+                            <td class="py-3 px-2 text-center text-red-600">24</td>
+                            <td class="py-3 px-2 text-center">4.6</td>
+                            <td class="py-3 px-2 text-center">
+                                <div class="w-16 h-4 bg-slate-200 rounded-full overflow-hidden mx-auto">
+                                    <div class="bg-emerald-500 h-full" style="width: 92%"></div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-slate-50">
+                            <td class="py-3 px-2 font-medium text-slate-700">สิงหาคม</td>
+                            <td class="py-3 px-2 text-center">289</td>
+                            <td class="py-3 px-2 text-center">278</td>
+                            <td class="py-3 px-2 text-center"><span class="px-2 py-1 bg-emerald-100 text-emerald-700 text-xs rounded-full">93%</span></td>
+                            <td class="py-3 px-2 text-center text-red-600">20</td>
+                            <td class="py-3 px-2 text-center">4.7</td>
+                            <td class="py-3 px-2 text-center">
+                                <div class="w-16 h-4 bg-slate-200 rounded-full overflow-hidden mx-auto">
+                                    <div class="bg-emerald-500 h-full" style="width: 93%"></div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-slate-50">
+                            <td class="py-3 px-2 font-medium text-slate-700">กันยายน</td>
+                            <td class="py-3 px-2 text-center">256</td>
+                            <td class="py-3 px-2 text-center">245</td>
+                            <td class="py-3 px-2 text-center"><span class="px-2 py-1 bg-emerald-100 text-emerald-700 text-xs rounded-full">93%</span></td>
+                            <td class="py-3 px-2 text-center text-red-600">18</td>
+                            <td class="py-3 px-2 text-center">4.7</td>
+                            <td class="py-3 px-2 text-center">
+                                <div class="w-16 h-4 bg-slate-200 rounded-full overflow-hidden mx-auto">
+                                    <div class="bg-emerald-500 h-full" style="width: 93%"></div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-slate-50">
+                            <td class="py-3 px-2 font-medium text-slate-700">ตุลาคม</td>
+                            <td class="py-3 px-2 text-center">234</td>
+                            <td class="py-3 px-2 text-center">225</td>
+                            <td class="py-3 px-2 text-center"><span class="px-2 py-1 bg-emerald-100 text-emerald-700 text-xs rounded-full">94%</span></td>
+                            <td class="py-3 px-2 text-center text-red-600">14</td>
+                            <td class="py-3 px-2 text-center">4.8</td>
+                            <td class="py-3 px-2 text-center">
+                                <div class="w-16 h-4 bg-slate-200 rounded-full overflow-hidden mx-auto">
+                                    <div class="bg-emerald-500 h-full" style="width: 94%"></div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-slate-50">
+                            <td class="py-3 px-2 font-medium text-slate-700">พฤศจิกายน</td>
+                            <td class="py-3 px-2 text-center">221</td>
+                            <td class="py-3 px-2 text-center">212</td>
+                            <td class="py-3 px-2 text-center"><span class="px-2 py-1 bg-emerald-100 text-emerald-700 text-xs rounded-full">94%</span></td>
+                            <td class="py-3 px-2 text-center text-red-600">13</td>
+                            <td class="py-3 px-2 text-center">4.8</td>
+                            <td class="py-3 px-2 text-center">
+                                <div class="w-16 h-4 bg-slate-200 rounded-full overflow-hidden mx-auto">
+                                    <div class="bg-emerald-500 h-full" style="width: 94%"></div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-slate-50 bg-cyan-50">
+                            <td class="py-3 px-2 font-medium text-slate-700">ธันวาคม</td>
+                            <td class="py-3 px-2 text-center">157</td>
+                            <td class="py-3 px-2 text-center">140</td>
+                            <td class="py-3 px-2 text-center"><span class="px-2 py-1 bg-emerald-100 text-emerald-700 text-xs rounded-full">95%</span></td>
+                            <td class="py-3 px-2 text-center text-red-600">5</td>
+                            <td class="py-3 px-2 text-center">4.8</td>
+                            <td class="py-3 px-2 text-center">
+                                <div class="w-16 h-4 bg-slate-200 rounded-full overflow-hidden mx-auto">
+                                    <div class="bg-emerald-600 h-full" style="width: 95%"></div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr class="bg-slate-100 font-semibold">
+                            <td class="py-3 px-2 text-slate-800">รวมทั้งปี</td>
+                            <td class="py-3 px-2 text-center text-slate-800">2,847</td>
+                            <td class="py-3 px-2 text-center text-slate-800">2,695</td>
+                            <td class="py-3 px-2 text-center"><span class="px-2 py-1 bg-emerald-500 text-white text-xs rounded-full">91.2%</span></td>
+                            <td class="py-3 px-2 text-center text-red-600">250</td>
+                            <td class="py-3 px-2 text-center text-slate-800">4.6</td>
+                            <td class="py-3 px-2"></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+
+        <!-- Project Comparison -->
+        <div class="grid grid-cols-2 gap-6 mb-8">
+            <!-- By Project -->
+            <div class="bg-white rounded-xl shadow-sm p-6">
+                <h3 class="font-semibold text-slate-800 mb-4 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                    </svg>
+                    Performance by Project
+                </h3>
+                <div class="space-y-4">
+                    <div class="flex items-center gap-4">
+                        <div class="w-40 truncate text-sm text-slate-600">Sena Park Grand Rama 9</div>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2">
+                                <div class="flex-1 h-6 bg-slate-100 rounded-full overflow-hidden">
+                                    <div class="bg-emerald-500 h-full" style="width: 94%"></div>
+                                </div>
+                                <span class="text-sm font-medium text-slate-700 w-12">94%</span>
+                            </div>
+                        </div>
+                        <span class="text-xs text-slate-500">856 เรื่อง</span>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="w-40 truncate text-sm text-slate-600">Sena Kith Srinakarin</div>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2">
+                                <div class="flex-1 h-6 bg-slate-100 rounded-full overflow-hidden">
+                                    <div class="bg-emerald-500 h-full" style="width: 92%"></div>
+                                </div>
+                                <span class="text-sm font-medium text-slate-700 w-12">92%</span>
+                            </div>
+                        </div>
+                        <span class="text-xs text-slate-500">723 เรื่อง</span>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="w-40 truncate text-sm text-slate-600">Sena Ville Bangna</div>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2">
+                                <div class="flex-1 h-6 bg-slate-100 rounded-full overflow-hidden">
+                                    <div class="bg-emerald-500 h-full" style="width: 91%"></div>
+                                </div>
+                                <span class="text-sm font-medium text-slate-700 w-12">91%</span>
+                            </div>
+                        </div>
+                        <span class="text-xs text-slate-500">612 เรื่อง</span>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="w-40 truncate text-sm text-slate-600">Sena Park Ville Ramkhamhaeng</div>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2">
+                                <div class="flex-1 h-6 bg-slate-100 rounded-full overflow-hidden">
+                                    <div class="bg-amber-500 h-full" style="width: 88%"></div>
+                                </div>
+                                <span class="text-sm font-medium text-slate-700 w-12">88%</span>
+                            </div>
+                        </div>
+                        <span class="text-xs text-slate-500">434 เรื่อง</span>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="w-40 truncate text-sm text-slate-600">Sena Ecotown Ratchaphruek</div>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2">
+                                <div class="flex-1 h-6 bg-slate-100 rounded-full overflow-hidden">
+                                    <div class="bg-amber-500 h-full" style="width: 86%"></div>
+                                </div>
+                                <span class="text-sm font-medium text-slate-700 w-12">86%</span>
+                            </div>
+                        </div>
+                        <span class="text-xs text-slate-500">222 เรื่อง</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- By Category -->
+            <div class="bg-white rounded-xl shadow-sm p-6">
+                <h3 class="font-semibold text-slate-800 mb-4 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"/>
+                    </svg>
+                    Breakdown by Category
+                </h3>
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+                        <div class="flex items-center gap-3">
+                            <div class="w-3 h-3 bg-blue-500 rounded-full"></div>
+                            <span class="text-sm text-slate-700">ระบบไฟฟ้า</span>
+                        </div>
+                        <div class="text-right">
+                            <span class="font-semibold text-slate-800">845</span>
+                            <span class="text-xs text-slate-500 ml-1">(29.7%)</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between p-3 bg-cyan-50 rounded-lg">
+                        <div class="flex items-center gap-3">
+                            <div class="w-3 h-3 bg-cyan-500 rounded-full"></div>
+                            <span class="text-sm text-slate-700">ระบบประปา</span>
+                        </div>
+                        <div class="text-right">
+                            <span class="font-semibold text-slate-800">712</span>
+                            <span class="text-xs text-slate-500 ml-1">(25.0%)</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between p-3 bg-amber-50 rounded-lg">
+                        <div class="flex items-center gap-3">
+                            <div class="w-3 h-3 bg-amber-500 rounded-full"></div>
+                            <span class="text-sm text-slate-700">โครงสร้าง / งานปูน</span>
+                        </div>
+                        <div class="text-right">
+                            <span class="font-semibold text-slate-800">498</span>
+                            <span class="text-xs text-slate-500 ml-1">(17.5%)</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between p-3 bg-emerald-50 rounded-lg">
+                        <div class="flex items-center gap-3">
+                            <div class="w-3 h-3 bg-emerald-500 rounded-full"></div>
+                            <span class="text-sm text-slate-700">ส่วนกลาง / สาธารณูปโภค</span>
+                        </div>
+                        <div class="text-right">
+                            <span class="font-semibold text-slate-800">412</span>
+                            <span class="text-xs text-slate-500 ml-1">(14.5%)</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between p-3 bg-purple-50 rounded-lg">
+                        <div class="flex items-center gap-3">
+                            <div class="w-3 h-3 bg-purple-500 rounded-full"></div>
+                            <span class="text-sm text-slate-700">ร้องเรียน / อื่นๆ</span>
+                        </div>
+                        <div class="text-right">
+                            <span class="font-semibold text-slate-800">380</span>
+                            <span class="text-xs text-slate-500 ml-1">(13.3%)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Issues & Cost Analysis -->
+        <div class="grid grid-cols-2 gap-6 mb-8">
+            <!-- Top Recurring Issues -->
+            <div class="bg-white rounded-xl shadow-sm p-6">
+                <h3 class="font-semibold text-slate-800 mb-4 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                    </svg>
+                    Top Recurring Issues
+                </h3>
+                <div class="space-y-3">
+                    <div class="flex items-center gap-4 p-3 border border-slate-200 rounded-lg">
+                        <span class="w-8 h-8 bg-red-100 text-red-600 rounded-full flex items-center justify-center font-bold text-sm">1</span>
+                        <div class="flex-1">
+                            <p class="font-medium text-slate-800">ปัญหาน้ำรั่ว / ท่อแตก</p>
+                            <p class="text-xs text-slate-500">พบในทุกโครงการ - เฉลี่ย 35 เรื่อง/เดือน</p>
+                        </div>
+                        <span class="text-lg font-bold text-red-600">423</span>
+                    </div>
+                    <div class="flex items-center gap-4 p-3 border border-slate-200 rounded-lg">
+                        <span class="w-8 h-8 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center font-bold text-sm">2</span>
+                        <div class="flex-1">
+                            <p class="font-medium text-slate-800">แอร์ไม่เย็น / ระบบปรับอากาศ</p>
+                            <p class="text-xs text-slate-500">พีคในช่วง มี.ค. - พ.ค.</p>
+                        </div>
+                        <span class="text-lg font-bold text-amber-600">312</span>
+                    </div>
+                    <div class="flex items-center gap-4 p-3 border border-slate-200 rounded-lg">
+                        <span class="w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold text-sm">3</span>
+                        <div class="flex-1">
+                            <p class="font-medium text-slate-800">ไฟฟ้าขัดข้อง / สวิตช์ชำรุด</p>
+                            <p class="text-xs text-slate-500">ส่วนใหญ่เป็นอาคารเก่า</p>
+                        </div>
+                        <span class="text-lg font-bold text-blue-600">287</span>
+                    </div>
+                    <div class="flex items-center gap-4 p-3 border border-slate-200 rounded-lg">
+                        <span class="w-8 h-8 bg-slate-100 text-slate-600 rounded-full flex items-center justify-center font-bold text-sm">4</span>
+                        <div class="flex-1">
+                            <p class="font-medium text-slate-800">ลิฟต์ขัดข้อง</p>
+                            <p class="text-xs text-slate-500">Critical - ต้องแก้ไขทันที</p>
+                        </div>
+                        <span class="text-lg font-bold text-slate-600">156</span>
+                    </div>
+                    <div class="flex items-center gap-4 p-3 border border-slate-200 rounded-lg">
+                        <span class="w-8 h-8 bg-slate-100 text-slate-600 rounded-full flex items-center justify-center font-bold text-sm">5</span>
+                        <div class="flex-1">
+                            <p class="font-medium text-slate-800">เสียงรบกวน / ข้อพิพาทเพื่อนบ้าน</p>
+                            <p class="text-xs text-slate-500">ต้องการการไกล่เกลี่ย</p>
+                        </div>
+                        <span class="text-lg font-bold text-slate-600">134</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cost Analysis -->
+            <div class="bg-white rounded-xl shadow-sm p-6">
+                <h3 class="font-semibold text-slate-800 mb-4 flex items-center gap-2">
+                    <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    Annual Cost Analysis
+                </h3>
+                <div class="space-y-4">
+                    <div class="p-4 bg-gradient-to-r from-emerald-50 to-cyan-50 rounded-xl">
+                        <p class="text-sm text-slate-600 mb-1">งบประมาณซ่อมบำรุงประจำปี</p>
+                        <p class="text-2xl font-bold text-slate-800">฿ 8,500,000</p>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="p-4 bg-slate-50 rounded-lg">
+                            <p class="text-xs text-slate-500 mb-1">ใช้จ่ายจริง</p>
+                            <p class="text-xl font-bold text-slate-800">฿ 7,245,680</p>
+                            <p class="text-xs text-emerald-600 mt-1">ต่ำกว่างบ 14.8%</p>
+                        </div>
+                        <div class="p-4 bg-slate-50 rounded-lg">
+                            <p class="text-xs text-slate-500 mb-1">เฉลี่ย/เรื่อง</p>
+                            <p class="text-xl font-bold text-slate-800">฿ 2,545</p>
+                            <p class="text-xs text-emerald-600 mt-1">ลดลง 8% จากปีก่อน</p>
+                        </div>
+                    </div>
+                    <div class="border-t border-slate-200 pt-4">
+                        <p class="text-sm font-medium text-slate-700 mb-3">Cost by Category</p>
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="text-slate-600">ระบบประปา</span>
+                                <span class="font-medium">฿ 2,890,000 (39.9%)</span>
+                            </div>
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="text-slate-600">ระบบไฟฟ้า</span>
+                                <span class="font-medium">฿ 1,956,000 (27.0%)</span>
+                            </div>
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="text-slate-600">โครงสร้าง</span>
+                                <span class="font-medium">฿ 1,450,000 (20.0%)</span>
+                            </div>
+                            <div class="flex items-center justify-between text-sm">
+                                <span class="text-slate-600">อื่นๆ</span>
+                                <span class="font-medium">฿ 949,680 (13.1%)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recommendations for Next Year -->
+        <div class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl p-6 text-white mb-8">
+            <h3 class="font-semibold mb-6 flex items-center gap-2 text-lg">
+                <svg class="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                </svg>
+                Strategic Recommendations for 2568
+            </h3>
+            <div class="grid grid-cols-3 gap-6">
+                <div class="bg-white/10 rounded-lg p-5">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-10 h-10 bg-red-500/20 rounded-lg flex items-center justify-center">
+                            <svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                            </svg>
+                        </div>
+                        <h4 class="font-semibold">Preventive Maintenance</h4>
+                    </div>
+                    <p class="text-sm text-slate-300 leading-relaxed">เพิ่มงบประมาณสำหรับการบำรุงรักษาเชิงป้องกัน โดยเฉพาะระบบประปาในโครงการที่มีอายุ > 5 ปี</p>
+                    <p class="text-xs text-amber-400 mt-3">Expected Impact: ลดเรื่องแจ้งซ่อมน้ำรั่ว 30%</p>
+                </div>
+                <div class="bg-white/10 rounded-lg p-5">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                            <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                            </svg>
+                        </div>
+                        <h4 class="font-semibold">Team Expansion</h4>
+                    </div>
+                    <p class="text-sm text-slate-300 leading-relaxed">เพิ่มทีมช่างประจำโครงการ Sena Park Ville Ramkhamhaeng เพื่อปรับปรุง SLA ที่ต่ำกว่าเป้า</p>
+                    <p class="text-xs text-amber-400 mt-3">Expected Impact: SLA +6% (88% → 94%)</p>
+                </div>
+                <div class="bg-white/10 rounded-lg p-5">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center">
+                            <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                            </svg>
+                        </div>
+                        <h4 class="font-semibold">Quality Assurance</h4>
+                    </div>
+                    <p class="text-sm text-slate-300 leading-relaxed">เพิ่มขั้นตอน QC หลังซ่อมสำหรับงานที่มูลค่า > 10,000 บาท เพื่อลด Rework Rate</p>
+                    <p class="text-xs text-amber-400 mt-3">Expected Impact: ลด Rework 25%</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2568 Targets -->
+        <div class="bg-white rounded-xl shadow-sm p-6">
+            <h3 class="font-semibold text-slate-800 mb-6 flex items-center gap-2">
+                <svg class="w-5 h-5 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
+                </svg>
+                KPI Targets for 2568
+            </h3>
+            <div class="grid grid-cols-5 gap-4">
+                <div class="text-center p-4 bg-cyan-50 rounded-xl">
+                    <p class="text-sm text-slate-600 mb-2">SLA Achievement</p>
+                    <p class="text-3xl font-bold text-cyan-700">95%</p>
+                    <p class="text-xs text-slate-500 mt-1">Current: 91.2%</p>
+                </div>
+                <div class="text-center p-4 bg-emerald-50 rounded-xl">
+                    <p class="text-sm text-slate-600 mb-2">Customer Satisfaction</p>
+                    <p class="text-3xl font-bold text-emerald-700">4.8</p>
+                    <p class="text-xs text-slate-500 mt-1">Current: 4.6</p>
+                </div>
+                <div class="text-center p-4 bg-blue-50 rounded-xl">
+                    <p class="text-sm text-slate-600 mb-2">Avg. Resolution</p>
+                    <p class="text-3xl font-bold text-blue-700">16 ชม.</p>
+                    <p class="text-xs text-slate-500 mt-1">Current: 18.5 ชม.</p>
+                </div>
+                <div class="text-center p-4 bg-amber-50 rounded-xl">
+                    <p class="text-sm text-slate-600 mb-2">First Contact Resolution</p>
+                    <p class="text-3xl font-bold text-amber-700">70%</p>
+                    <p class="text-xs text-slate-500 mt-1">Current: 62%</p>
+                </div>
+                <div class="text-center p-4 bg-purple-50 rounded-xl">
+                    <p class="text-sm text-slate-600 mb-2">Cost per Request</p>
+                    <p class="text-3xl font-bold text-purple-700">฿2,300</p>
+                    <p class="text-xs text-slate-500 mt-1">Current: ฿2,545</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="mt-8 pt-6 border-t border-slate-200 text-center text-sm text-slate-500">
+            <p>Annual Performance Report 2567 | ระบบแจ้งซ่อม & ร้องเรียน</p>
+            <p class="mt-1">SENA Development Public Company Limited</p>
+        </div>
+    </main>
+</body>
+</html>

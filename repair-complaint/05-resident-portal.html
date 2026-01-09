@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resident Portal - ระบบแจ้งซ่อม & ร้องเรียน</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { font-family: 'Sarabun', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen">
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-cyan-600 to-cyan-700 text-white shadow-lg">
+        <div class="max-w-4xl mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-lg">SENA Resident Portal</h1>
+                        <p class="text-cyan-100 text-xs">ระบบแจ้งซ่อม & ร้องเรียน</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="text-right">
+                        <p class="font-medium">คุณสมศรี มีสุข</p>
+                        <p class="text-cyan-100 text-xs">ห้อง 1205 | Sena Park Grand Rama 9</p>
+                    </div>
+                    <div class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+                        <span class="font-semibold">ส.ม.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-4xl mx-auto px-6 py-8">
+        <!-- Welcome Card -->
+        <div class="bg-gradient-to-r from-cyan-500 to-blue-600 rounded-2xl shadow-lg p-6 mb-8 text-white">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="text-xl font-bold mb-1">สวัสดีครับ คุณสมศรี</h2>
+                    <p class="text-cyan-100">มีปัญหาอะไรให้ช่วยเหลือไหมครับ?</p>
+                </div>
+                <button onclick="window.location='04-new-request.html'" class="px-5 py-3 bg-white text-cyan-600 rounded-xl font-semibold hover:bg-cyan-50 transition flex items-center gap-2 shadow-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                    </svg>
+                    แจ้งปัญหาใหม่
+                </button>
+            </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="grid grid-cols-4 gap-4 mb-8">
+            <div class="bg-white rounded-xl shadow-sm p-4 text-center">
+                <p class="text-3xl font-bold text-slate-800">5</p>
+                <p class="text-sm text-slate-500">ทั้งหมด</p>
+            </div>
+            <div class="bg-amber-50 rounded-xl shadow-sm p-4 text-center border border-amber-200">
+                <p class="text-3xl font-bold text-amber-600">1</p>
+                <p class="text-sm text-amber-600">รอดำเนินการ</p>
+            </div>
+            <div class="bg-blue-50 rounded-xl shadow-sm p-4 text-center border border-blue-200">
+                <p class="text-3xl font-bold text-blue-600">1</p>
+                <p class="text-sm text-blue-600">กำลังดำเนินการ</p>
+            </div>
+            <div class="bg-emerald-50 rounded-xl shadow-sm p-4 text-center border border-emerald-200">
+                <p class="text-3xl font-bold text-emerald-600">3</p>
+                <p class="text-sm text-emerald-600">เสร็จสิ้น</p>
+            </div>
+        </div>
+
+        <!-- Current Active Requests -->
+        <div class="mb-8">
+            <h3 class="font-semibold text-slate-800 mb-4 flex items-center gap-2">
+                <svg class="w-5 h-5 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                รายการที่กำลังดำเนินการ
+            </h3>
+            <div class="space-y-4">
+                <!-- Active Request 1 -->
+                <div class="bg-white rounded-xl shadow-sm p-5 border-l-4 border-amber-500">
+                    <div class="flex justify-between items-start mb-3">
+                        <div>
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="font-medium text-slate-800">#REQ-2024-1248</span>
+                                <span class="px-2 py-0.5 bg-amber-100 text-amber-700 text-xs rounded-full">รอดำเนินการ</span>
+                            </div>
+                            <p class="text-slate-600">น้ำรั่วจากเพดาน</p>
+                        </div>
+                        <span class="text-xs text-slate-400">8 ม.ค. 67, 10:30 น.</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-4 text-sm">
+                            <span class="text-slate-500">หมวด: ระบบประปา</span>
+                            <span class="text-red-600 font-medium">Priority: สูง</span>
+                        </div>
+                        <button class="text-cyan-600 text-sm hover:underline flex items-center gap-1">
+                            ดูรายละเอียด
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <!-- Progress Steps -->
+                    <div class="mt-4 pt-4 border-t border-slate-100">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <div class="w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center">
+                                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                    </svg>
+                                </div>
+                                <span class="text-xs text-slate-600">รับเรื่อง</span>
+                            </div>
+                            <div class="flex-1 h-1 bg-emerald-200 mx-2"></div>
+                            <div class="flex items-center gap-2">
+                                <div class="w-6 h-6 bg-amber-500 rounded-full flex items-center justify-center animate-pulse">
+                                    <div class="w-2 h-2 bg-white rounded-full"></div>
+                                </div>
+                                <span class="text-xs text-amber-600 font-medium">มอบหมายช่าง</span>
+                            </div>
+                            <div class="flex-1 h-1 bg-slate-200 mx-2"></div>
+                            <div class="flex items-center gap-2">
+                                <div class="w-6 h-6 bg-slate-200 rounded-full"></div>
+                                <span class="text-xs text-slate-400">ดำเนินการ</span>
+                            </div>
+                            <div class="flex-1 h-1 bg-slate-200 mx-2"></div>
+                            <div class="flex items-center gap-2">
+                                <div class="w-6 h-6 bg-slate-200 rounded-full"></div>
+                                <span class="text-xs text-slate-400">เสร็จสิ้น</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Active Request 2 -->
+                <div class="bg-white rounded-xl shadow-sm p-5 border-l-4 border-blue-500">
+                    <div class="flex justify-between items-start mb-3">
+                        <div>
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="font-medium text-slate-800">#REQ-2024-1235</span>
+                                <span class="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs rounded-full">กำลังดำเนินการ</span>
+                            </div>
+                            <p class="text-slate-600">สวิตช์ไฟห้องนอนไม่ทำงาน</p>
+                        </div>
+                        <span class="text-xs text-slate-400">6 ม.ค. 67, 14:20 น.</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-4 text-sm">
+                            <span class="text-slate-500">หมวด: ระบบไฟฟ้า</span>
+                            <span class="text-amber-600 font-medium">Priority: ปานกลาง</span>
+                        </div>
+                        <button class="text-cyan-600 text-sm hover:underline flex items-center gap-1">
+                            ดูรายละเอียด
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <!-- Progress Steps -->
+                    <div class="mt-4 pt-4 border-t border-slate-100">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <div class="w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center">
+                                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                    </svg>
+                                </div>
+                                <span class="text-xs text-slate-600">รับเรื่อง</span>
+                            </div>
+                            <div class="flex-1 h-1 bg-emerald-200 mx-2"></div>
+                            <div class="flex items-center gap-2">
+                                <div class="w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center">
+                                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                    </svg>
+                                </div>
+                                <span class="text-xs text-slate-600">มอบหมายช่าง</span>
+                            </div>
+                            <div class="flex-1 h-1 bg-emerald-200 mx-2"></div>
+                            <div class="flex items-center gap-2">
+                                <div class="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center animate-pulse">
+                                    <div class="w-2 h-2 bg-white rounded-full"></div>
+                                </div>
+                                <span class="text-xs text-blue-600 font-medium">ดำเนินการ</span>
+                            </div>
+                            <div class="flex-1 h-1 bg-slate-200 mx-2"></div>
+                            <div class="flex items-center gap-2">
+                                <div class="w-6 h-6 bg-slate-200 rounded-full"></div>
+                                <span class="text-xs text-slate-400">เสร็จสิ้น</span>
+                            </div>
+                        </div>
+                        <div class="mt-3 p-3 bg-blue-50 rounded-lg">
+                            <p class="text-sm text-blue-700">
+                                <span class="font-medium">ช่างประยุทธ์</span> กำลังดำเนินการ - นัดหมายเข้าพื้นที่ 9 ม.ค. 67, 10:00 น.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- History -->
+        <div>
+            <h3 class="font-semibold text-slate-800 mb-4 flex items-center gap-2">
+                <svg class="w-5 h-5 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                </svg>
+                ประวัติการแจ้ง
+            </h3>
+            <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                <table class="w-full">
+                    <thead class="bg-slate-50 border-b border-slate-200">
+                        <tr>
+                            <th class="px-4 py-3 text-left text-xs font-semibold text-slate-600">เลขที่</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold text-slate-600">รายละเอียด</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold text-slate-600">วันที่แจ้ง</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold text-slate-600">สถานะ</th>
+                            <th class="px-4 py-3 text-left text-xs font-semibold text-slate-600">ความพึงพอใจ</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-200">
+                        <tr class="hover:bg-slate-50">
+                            <td class="px-4 py-3">
+                                <span class="text-cyan-600 font-medium">#REQ-2024-1180</span>
+                            </td>
+                            <td class="px-4 py-3">
+                                <p class="text-slate-800">แอร์ไม่เย็น</p>
+                                <p class="text-xs text-slate-400">ระบบไฟฟ้า</p>
+                            </td>
+                            <td class="px-4 py-3 text-sm text-slate-600">28 ธ.ค. 66</td>
+                            <td class="px-4 py-3">
+                                <span class="px-2 py-1 bg-emerald-100 text-emerald-700 text-xs rounded-full">เสร็จสิ้น</span>
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="flex items-center gap-1">
+                                    <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                    </svg>
+                                    <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                    </svg>
+                                    <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                    </svg>
+                                    <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                    </svg>
+                                    <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                    </svg>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-slate-50">
+                            <td class="px-4 py-3">
+                                <span class="text-cyan-600 font-medium">#REQ-2024-1098</span>
+                            </td>
+                            <td class="px-4 py-3">
+                                <p class="text-slate-800">ก๊อกน้ำห้องน้ำรั่ว</p>
+                                <p class="text-xs text-slate-400">ระบบประปา</p>
+                            </td>
+                            <td class="px-4 py-3 text-sm text-slate-600">15 ธ.ค. 66</td>
+                            <td class="px-4 py-3">
+                                <span class="px-2 py-1 bg-emerald-100 text-emerald-700 text-xs rounded-full">เสร็จสิ้น</span>
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="flex items-center gap-1">
+                                    <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                    </svg>
+                                    <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                    </svg>
+                                    <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                    </svg>
+                                    <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                    </svg>
+                                    <svg class="w-4 h-4 text-slate-300" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                    </svg>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-slate-50">
+                            <td class="px-4 py-3">
+                                <span class="text-cyan-600 font-medium">#REQ-2024-0956</span>
+                            </td>
+                            <td class="px-4 py-3">
+                                <p class="text-slate-800">ประตูห้องน้ำปิดไม่สนิท</p>
+                                <p class="text-xs text-slate-400">โครงสร้าง</p>
+                            </td>
+                            <td class="px-4 py-3 text-sm text-slate-600">2 พ.ย. 66</td>
+                            <td class="px-4 py-3">
+                                <span class="px-2 py-1 bg-emerald-100 text-emerald-700 text-xs rounded-full">เสร็จสิ้น</span>
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="flex items-center gap-1">
+                                    <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                    </svg>
+                                    <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                    </svg>
+                                    <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                    </svg>
+                                    <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                    </svg>
+                                    <svg class="w-4 h-4 text-amber-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                    </svg>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Contact Info -->
+        <div class="mt-8 bg-white rounded-xl shadow-sm p-6">
+            <h3 class="font-semibold text-slate-800 mb-4">ติดต่อนิติบุคคล</h3>
+            <div class="grid grid-cols-3 gap-6">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-cyan-100 rounded-full flex items-center justify-center">
+                        <svg class="w-5 h-5 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-sm text-slate-500">โทรศัพท์</p>
+                        <p class="font-medium text-slate-800">02-123-4567</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center">
+                        <svg class="w-5 h-5 text-emerald-600" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0012.04 2z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-sm text-slate-500">LINE Official</p>
+                        <p class="font-medium text-slate-800">@senapark-rama9</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center">
+                        <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-sm text-slate-500">เวลาทำการ</p>
+                        <p class="font-medium text-slate-800">08:00 - 20:00 น.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="max-w-4xl mx-auto px-6 py-4 text-center text-sm text-slate-400">
+        <p>SENA Development Public Company Limited</p>
+    </footer>
+</body>
+</html>

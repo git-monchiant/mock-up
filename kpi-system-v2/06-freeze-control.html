@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Freeze Control - KPI System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Sarabun', sans-serif; }
+        @keyframes countdown { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+        .countdown-pulse { animation: countdown 2s ease-in-out infinite; }
+    </style>
+    <script>
+        const roles = {
+            employee: {
+                name: 'นางสาวสุดา พรหมชัย',
+                initials: 'สด',
+                position: 'Full-stack Developer',
+                team: 'Development Team',
+                department: 'IT Department',
+                empId: 'EMP-0042',
+                level: 'employee',
+                permissions: ['dashboard', 'my-kpi', 'alignment', 'evaluation']
+            },
+            team_lead: {
+                name: 'นายสมศักดิ์ รักษ์ชาติ',
+                initials: 'สศ',
+                position: 'Team Lead',
+                team: 'Development Team',
+                department: 'IT Department',
+                empId: 'MGR-0012',
+                level: 'team_lead',
+                permissions: ['dashboard', 'my-kpi', 'team-kpi', 'alignment', 'approval', 'evaluation']
+            },
+            dept_head: {
+                name: 'นางสาวจิราพร วงศ์ไพศาล',
+                initials: 'จว',
+                position: 'IT Director',
+                team: 'IT Management',
+                department: 'IT Department',
+                empId: 'DIR-0003',
+                level: 'dept_head',
+                permissions: ['dashboard', 'my-kpi', 'dept-kpi', 'team-kpi', 'alignment', 'approval', 'evaluation', 'reports']
+            },
+            kpi_admin: {
+                name: 'นายประสิทธิ์ มั่นคง',
+                initials: 'ปม',
+                position: 'KPI Admin',
+                team: 'KPI Management',
+                department: 'KPI Administration',
+                empId: 'HR-0001',
+                level: 'kpi_admin',
+                permissions: ['dashboard', 'my-kpi', 'corporate-kpi', 'alignment', 'approval', 'evaluation', 'reports', 'freeze-control']
+            }
+        };
+
+        let currentRole = 'kpi_admin';
+
+        function switchRole(roleKey) {
+            currentRole = roleKey;
+            localStorage.setItem('selectedRole', roleKey);
+            updateUI();
+        }
+
+        function updateUI() {
+            const role = roles[currentRole];
+            document.getElementById('userName').textContent = role.name;
+            document.getElementById('userPosition').textContent = role.position;
+            document.getElementById('userDept').textContent = role.department;
+            document.getElementById('userInitials').textContent = role.initials;
+
+            // Update navigation visibility
+            document.querySelectorAll('[data-permission]').forEach(item => {
+                const perm = item.dataset.permission;
+                item.classList.toggle('hidden', !role.permissions.includes(perm));
+            });
+
+            // Access control for freeze-control page
+            if (!role.permissions.includes('freeze-control')) {
+                document.getElementById('accessDenied').classList.remove('hidden');
+                document.getElementById('mainContent').classList.add('hidden');
+            } else {
+                document.getElementById('accessDenied').classList.add('hidden');
+                document.getElementById('mainContent').classList.remove('hidden');
+            }
+        }
+
+        function openFreezeModal() {
+            document.getElementById('freezeModal').classList.remove('hidden');
+        }
+
+        function closeFreezeModal() {
+            document.getElementById('freezeModal').classList.add('hidden');
+        }
+
+        function toggleFreeze(type) {
+            const toggle = event.target;
+            const statusText = toggle.closest('.flex').querySelector('.status-text');
+            if (toggle.checked) {
+                statusText.textContent = 'Locked';
+                statusText.classList.remove('text-gray-500');
+                statusText.classList.add('text-red-600');
+            } else {
+                statusText.textContent = 'Open';
+                statusText.classList.remove('text-red-600');
+                statusText.classList.add('text-green-600');
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const saved = localStorage.getItem('selectedRole') || 'kpi_admin';
+            currentRole = saved;
+            document.getElementById('roleSelector').value = saved;
+            updateUI();
+        });
+    </script>
+</head>
+<body class="bg-white min-h-screen">
+
+    <!-- Sidebar -->
+    <div class="fixed left-0 top-0 h-full w-64 bg-amber-700 shadow-lg z-20">
+        <div class="p-6">
+            <!-- Logo -->
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
+                    <svg class="w-6 h-6 text-amber-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-white font-bold text-lg">KPI System</h1>
+                    <p class="text-amber-200 text-xs">Performance Management</p>
+                </div>
+            </div>
+
+            <!-- User Profile -->
+            <div class="bg-white rounded-xl p-4 mb-6 shadow">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                        <span id="userInitials" class="text-white font-bold">ปม</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p id="userName" class="text-gray-800 font-semibold text-sm truncate">นายประสิทธิ์ มั่นคง</p>
+                        <p id="userPosition" class="text-gray-600 text-xs truncate">HR Director</p>
+                        <p id="userDept" class="text-amber-600 text-xs truncate">Human Resources</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Role Selector (Demo) -->
+            <div class="mb-6 pb-6 border-b border-amber-600">
+                <label class="text-amber-100 text-xs mb-2 block">Demo: Switch Role</label>
+                <select id="roleSelector" onchange="switchRole(this.value)" class="w-full bg-white text-gray-800 rounded-lg px-3 py-2 text-sm border border-amber-600 focus:outline-none focus:ring-2 focus:ring-amber-500">
+                    <option value="employee">Employee</option>
+                    <option value="team_lead">Team Lead</option>
+                    <option value="dept_head">Department Head</option>
+                    <option value="kpi_admin">KPI Admin</option>
+                </select>
+            </div>
+
+            <!-- Navigation -->
+            <nav class="space-y-1">
+                <a href="01-dashboard.html" data-permission="dashboard" class="flex items-center gap-3 px-4 py-3 text-white hover:bg-amber-600 rounded-lg transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                    </svg>
+                    <span class="font-medium">Dashboard</span>
+                </a>
+
+                <a href="04-my-kpi.html" data-permission="my-kpi" class="flex items-center gap-3 px-4 py-3 text-white hover:bg-amber-600 rounded-lg transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                    </svg>
+                    <span class="font-medium">My KPI</span>
+                </a>
+
+                <a href="03-alignment.html" data-permission="alignment" class="flex items-center gap-3 px-4 py-3 text-white hover:bg-amber-600 rounded-lg transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"/>
+                    </svg>
+                    <span class="font-medium">Alignment View</span>
+                </a>
+
+                <div class="border-t border-amber-600 my-3"></div>
+
+                <a href="02-corporate-kpi.html" data-permission="corporate-kpi" class="hidden flex items-center gap-3 px-4 py-3 text-white hover:bg-amber-600 rounded-lg transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                    </svg>
+                    <span class="font-medium">Corporate KPI</span>
+                </a>
+
+                <a href="05-approval.html" data-permission="approval" class="hidden flex items-center gap-3 px-4 py-3 text-white hover:bg-amber-600 rounded-lg transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <span class="font-medium">Approval Inbox</span>
+                    <span class="ml-auto bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">5</span>
+                </a>
+
+                <a href="07-evaluation.html" data-permission="evaluation" class="flex items-center gap-3 px-4 py-3 text-white hover:bg-amber-600 rounded-lg transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
+                    </svg>
+                    <span class="font-medium">Evaluation</span>
+                </a>
+
+                <a href="06-freeze-control.html" data-permission="freeze-control" class="hidden flex items-center gap-3 px-4 py-3 bg-amber-800 text-white rounded-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                    </svg>
+                    <span class="font-medium">Freeze Control</span>
+                </a>
+
+                <a href="08-reports.html" data-permission="reports" class="hidden flex items-center gap-3 px-4 py-3 text-white hover:bg-amber-600 rounded-lg transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    <span class="font-medium">Reports</span>
+                </a>
+            </nav>
+
+            <div class="mt-6 pt-6 border-t border-amber-600">
+                <a href="../index.html" class="flex items-center gap-3 px-4 py-3 text-amber-100 hover:bg-amber-600 rounded-lg transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                    </svg>
+                    <span class="font-medium">Back to Home</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="ml-64 p-8">
+        <!-- Access Denied -->
+        <div id="accessDenied" class="hidden">
+            <div class="bg-red-50 border-2 border-red-200 rounded-xl p-8 text-center max-w-md mx-auto mt-20">
+                <div class="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-10 h-10 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                    </svg>
+                </div>
+                <h2 class="text-2xl font-bold text-gray-800 mb-2">Access Denied</h2>
+                <p class="text-gray-600 mb-6">This page is only available for KPI Admin role.</p>
+                <a href="01-dashboard.html" class="inline-block px-6 py-3 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-bold transition-all">
+                    Go to Dashboard
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div id="mainContent">
+            <!-- Header -->
+            <div class="bg-white shadow-sm rounded-lg p-6 mb-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-800">Freeze Control</h2>
+                        <p class="text-gray-600">Manage KPI freeze dates and lock submissions</p>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="bg-amber-50 rounded-lg px-4 py-2 border border-amber-200">
+                            <p class="text-amber-600 text-xs">Current Cycle</p>
+                            <p class="text-amber-800 font-bold">Q4/2025</p>
+                        </div>
+                        <button onclick="openFreezeModal()" class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-bold transition-all flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                            </svg>
+                            Set Freeze Date
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Current Freeze Status -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                <!-- Countdown Card -->
+                <div class="bg-white rounded-lg shadow p-8 border-2 border-red-200">
+                    <div class="text-center">
+                        <div class="flex items-center justify-center gap-2 mb-4">
+                            <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <h3 class="text-xl font-bold text-gray-800">KPI Freeze Countdown</h3>
+                        </div>
+                        <div class="countdown-pulse">
+                            <p class="text-6xl font-bold text-red-600 mb-2">12</p>
+                            <p class="text-red-500 text-lg">Days Remaining</p>
+                        </div>
+                        <div class="mt-6 pt-6 border-t border-gray-200">
+                            <p class="text-gray-600">Freeze Date:</p>
+                            <p class="text-gray-800 font-bold text-xl">December 31, 2025</p>
+                            <p class="text-gray-500 text-sm">11:59 PM (GMT+7)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Current Cycle Status -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h3 class="text-lg font-bold text-gray-800 mb-6">Q4/2025 Submission Summary</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-gray-800 font-semibold">Submitted</p>
+                                    <p class="text-gray-600 text-sm">KPI submitted and approved</p>
+                                </div>
+                            </div>
+                            <span class="text-emerald-600 font-bold text-2xl">128</span>
+                        </div>
+
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-gray-800 font-semibold">Pending</p>
+                                    <p class="text-gray-600 text-sm">Awaiting manager approval</p>
+                                </div>
+                            </div>
+                            <span class="text-amber-600 font-bold text-2xl">15</span>
+                        </div>
+
+                        <div class="flex items-center justify-between p-4 bg-red-50 rounded-lg border border-red-200">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-gray-800 font-semibold">Not Started</p>
+                                    <p class="text-red-600 text-sm">Action required!</p>
+                                </div>
+                            </div>
+                            <span class="text-red-600 font-bold text-2xl">7</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 pt-4 border-t border-gray-200">
+                        <div class="flex items-center justify-between text-sm text-gray-600">
+                            <span>Total Employees</span>
+                            <span class="font-bold text-gray-800">150</span>
+                        </div>
+                        <div class="mt-2 h-3 bg-gray-200 rounded-full overflow-hidden flex">
+                            <div class="h-full bg-emerald-500" style="width: 85.3%"></div>
+                            <div class="h-full bg-amber-500" style="width: 10%"></div>
+                            <div class="h-full bg-red-500" style="width: 4.7%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Period Freeze Settings (OP1-OP4) -->
+            <div class="bg-white rounded-lg shadow p-6 mb-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-lg font-bold text-gray-800">Period Submission Windows - 2025</h3>
+                    <span class="px-3 py-1 bg-amber-100 text-amber-700 rounded-full text-sm font-medium">Fiscal Year 2025</span>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <!-- OP1 -->
+                    <div class="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="px-2 py-1 bg-blue-500 text-white text-xs font-bold rounded">OP1</span>
+                            <span class="px-2 py-1 bg-emerald-100 text-emerald-700 rounded text-xs">Closed</span>
+                        </div>
+                        <p class="text-gray-600 text-xs mb-1">Center Project KPI</p>
+                        <p class="text-gray-800 font-semibold text-sm">Jan 1 - Mar 31</p>
+                        <p class="text-gray-500 text-xs mt-2">Freeze: Mar 15, 2025</p>
+                    </div>
+
+                    <!-- OP2 -->
+                    <div class="p-4 bg-purple-50 rounded-lg border border-purple-200">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="px-2 py-1 bg-purple-500 text-white text-xs font-bold rounded">OP2</span>
+                            <span class="px-2 py-1 bg-emerald-100 text-emerald-700 rounded text-xs">Closed</span>
+                        </div>
+                        <p class="text-gray-600 text-xs mb-1">Individual KPI</p>
+                        <p class="text-gray-800 font-semibold text-sm">Apr 1 - Jun 30</p>
+                        <p class="text-gray-500 text-xs mt-2">Freeze: Jun 15, 2025</p>
+                    </div>
+
+                    <!-- OP3 -->
+                    <div class="p-4 bg-teal-50 rounded-lg border border-teal-200">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="px-2 py-1 bg-teal-500 text-white text-xs font-bold rounded">OP3</span>
+                            <span class="px-2 py-1 bg-emerald-100 text-emerald-700 rounded text-xs">Closed</span>
+                        </div>
+                        <p class="text-gray-600 text-xs mb-1">Behavioral Evaluation</p>
+                        <p class="text-gray-800 font-semibold text-sm">Jul 1 - Sep 30</p>
+                        <p class="text-gray-500 text-xs mt-2">Freeze: Sep 15, 2025</p>
+                    </div>
+
+                    <!-- OP4 -->
+                    <div class="p-4 bg-amber-50 rounded-lg border-2 border-amber-400">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="px-2 py-1 bg-amber-500 text-white text-xs font-bold rounded">OP4</span>
+                            <span class="px-2 py-1 bg-amber-100 text-amber-700 rounded text-xs">Active</span>
+                        </div>
+                        <p class="text-gray-600 text-xs mb-1">Attendance</p>
+                        <p class="text-gray-800 font-semibold text-sm">Oct 1 - Dec 31</p>
+                        <p class="text-amber-600 text-xs mt-2 font-semibold">Freeze: Dec 31, 2025</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lock Actions -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                <!-- Manual Lock -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">Manual Lock Controls</h3>
+                    <p class="text-gray-600 mb-6">Lock submissions before the automatic freeze date</p>
+
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                            <div>
+                                <p class="text-gray-800 font-semibold">Lock KPI Submissions</p>
+                                <p class="text-gray-600 text-sm">Prevent new KPI submissions</p>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="status-text text-green-600 text-sm font-medium">Open</span>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" onchange="toggleFreeze('kpi')" class="sr-only peer">
+                                    <div class="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-500"></div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                            <div>
+                                <p class="text-gray-800 font-semibold">Lock Progress Updates</p>
+                                <p class="text-gray-600 text-sm">Prevent progress tracking updates</p>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="status-text text-green-600 text-sm font-medium">Open</span>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" onchange="toggleFreeze('progress')" class="sr-only peer">
+                                    <div class="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-500"></div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                            <div>
+                                <p class="text-gray-800 font-semibold">Lock Self-Evaluation</p>
+                                <p class="text-gray-600 text-sm">Prevent self-evaluation submissions</p>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="status-text text-green-600 text-sm font-medium">Open</span>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" onchange="toggleFreeze('eval')" class="sr-only peer">
+                                    <div class="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-500"></div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 p-4 bg-amber-50 rounded-lg border border-amber-200">
+                        <div class="flex items-start gap-3">
+                            <svg class="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                            </svg>
+                            <p class="text-amber-800 text-sm">
+                                <strong>Warning:</strong> Locking submissions will immediately prevent employees from making changes. This action is logged in the audit trail.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Audit Trail -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">Recent Actions (Audit Trail)</h3>
+                    <div class="space-y-3 max-h-80 overflow-y-auto">
+                        <div class="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
+                            <div class="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="text-gray-800 text-sm">OP3 submissions locked</p>
+                                <p class="text-gray-500 text-xs">By: Prasit Mankong - Sep 15, 2025 09:00</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
+                            <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="text-gray-800 text-sm">Q4/2025 freeze date set to Dec 31</p>
+                                <p class="text-gray-500 text-xs">By: Prasit Mankong - Dec 1, 2025 10:30</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
+                            <div class="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                <svg class="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="text-gray-800 text-sm">Reminder sent to 22 employees</p>
+                                <p class="text-gray-500 text-xs">By: Prasit Mankong - Dec 10, 2025 14:00</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
+                            <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="text-gray-800 text-sm">Q4/2025 cycle created</p>
+                                <p class="text-gray-500 text-xs">By: Prasit Mankong - Oct 1, 2025 08:00</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
+                            <div class="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
+                                <svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="text-gray-800 text-sm">OP2 submissions locked</p>
+                                <p class="text-gray-500 text-xs">By: Prasit Mankong - Jun 15, 2025 09:00</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Employees Without KPI -->
+            <div class="bg-white rounded-lg shadow p-6 border-2 border-red-200">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                        </svg>
+                        Employees Without KPI Submission (7)
+                    </h3>
+                    <div class="flex items-center gap-3">
+                        <button class="px-4 py-2 bg-amber-50 hover:bg-amber-100 text-amber-600 rounded-lg font-semibold transition-all flex items-center gap-2 border border-amber-200">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                            </svg>
+                            Send Reminder to All
+                        </button>
+                        <button class="px-4 py-2 bg-gray-50 hover:bg-gray-100 text-gray-600 rounded-lg font-semibold transition-all flex items-center gap-2 border border-gray-200">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                            </svg>
+                            Export List
+                        </button>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="text-left text-gray-600 text-sm border-b border-gray-200 bg-gray-50">
+                                <th class="pb-3 pt-3 px-4 font-medium">Employee</th>
+                                <th class="pb-3 pt-3 px-4 font-medium">Department</th>
+                                <th class="pb-3 pt-3 px-4 font-medium">Manager</th>
+                                <th class="pb-3 pt-3 px-4 font-medium">Status</th>
+                                <th class="pb-3 pt-3 px-4 font-medium">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-gray-800 text-sm">
+                            <tr class="border-b border-gray-100">
+                                <td class="py-3 px-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 bg-amber-500 rounded-full flex items-center justify-center text-white text-xs font-bold">PR</div>
+                                        <span>Preecha Wongsuwan</span>
+                                    </div>
+                                </td>
+                                <td class="py-3 px-4 text-gray-600">IT Department</td>
+                                <td class="py-3 px-4 text-gray-600">Somsak Rakchat</td>
+                                <td class="py-3 px-4"><span class="px-2 py-1 bg-amber-100 text-amber-700 rounded text-xs">Draft</span></td>
+                                <td class="py-3 px-4">
+                                    <button class="px-3 py-1 bg-amber-50 hover:bg-amber-100 text-amber-600 rounded text-xs transition-all border border-amber-200">
+                                        Send Reminder
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr class="border-b border-gray-100">
+                                <td class="py-3 px-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-xs font-bold">AN</div>
+                                        <span>Anucha Somjai</span>
+                                    </div>
+                                </td>
+                                <td class="py-3 px-4 text-gray-600">Operations</td>
+                                <td class="py-3 px-4 text-gray-600">Wichai Jaidee</td>
+                                <td class="py-3 px-4"><span class="px-2 py-1 bg-red-100 text-red-700 rounded text-xs">Not Started</span></td>
+                                <td class="py-3 px-4">
+                                    <button class="px-3 py-1 bg-amber-50 hover:bg-amber-100 text-amber-600 rounded text-xs transition-all border border-amber-200">
+                                        Send Reminder
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr class="border-b border-gray-100">
+                                <td class="py-3 px-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center text-white text-xs font-bold">NW</div>
+                                        <span>Narut Wattana</span>
+                                    </div>
+                                </td>
+                                <td class="py-3 px-4 text-gray-600">Sales</td>
+                                <td class="py-3 px-4 text-gray-600">Parichat Suwanee</td>
+                                <td class="py-3 px-4"><span class="px-2 py-1 bg-red-100 text-red-700 rounded text-xs">Not Started</span></td>
+                                <td class="py-3 px-4">
+                                    <button class="px-3 py-1 bg-amber-50 hover:bg-amber-100 text-amber-600 rounded text-xs transition-all border border-amber-200">
+                                        Send Reminder
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr class="border-b border-gray-100">
+                                <td class="py-3 px-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 bg-teal-500 rounded-full flex items-center justify-center text-white text-xs font-bold">SK</div>
+                                        <span>Sukanya Kaewsri</span>
+                                    </div>
+                                </td>
+                                <td class="py-3 px-4 text-gray-600">Marketing</td>
+                                <td class="py-3 px-4 text-gray-600">Tanawat Prasert</td>
+                                <td class="py-3 px-4"><span class="px-2 py-1 bg-amber-100 text-amber-700 rounded text-xs">Draft</span></td>
+                                <td class="py-3 px-4">
+                                    <button class="px-3 py-1 bg-amber-50 hover:bg-amber-100 text-amber-600 rounded text-xs transition-all border border-amber-200">
+                                        Send Reminder
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr class="border-b border-gray-100">
+                                <td class="py-3 px-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center text-white text-xs font-bold">KP</div>
+                                        <span>Kritsada Pongpan</span>
+                                    </div>
+                                </td>
+                                <td class="py-3 px-4 text-gray-600">Finance</td>
+                                <td class="py-3 px-4 text-gray-600">Manee Srisuk</td>
+                                <td class="py-3 px-4"><span class="px-2 py-1 bg-red-100 text-red-700 rounded text-xs">Not Started</span></td>
+                                <td class="py-3 px-4">
+                                    <button class="px-3 py-1 bg-amber-50 hover:bg-amber-100 text-amber-600 rounded text-xs transition-all border border-amber-200">
+                                        Send Reminder
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mt-4 text-center">
+                    <button class="text-amber-600 hover:text-amber-700 text-sm font-semibold">View All 7 Employees</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Freeze Date Modal -->
+    <div id="freezeModal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl w-full max-w-7xl shadow-2xl">
+            <!-- Header with gradient -->
+            <div class="bg-gradient-to-r from-red-500 to-red-600 p-5 rounded-t-2xl">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-white">Set Freeze Date</h3>
+                            <p class="text-red-100 text-xs">กำหนดวันล็อคการส่ง KPI</p>
+                        </div>
+                    </div>
+                    <button onclick="closeFreezeModal()" class="text-white/80 hover:text-white hover:bg-white/20 p-2 rounded-lg transition-all">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Form Content -->
+            <div class="p-6 space-y-5">
+                <!-- Cycle & Period - 2 columns -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Cycle</label>
+                        <select class="w-full bg-gray-50 text-gray-800 rounded-xl px-4 py-3 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent focus:bg-white transition-all">
+                            <option>Q4/2025</option>
+                            <option>Q1/2026</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Period</label>
+                        <select class="w-full bg-gray-50 text-gray-800 rounded-xl px-4 py-3 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent focus:bg-white transition-all">
+                            <option>OP1 - Center Project KPI</option>
+                            <option>OP2 - Individual KPI</option>
+                            <option>OP3 - Behavioral Evaluation</option>
+                            <option selected>OP4 - Attendance</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Date Settings Card -->
+                <div class="bg-gray-50 rounded-xl p-5 border border-gray-200">
+                    <h4 class="text-sm font-bold text-gray-700 mb-4 flex items-center gap-2">
+                        <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                        Date Settings
+                    </h4>
+                    <div class="grid grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1.5">Start Date</label>
+                            <input type="date" value="2025-10-01" class="w-full bg-white text-gray-800 rounded-lg px-3 py-2.5 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1.5">End Date</label>
+                            <input type="date" value="2025-12-15" class="w-full bg-white text-gray-800 rounded-lg px-3 py-2.5 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1.5">Freeze Date</label>
+                            <input type="date" value="2025-12-31" class="w-full bg-white text-gray-800 rounded-lg px-3 py-2.5 border border-red-300 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent text-sm font-medium text-red-700">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Warning Notice -->
+                <div class="flex items-start gap-3 p-4 bg-red-50 rounded-xl border border-red-200">
+                    <svg class="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                    </svg>
+                    <div>
+                        <p class="text-red-800 text-sm font-semibold mb-1">Important Notice</p>
+                        <p class="text-red-700 text-sm">After the freeze date, all KPI submissions for this period will be locked and employees will not be able to make any changes.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="px-6 py-4 bg-gray-50 rounded-b-2xl flex items-center justify-end gap-3">
+                <button onclick="closeFreezeModal()" class="px-5 py-2.5 text-gray-600 hover:text-gray-800 font-semibold transition-all">
+                    Cancel
+                </button>
+                <button onclick="closeFreezeModal()" class="px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold transition-all shadow-lg shadow-red-200">
+                    Save Settings
+                </button>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

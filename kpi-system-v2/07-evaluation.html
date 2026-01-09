@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evaluation - KPI System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Sarabun', sans-serif; }
+    </style>
+    <script>
+        const roles = {
+            employee: {
+                name: 'นางสาวสุดา พรหมชัย',
+                initials: 'สด',
+                position: 'Full-stack Developer',
+                team: 'Development Team',
+                department: 'IT Department',
+                empId: 'EMP-0042',
+                level: 'employee',
+                permissions: ['my-kpi', 'alignment', 'evaluation']
+            },
+            team_lead: {
+                name: 'นายสมศักดิ์ รักษ์ชาติ',
+                initials: 'สศ',
+                position: 'Team Lead',
+                team: 'Development Team',
+                department: 'IT Department',
+                empId: 'MGR-0012',
+                level: 'team_lead',
+                permissions: ['my-kpi', 'team-kpi', 'alignment', 'approval', 'evaluation']
+            },
+            dept_head: {
+                name: 'นางสาวจิราพร วงศ์ไพศาล',
+                initials: 'จว',
+                position: 'IT Director',
+                team: 'IT Management',
+                department: 'IT Department',
+                empId: 'DIR-0003',
+                level: 'dept_head',
+                permissions: ['my-kpi', 'dept-kpi', 'team-kpi', 'alignment', 'approval', 'evaluation', 'reports']
+            },
+            kpi_admin: {
+                name: 'นายประสิทธิ์ มั่นคง',
+                initials: 'ปม',
+                position: 'KPI Admin',
+                team: 'KPI Management',
+                department: 'KPI Administration',
+                empId: 'HR-0001',
+                level: 'kpi_admin',
+                permissions: ['my-kpi', 'corporate-kpi', 'alignment', 'approval', 'evaluation', 'reports', 'freeze-control']
+            }
+        };
+
+        let currentRole = 'employee';
+        let currentTab = 'my';
+
+        function switchRole(roleKey) {
+            currentRole = roleKey;
+            localStorage.setItem('selectedRole', roleKey);
+            updateUI();
+        }
+
+        function updateUI() {
+            const role = roles[currentRole];
+            document.getElementById('userName').textContent = role.name;
+            document.getElementById('userPosition').textContent = role.position;
+            document.getElementById('userDept').textContent = role.department;
+            document.getElementById('userInitials').textContent = role.initials;
+
+            // Update navigation visibility
+            document.querySelectorAll('[data-permission]').forEach(item => {
+                const perm = item.dataset.permission;
+                item.classList.toggle('hidden', !role.permissions.includes(perm));
+            });
+
+            // Show/hide Team Evaluation tab based on role
+            const isMgr = ['team_lead', 'dept_head', 'kpi_admin'].includes(currentRole);
+            document.getElementById('teamTabBtn').classList.toggle('hidden', !isMgr);
+
+            // If switching to employee role, force switch to 'my' tab
+            if (!isMgr && currentTab === 'team') {
+                switchTab('my');
+            }
+
+            // Update sidebar menu label based on role
+            const sidebarKpiLabel = document.getElementById('sidebarKpiLabel');
+            if (role.level === 'employee' || role.level === 'kpi_admin') {
+                sidebarKpiLabel.textContent = 'My KPI';
+            } else if (role.level === 'team_lead') {
+                sidebarKpiLabel.textContent = 'Team KPI';
+            } else if (role.level === 'dept_head') {
+                sidebarKpiLabel.textContent = 'Dept KPI';
+            }
+        }
+
+        function switchTab(tab) {
+            currentTab = tab;
+
+            // Update tab button styles
+            document.getElementById('myTabBtn').classList.toggle('bg-amber-600', tab === 'my');
+            document.getElementById('myTabBtn').classList.toggle('text-white', tab === 'my');
+            document.getElementById('myTabBtn').classList.toggle('bg-gray-100', tab !== 'my');
+            document.getElementById('myTabBtn').classList.toggle('text-gray-600', tab !== 'my');
+
+            document.getElementById('teamTabBtn').classList.toggle('bg-amber-600', tab === 'team');
+            document.getElementById('teamTabBtn').classList.toggle('text-white', tab === 'team');
+            document.getElementById('teamTabBtn').classList.toggle('bg-gray-100', tab !== 'team');
+            document.getElementById('teamTabBtn').classList.toggle('text-gray-600', tab !== 'team');
+
+            // Show/hide content
+            document.getElementById('myEvalContent').classList.toggle('hidden', tab !== 'my');
+            document.getElementById('teamEvalContent').classList.toggle('hidden', tab !== 'team');
+        }
+
+        function selectScore(okrId, score) {
+            const buttons = document.querySelectorAll(`[data-okr="${okrId}"] .score-btn`);
+            buttons.forEach(btn => {
+                const btnScore = parseInt(btn.dataset.score);
+                btn.classList.toggle('bg-amber-600', btnScore === score);
+                btn.classList.toggle('border-amber-600', btnScore === score);
+                btn.classList.toggle('text-white', btnScore === score);
+                btn.classList.toggle('bg-white', btnScore !== score);
+                btn.classList.toggle('border-gray-300', btnScore !== score);
+                btn.classList.toggle('text-gray-600', btnScore !== score);
+            });
+        }
+
+        // Manager score selection with employee score indicator
+        const employeeScores = {
+            'mgr-kpi1': 4,
+            'mgr-kpi2': 3,
+            'mgr-kpi3': 5
+        };
+
+        function selectManagerScore(okrId, score) {
+            const container = document.querySelector(`[data-okr="${okrId}"]`);
+            const buttons = container.querySelectorAll('.mgr-score-btn');
+            const employeeScore = employeeScores[okrId];
+
+            buttons.forEach(btn => {
+                const btnScore = parseInt(btn.dataset.score);
+                const isManagerSelected = (btnScore === score);
+                const isEmployeeScore = (btnScore === employeeScore);
+
+                // Reset classes
+                btn.classList.remove('bg-amber-600', 'bg-white', 'text-white', 'text-gray-600', 'text-gray-800', 'font-bold', 'border', 'border-2', 'border-gray-300', 'border-amber-600', 'border-blue-500', 'hover:bg-gray-100', 'hover:bg-amber-700', 'hover:bg-blue-50', 'hover:text-gray-800');
+
+                if (isManagerSelected && isEmployeeScore) {
+                    // Same score - amber background with blue border
+                    btn.classList.add('bg-amber-600', 'border-2', 'border-blue-500', 'text-white', 'font-bold', 'hover:bg-amber-700');
+                } else if (isManagerSelected) {
+                    // Manager selected different score
+                    btn.classList.add('bg-amber-600', 'border-2', 'border-amber-600', 'text-white', 'font-bold', 'hover:bg-amber-700');
+                } else if (isEmployeeScore) {
+                    // Employee's score (not selected by manager)
+                    btn.classList.add('bg-white', 'border-2', 'border-blue-500', 'text-gray-800', 'hover:bg-blue-50', 'hover:text-gray-800');
+                } else {
+                    // Normal button
+                    btn.classList.add('bg-white', 'border', 'border-gray-300', 'text-gray-600', 'hover:bg-gray-100', 'hover:text-gray-800');
+                }
+            });
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const saved = localStorage.getItem('selectedRole') || 'employee';
+            currentRole = saved;
+            document.getElementById('roleSelector').value = saved;
+            updateUI();
+        });
+    </script>
+</head>
+<body class="bg-white min-h-screen">
+
+    <!-- Sidebar -->
+    <div class="fixed left-0 top-0 h-full w-64 bg-amber-700 shadow-lg z-20">
+        <div class="p-6">
+            <!-- Logo -->
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
+                    <svg class="w-6 h-6 text-amber-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-white font-bold text-lg">KPI System</h1>
+                    <p class="text-amber-200 text-xs">Performance Management</p>
+                </div>
+            </div>
+
+            <!-- User Profile -->
+            <div class="bg-white rounded-xl p-4 mb-6 shadow">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                        <span id="userInitials" class="text-white font-bold">สด</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p id="userName" class="text-gray-800 font-semibold text-sm truncate">นางสาวสุดา พรหมชัย</p>
+                        <p id="userPosition" class="text-gray-600 text-xs truncate">Full-stack Developer</p>
+                        <p id="userDept" class="text-amber-600 text-xs truncate">IT Department</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Role Selector (Demo) -->
+            <div class="mb-6 pb-6 border-b border-amber-600">
+                <label class="text-amber-100 text-xs mb-2 block">Demo: Switch Role</label>
+                <select id="roleSelector" onchange="switchRole(this.value)" class="w-full bg-white text-gray-800 rounded-lg px-3 py-2 text-sm border border-amber-600 focus:outline-none focus:ring-2 focus:ring-amber-500">
+                    <option value="employee">Employee</option>
+                    <option value="team_lead">Team Lead</option>
+                    <option value="dept_head">Department Head</option>
+                    <option value="kpi_admin">KPI Admin</option>
+                </select>
+            </div>
+
+            <!-- Navigation -->
+            <nav class="space-y-1">
+                <a href="01-dashboard.html" data-permission="dashboard" class="flex items-center gap-3 px-4 py-3 text-white hover:bg-amber-600 rounded-lg transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                    </svg>
+                    <span class="font-medium">Dashboard</span>
+                </a>
+
+                <a href="04-my-kpi.html" data-permission="my-kpi" class="flex items-center gap-3 px-4 py-3 text-white hover:bg-amber-600 rounded-lg transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                    </svg>
+                    <span id="sidebarKpiLabel" class="font-medium">My KPI</span>
+                </a>
+
+                <a href="03-alignment.html" data-permission="alignment" class="flex items-center gap-3 px-4 py-3 text-white hover:bg-amber-600 rounded-lg transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"/>
+                    </svg>
+                    <span class="font-medium">Alignment View</span>
+                </a>
+
+                <div class="border-t border-amber-600 my-3"></div>
+
+                <a href="02-corporate-kpi.html" data-permission="corporate-kpi" class="hidden flex items-center gap-3 px-4 py-3 text-white hover:bg-amber-600 rounded-lg transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                    </svg>
+                    <span class="font-medium">Corporate KPI</span>
+                </a>
+
+                <a href="05-approval.html" data-permission="approval" class="hidden flex items-center gap-3 px-4 py-3 text-white hover:bg-amber-600 rounded-lg transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <span class="font-medium">Approval Inbox</span>
+                    <span class="ml-auto bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">5</span>
+                </a>
+
+                <a href="07-evaluation.html" data-permission="evaluation" class="flex items-center gap-3 px-4 py-3 bg-amber-800 text-white rounded-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
+                    </svg>
+                    <span class="font-medium">Evaluation</span>
+                </a>
+
+                <a href="06-freeze-control.html" data-permission="freeze-control" class="hidden flex items-center gap-3 px-4 py-3 text-white hover:bg-amber-600 rounded-lg transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                    </svg>
+                    <span class="font-medium">Freeze Control</span>
+                </a>
+
+                <a href="08-reports.html" data-permission="reports" class="hidden flex items-center gap-3 px-4 py-3 text-white hover:bg-amber-600 rounded-lg transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    <span class="font-medium">Reports</span>
+                </a>
+            </nav>
+
+            <div class="mt-6 pt-6 border-t border-amber-600">
+                <a href="../index.html" class="flex items-center gap-3 px-4 py-3 text-amber-100 hover:bg-amber-600 rounded-lg transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                    </svg>
+                    <span class="font-medium">Back to Home</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="ml-64 p-8">
+        <!-- Header -->
+        <div class="bg-white shadow-sm rounded-lg p-6 mb-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-800">Evaluation</h2>
+                    <p class="text-sm text-gray-600 mt-1">Performance Scoring & Self-Assessment</p>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="bg-amber-50 rounded-lg px-4 py-2 border border-amber-200">
+                        <p class="text-amber-600 text-xs">Evaluation Period</p>
+                        <p class="text-amber-800 font-bold">Q4/2025</p>
+                    </div>
+                    <span class="px-4 py-2 bg-amber-100 text-amber-700 rounded-lg font-semibold">
+                        In Progress
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="flex items-center gap-2 mb-6">
+            <button id="myTabBtn" onclick="switchTab('my')" class="px-6 py-3 bg-amber-600 text-white rounded-lg font-semibold transition-all">
+                My Evaluation
+            </button>
+            <button id="teamTabBtn" onclick="switchTab('team')" class="hidden px-6 py-3 bg-gray-100 text-gray-600 hover:bg-gray-200 rounded-lg font-semibold transition-all">
+                Team Evaluation
+            </button>
+        </div>
+
+        <!-- My Evaluation Content -->
+        <div id="myEvalContent">
+            <!-- Self-Assessment Status Banner -->
+            <div class="bg-amber-50 rounded-xl p-5 border-2 border-amber-400 mb-6">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-amber-100 rounded-lg flex items-center justify-center">
+                            <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-gray-800 font-bold text-lg">Self-Assessment Required</h3>
+                            <p class="text-amber-700">Please complete your self-assessment for Q4/2025 before January 15, 2026</p>
+                        </div>
+                    </div>
+                    <span class="text-gray-800 font-bold text-xl">7 Days Left</span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- KPI Self-Assessment Form -->
+                <div class="lg:col-span-2 space-y-6">
+                    <div class="bg-white rounded-xl p-6 shadow">
+                        <h3 class="text-lg font-bold text-gray-800 mb-6">KPI Self-Assessment</h3>
+
+                        <!-- KPI 1 -->
+                        <div class="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200" data-okr="kpi1">
+                            <div class="flex items-center justify-between mb-4">
+                                <div>
+                                    <span class="px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs font-bold">KPI-1</span>
+                                    <h4 class="text-gray-800 font-semibold mt-1">API Endpoints Delivered</h4>
+                                    <p class="text-gray-500 text-sm">Target: 15 | Actual: 12 | Achievement: 80%</p>
+                                </div>
+                                <span class="text-emerald-600 font-bold">80%</span>
+                            </div>
+
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm text-gray-600 mb-2">Self Score (1-5)</label>
+                                    <div class="flex items-center gap-2">
+                                        <button onclick="selectScore('kpi1', 1)" data-score="1" class="score-btn w-10 h-10 rounded-lg border border-gray-300 text-gray-600 bg-white hover:bg-gray-100 transition-all">1</button>
+                                        <button onclick="selectScore('kpi1', 2)" data-score="2" class="score-btn w-10 h-10 rounded-lg border border-gray-300 text-gray-600 bg-white hover:bg-gray-100 transition-all">2</button>
+                                        <button onclick="selectScore('kpi1', 3)" data-score="3" class="score-btn w-10 h-10 rounded-lg border border-gray-300 text-gray-600 bg-white hover:bg-gray-100 transition-all">3</button>
+                                        <button onclick="selectScore('kpi1', 4)" data-score="4" class="score-btn w-10 h-10 rounded-lg bg-amber-600 border border-amber-600 text-white font-bold">4</button>
+                                        <button onclick="selectScore('kpi1', 5)" data-score="5" class="score-btn w-10 h-10 rounded-lg border border-gray-300 text-gray-600 bg-white hover:bg-gray-100 transition-all">5</button>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm text-gray-600 mb-2">Self-Assessment Comments</label>
+                                    <textarea rows="3" placeholder="Describe your achievements and challenges..." class="w-full bg-white text-gray-800 rounded-lg px-4 py-3 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-amber-500">Successfully delivered 12 out of 15 planned API endpoints. Faced some delays due to changing requirements but maintained quality throughout. Response times are consistently under target.</textarea>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm text-gray-600 mb-2">Evidence / Attachments</label>
+                                    <div class="flex items-center gap-2">
+                                        <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded text-sm flex items-center gap-1">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                            </svg>
+                                            API_Docs_Q4.pdf
+                                        </span>
+                                        <button class="p-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-all">
+                                            <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- KPI 2 -->
+                        <div class="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200" data-okr="kpi2">
+                            <div class="flex items-center justify-between mb-4">
+                                <div>
+                                    <span class="px-2 py-0.5 bg-purple-100 text-purple-700 rounded text-xs font-bold">KPI-2</span>
+                                    <h4 class="text-gray-800 font-semibold mt-1">Unit Test Coverage</h4>
+                                    <p class="text-gray-500 text-sm">Target: 90% | Actual: 78% | Achievement: 87%</p>
+                                </div>
+                                <span class="text-amber-600 font-bold">87%</span>
+                            </div>
+
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm text-gray-600 mb-2">Self Score (1-5)</label>
+                                    <div class="flex items-center gap-2">
+                                        <button onclick="selectScore('kpi2', 1)" data-score="1" class="score-btn w-10 h-10 rounded-lg border border-gray-300 text-gray-600 bg-white hover:bg-gray-100 transition-all">1</button>
+                                        <button onclick="selectScore('kpi2', 2)" data-score="2" class="score-btn w-10 h-10 rounded-lg border border-gray-300 text-gray-600 bg-white hover:bg-gray-100 transition-all">2</button>
+                                        <button onclick="selectScore('kpi2', 3)" data-score="3" class="score-btn w-10 h-10 rounded-lg bg-amber-600 border border-amber-600 text-white font-bold">3</button>
+                                        <button onclick="selectScore('kpi2', 4)" data-score="4" class="score-btn w-10 h-10 rounded-lg border border-gray-300 text-gray-600 bg-white hover:bg-gray-100 transition-all">4</button>
+                                        <button onclick="selectScore('kpi2', 5)" data-score="5" class="score-btn w-10 h-10 rounded-lg border border-gray-300 text-gray-600 bg-white hover:bg-gray-100 transition-all">5</button>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm text-gray-600 mb-2">Self-Assessment Comments</label>
+                                    <textarea rows="3" placeholder="Describe your achievements and challenges..." class="w-full bg-white text-gray-800 rounded-lg px-4 py-3 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-amber-500">Test coverage improved from 60% to 78%, still working towards the 90% target. Two critical bugs occurred in production which impacted this score.</textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- KPI 3 -->
+                        <div class="mb-6 p-4 bg-gray-50 rounded-lg border border-gray-200" data-okr="kpi3">
+                            <div class="flex items-center justify-between mb-4">
+                                <div>
+                                    <span class="px-2 py-0.5 bg-teal-100 text-teal-700 rounded text-xs font-bold">KPI-3</span>
+                                    <h4 class="text-gray-800 font-semibold mt-1">Bug Fix Response Time</h4>
+                                    <p class="text-gray-500 text-sm">Target: &lt; 4 hrs | Actual: 3.2 hrs | Achievement: 100%</p>
+                                </div>
+                                <span class="text-emerald-600 font-bold">100%</span>
+                            </div>
+
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm text-gray-600 mb-2">Self Score (1-5)</label>
+                                    <div class="flex items-center gap-2">
+                                        <button onclick="selectScore('kpi3', 1)" data-score="1" class="score-btn w-10 h-10 rounded-lg border border-gray-300 text-gray-600 bg-white hover:bg-gray-100 transition-all">1</button>
+                                        <button onclick="selectScore('kpi3', 2)" data-score="2" class="score-btn w-10 h-10 rounded-lg border border-gray-300 text-gray-600 bg-white hover:bg-gray-100 transition-all">2</button>
+                                        <button onclick="selectScore('kpi3', 3)" data-score="3" class="score-btn w-10 h-10 rounded-lg border border-gray-300 text-gray-600 bg-white hover:bg-gray-100 transition-all">3</button>
+                                        <button onclick="selectScore('kpi3', 4)" data-score="4" class="score-btn w-10 h-10 rounded-lg border border-gray-300 text-gray-600 bg-white hover:bg-gray-100 transition-all">4</button>
+                                        <button onclick="selectScore('kpi3', 5)" data-score="5" class="score-btn w-10 h-10 rounded-lg bg-amber-600 border border-amber-600 text-white font-bold">5</button>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm text-gray-600 mb-2">Self-Assessment Comments</label>
+                                    <textarea rows="3" placeholder="Describe your achievements and challenges..." class="w-full bg-white text-gray-800 rounded-lg px-4 py-3 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-amber-500">Consistently responded to bugs within the target time. Implemented automated alerts to improve response efficiency.</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Weighted Score Calculation -->
+                    <div class="bg-white rounded-xl p-6 shadow">
+                        <h3 class="text-lg font-bold text-gray-800 mb-4">Weighted Score Calculation</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead>
+                                    <tr class="text-left text-gray-500 text-sm border-b border-gray-200">
+                                        <th class="pb-3 font-medium">Component</th>
+                                        <th class="pb-3 font-medium">Weight</th>
+                                        <th class="pb-3 font-medium">Raw Score</th>
+                                        <th class="pb-3 font-medium">Weighted Score</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-gray-700 text-sm">
+                                    <tr class="border-b border-gray-100">
+                                        <td class="py-3">
+                                            <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs font-bold mr-2">OP1</span>
+                                            Center Project KPI
+                                        </td>
+                                        <td class="py-3">25%</td>
+                                        <td class="py-3">82</td>
+                                        <td class="py-3 font-semibold">20.50</td>
+                                    </tr>
+                                    <tr class="border-b border-gray-100">
+                                        <td class="py-3">
+                                            <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs font-bold mr-2">OP2</span>
+                                            Individual KPI
+                                        </td>
+                                        <td class="py-3">35%</td>
+                                        <td class="py-3">72</td>
+                                        <td class="py-3 font-semibold">25.20</td>
+                                    </tr>
+                                    <tr class="border-b border-gray-100">
+                                        <td class="py-3">
+                                            <span class="px-2 py-1 bg-teal-100 text-teal-700 rounded text-xs font-bold mr-2">OP3</span>
+                                            Behavioral Evaluation
+                                        </td>
+                                        <td class="py-3">25%</td>
+                                        <td class="py-3">75</td>
+                                        <td class="py-3 font-semibold">18.75</td>
+                                    </tr>
+                                    <tr class="border-b border-gray-100">
+                                        <td class="py-3">
+                                            <span class="px-2 py-1 bg-amber-100 text-amber-700 rounded text-xs font-bold mr-2">OP4</span>
+                                            Attendance
+                                        </td>
+                                        <td class="py-3">15%</td>
+                                        <td class="py-3">95</td>
+                                        <td class="py-3 font-semibold">14.25</td>
+                                    </tr>
+                                    <tr class="bg-amber-50">
+                                        <td class="py-3 font-bold text-gray-800" colspan="2">Total</td>
+                                        <td class="py-3"></td>
+                                        <td class="py-3 font-bold text-amber-700 text-lg">78.70</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Summary Sidebar -->
+                <div class="space-y-6">
+                    <!-- Score Summary -->
+                    <div class="bg-white rounded-xl p-6 shadow">
+                        <h3 class="text-lg font-bold text-gray-800 mb-4">Evaluation Summary</h3>
+
+                        <div class="space-y-4">
+                            <div class="text-center p-4 bg-gradient-to-br from-amber-100 to-amber-50 rounded-xl border border-amber-300">
+                                <p class="text-gray-600 text-sm mb-1">Your Self Score</p>
+                                <p class="text-4xl font-bold text-amber-600">4.0</p>
+                                <p class="text-gray-500 text-xs">out of 5.0</p>
+                            </div>
+
+                            <div class="space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-gray-600 text-sm">KPI-1 Score</span>
+                                    <span class="text-gray-800 font-semibold">4 / 5</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-gray-600 text-sm">KPI-2 Score</span>
+                                    <span class="text-gray-800 font-semibold">3 / 5</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-gray-600 text-sm">KPI-3 Score</span>
+                                    <span class="text-gray-800 font-semibold">5 / 5</span>
+                                </div>
+                                <div class="flex items-center justify-between pt-2 border-t border-gray-200">
+                                    <span class="text-gray-600 text-sm">Overall Achievement</span>
+                                    <span class="text-emerald-600 font-semibold">72%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Manager Review Status -->
+                    <div class="bg-white rounded-xl p-6 shadow">
+                        <h3 class="text-lg font-bold text-gray-800 mb-4">Manager Review</h3>
+
+                        <div class="text-center p-4 bg-gray-50 rounded-lg">
+                            <svg class="w-12 h-12 text-gray-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <p class="text-gray-600 text-sm">Pending Manager Review</p>
+                            <p class="text-gray-500 text-xs mt-1">Will be available after you submit</p>
+                        </div>
+                    </div>
+
+                    <!-- Submit Buttons -->
+                    <div class="space-y-3">
+                        <button class="w-full py-3 bg-gray-300 hover:bg-gray-400 text-gray-700 rounded-lg font-semibold transition-all">
+                            Save Draft
+                        </button>
+                        <button class="w-full py-3 bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white rounded-lg font-bold transition-all">
+                            Submit Self-Assessment
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Team Evaluation Content (for managers) -->
+        <div id="teamEvalContent" class="hidden">
+            <!-- Team Members Evaluation Status -->
+            <div class="bg-white rounded-xl p-6 shadow mb-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-lg font-bold text-gray-800">Team Members Evaluation Status</h3>
+                    <div class="flex items-center gap-3">
+                        <select class="bg-white text-gray-800 rounded-lg px-3 py-2 text-sm border border-gray-300">
+                            <option>All Status</option>
+                            <option>Pending Self-Assessment</option>
+                            <option>Pending Review</option>
+                            <option>Completed</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="text-left text-gray-500 text-sm border-b border-gray-200">
+                                <th class="pb-3 font-medium">Employee</th>
+                                <th class="pb-3 font-medium">Self-Assessment</th>
+                                <th class="pb-3 font-medium">Self Score</th>
+                                <th class="pb-3 font-medium">Manager Score</th>
+                                <th class="pb-3 font-medium">Final Grade</th>
+                                <th class="pb-3 font-medium">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-gray-700 text-sm">
+                            <tr class="border-b border-gray-100 hover:bg-gray-50">
+                                <td class="py-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-xs font-bold">สด</div>
+                                        <div>
+                                            <p class="font-medium">สุดา พรหมชัย</p>
+                                            <p class="text-gray-500 text-xs">Full-stack Developer</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-4"><span class="px-2 py-1 bg-emerald-100 text-emerald-700 rounded text-xs">Completed</span></td>
+                                <td class="py-4">4.0 / 5</td>
+                                <td class="py-4"><span class="px-2 py-1 bg-amber-100 text-amber-700 rounded text-xs">Pending</span></td>
+                                <td class="py-4">-</td>
+                                <td class="py-4">
+                                    <button class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-semibold transition-all">
+                                        Review
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr class="border-b border-gray-100 hover:bg-gray-50">
+                                <td class="py-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-full flex items-center justify-center text-white text-xs font-bold">วร</div>
+                                        <div>
+                                            <p class="font-medium">วรพล สุขใจ</p>
+                                            <p class="text-gray-500 text-xs">Backend Developer</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-4"><span class="px-2 py-1 bg-amber-100 text-amber-700 rounded text-xs">In Progress</span></td>
+                                <td class="py-4">-</td>
+                                <td class="py-4"><span class="px-2 py-1 bg-gray-100 text-gray-500 rounded text-xs">Waiting</span></td>
+                                <td class="py-4">-</td>
+                                <td class="py-4">
+                                    <button class="px-4 py-2 bg-gray-200 text-gray-400 rounded-lg text-xs cursor-not-allowed">
+                                        Review
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr class="border-b border-gray-100 hover:bg-gray-50">
+                                <td class="py-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 bg-gradient-to-br from-pink-500 to-rose-600 rounded-full flex items-center justify-center text-white text-xs font-bold">มน</div>
+                                        <div>
+                                            <p class="font-medium">มณีรัตน์ แก้วใส</p>
+                                            <p class="text-gray-500 text-xs">Frontend Developer</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-4"><span class="px-2 py-1 bg-emerald-100 text-emerald-700 rounded text-xs">Completed</span></td>
+                                <td class="py-4">3.5 / 5</td>
+                                <td class="py-4"><span class="px-2 py-1 bg-emerald-100 text-emerald-700 rounded text-xs">Completed</span></td>
+                                <td class="py-4">
+                                    <span class="inline-flex items-center justify-center w-8 h-8 bg-gradient-to-br from-blue-400 to-blue-500 text-white rounded-full font-bold text-sm">B</span>
+                                </td>
+                                <td class="py-4">
+                                    <button class="px-4 py-2 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg text-xs font-semibold transition-all">
+                                        View
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr class="border-b border-gray-100 hover:bg-gray-50">
+                                <td class="py-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 bg-gradient-to-br from-orange-500 to-amber-600 rounded-full flex items-center justify-center text-white text-xs font-bold">ธว</div>
+                                        <div>
+                                            <p class="font-medium">ธวัชชัย มงคล</p>
+                                            <p class="text-gray-500 text-xs">QA Engineer</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-4"><span class="px-2 py-1 bg-emerald-100 text-emerald-700 rounded text-xs">Completed</span></td>
+                                <td class="py-4">4.2 / 5</td>
+                                <td class="py-4"><span class="px-2 py-1 bg-emerald-100 text-emerald-700 rounded text-xs">Completed</span></td>
+                                <td class="py-4">
+                                    <span class="inline-flex items-center justify-center w-8 h-8 bg-gradient-to-br from-green-400 to-emerald-500 text-white rounded-full font-bold text-sm">B+</span>
+                                </td>
+                                <td class="py-4">
+                                    <button class="px-4 py-2 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg text-xs font-semibold transition-all">
+                                        View
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Team Evaluation Summary -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+                <div class="bg-white rounded-lg shadow p-6 text-center">
+                    <p class="text-gray-500 text-sm mb-2">Total Team Members</p>
+                    <p class="text-3xl font-bold text-gray-800">4</p>
+                </div>
+                <div class="bg-white rounded-lg shadow p-6 text-center">
+                    <p class="text-gray-500 text-sm mb-2">Completed Review</p>
+                    <p class="text-3xl font-bold text-emerald-600">2</p>
+                </div>
+                <div class="bg-white rounded-lg shadow p-6 text-center">
+                    <p class="text-gray-500 text-sm mb-2">Pending Review</p>
+                    <p class="text-3xl font-bold text-amber-600">1</p>
+                </div>
+                <div class="bg-white rounded-lg shadow p-6 text-center">
+                    <p class="text-gray-500 text-sm mb-2">Awaiting Self-Assessment</p>
+                    <p class="text-3xl font-bold text-gray-400">1</p>
+                </div>
+            </div>
+
+            <!-- Manager Evaluation Form (Sample) -->
+            <div class="bg-white rounded-xl p-6 shadow">
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold">สด</div>
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-800">Evaluating: สุดา พรหมชัย</h3>
+                            <p class="text-gray-500 text-sm">Full-stack Developer</p>
+                        </div>
+                    </div>
+                    <span class="px-3 py-1 bg-amber-100 text-amber-700 rounded-lg text-sm font-semibold">Pending Your Review</span>
+                </div>
+
+                <!-- KPI Evaluation Cards (Single Button Set with Employee Indicator) -->
+                <div class="space-y-6">
+                    <!-- KPI 1 -->
+                    <div class="p-4 bg-gray-50 rounded-lg border border-gray-200" data-okr="mgr-kpi1">
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <span class="px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs font-bold">KPI-1</span>
+                                <h4 class="text-gray-800 font-semibold mt-1">API Endpoints Delivered</h4>
+                                <p class="text-gray-500 text-sm">Target: 15 | Actual: 12 | Achievement: 80%</p>
+                            </div>
+                            <span class="text-emerald-600 font-bold">80%</span>
+                        </div>
+
+                        <!-- Score Selection (Single Set) -->
+                        <div class="mb-4">
+                            <label class="block text-sm text-gray-700 font-semibold mb-2">Score</label>
+                            <div class="flex items-center gap-3">
+                                <div class="flex items-center gap-2">
+                                    <button onclick="selectManagerScore('mgr-kpi1', 1)" data-score="1" class="mgr-score-btn w-10 h-10 rounded-lg border border-gray-300 text-gray-600 bg-white hover:bg-gray-100 transition-all">1</button>
+                                    <button onclick="selectManagerScore('mgr-kpi1', 2)" data-score="2" class="mgr-score-btn w-10 h-10 rounded-lg border border-gray-300 text-gray-600 bg-white hover:bg-gray-100 transition-all">2</button>
+                                    <button onclick="selectManagerScore('mgr-kpi1', 3)" data-score="3" class="mgr-score-btn w-10 h-10 rounded-lg border border-gray-300 text-gray-600 bg-white hover:bg-gray-100 transition-all">3</button>
+                                    <button onclick="selectManagerScore('mgr-kpi1', 4)" data-score="4" data-emp-score="4" class="mgr-score-btn w-10 h-10 rounded-lg bg-amber-600 border-2 border-blue-500 text-white font-bold">4</button>
+                                    <button onclick="selectManagerScore('mgr-kpi1', 5)" data-score="5" class="mgr-score-btn w-10 h-10 rounded-lg border border-gray-300 text-gray-600 bg-white hover:bg-gray-100 transition-all">5</button>
+                                </div>
+                                <div class="flex items-center gap-2 ml-4 text-sm text-gray-500">
+                                    <span class="w-4 h-4 rounded border-2 border-blue-500"></span>
+                                    <span>Employee's Score</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Employee's Comment -->
+                        <div class="mb-3">
+                            <label class="block text-sm text-gray-600 mb-1">Employee's Comment</label>
+                            <div class="bg-white rounded-lg px-4 py-3 border border-gray-200 text-gray-700 text-sm">
+                                Successfully delivered 12 out of 15 planned API endpoints. Faced some delays due to changing requirements but maintained quality throughout. Response times are consistently under target.
+                            </div>
+                        </div>
+
+                        <!-- Manager's Comment -->
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">Your Comment</label>
+                            <textarea rows="2" placeholder="Add your feedback..." class="w-full bg-white text-gray-800 rounded-lg px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-amber-500 text-sm">Good job on API delivery. Quality was excellent despite the delays.</textarea>
+                        </div>
+                    </div>
+
+                    <!-- KPI 2 -->
+                    <div class="p-4 bg-gray-50 rounded-lg border border-gray-200" data-okr="mgr-kpi2">
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <span class="px-2 py-0.5 bg-purple-100 text-purple-700 rounded text-xs font-bold">KPI-2</span>
+                                <h4 class="text-gray-800 font-semibold mt-1">Unit Test Coverage</h4>
+                                <p class="text-gray-500 text-sm">Target: 90% | Actual: 78% | Achievement: 87%</p>
+                            </div>
+                            <span class="text-amber-600 font-bold">87%</span>
+                        </div>
+
+                        <!-- Score Selection (Single Set) -->
+                        <div class="mb-4">
+                            <label class="block text-sm text-gray-700 font-semibold mb-2">Score</label>
+                            <div class="flex items-center gap-3">
+                                <div class="flex items-center gap-2">
+                                    <button onclick="selectManagerScore('mgr-kpi2', 1)" data-score="1" class="mgr-score-btn w-10 h-10 rounded-lg border border-gray-300 text-gray-600 bg-white hover:bg-gray-100 transition-all">1</button>
+                                    <button onclick="selectManagerScore('mgr-kpi2', 2)" data-score="2" class="mgr-score-btn w-10 h-10 rounded-lg border border-gray-300 text-gray-600 bg-white hover:bg-gray-100 transition-all">2</button>
+                                    <button onclick="selectManagerScore('mgr-kpi2', 3)" data-score="3" data-emp-score="3" class="mgr-score-btn w-10 h-10 rounded-lg bg-amber-600 border-2 border-blue-500 text-white font-bold">3</button>
+                                    <button onclick="selectManagerScore('mgr-kpi2', 4)" data-score="4" class="mgr-score-btn w-10 h-10 rounded-lg border border-gray-300 text-gray-600 bg-white hover:bg-gray-100 transition-all">4</button>
+                                    <button onclick="selectManagerScore('mgr-kpi2', 5)" data-score="5" class="mgr-score-btn w-10 h-10 rounded-lg border border-gray-300 text-gray-600 bg-white hover:bg-gray-100 transition-all">5</button>
+                                </div>
+                                <div class="flex items-center gap-2 ml-4 text-sm text-gray-500">
+                                    <span class="w-4 h-4 rounded border-2 border-blue-500"></span>
+                                    <span>Employee's Score</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Employee's Comment -->
+                        <div class="mb-3">
+                            <label class="block text-sm text-gray-600 mb-1">Employee's Comment</label>
+                            <div class="bg-white rounded-lg px-4 py-3 border border-gray-200 text-gray-700 text-sm">
+                                Test coverage improved from 60% to 78%, still working towards the 90% target. Two critical bugs occurred in production which impacted this score.
+                            </div>
+                        </div>
+
+                        <!-- Manager's Comment -->
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">Your Comment</label>
+                            <textarea rows="2" placeholder="Add your feedback..." class="w-full bg-white text-gray-800 rounded-lg px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-amber-500 text-sm">Agree with self-assessment. Need to prioritize test coverage in next quarter.</textarea>
+                        </div>
+                    </div>
+
+                    <!-- KPI 3 -->
+                    <div class="p-4 bg-gray-50 rounded-lg border border-gray-200" data-okr="mgr-kpi3">
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <span class="px-2 py-0.5 bg-teal-100 text-teal-700 rounded text-xs font-bold">KPI-3</span>
+                                <h4 class="text-gray-800 font-semibold mt-1">Bug Fix Response Time</h4>
+                                <p class="text-gray-500 text-sm">Target: &lt; 4 hrs | Actual: 3.2 hrs | Achievement: 100%</p>
+                            </div>
+                            <span class="text-emerald-600 font-bold">100%</span>
+                        </div>
+
+                        <!-- Score Selection (Single Set) -->
+                        <div class="mb-4">
+                            <label class="block text-sm text-gray-700 font-semibold mb-2">Score</label>
+                            <div class="flex items-center gap-3">
+                                <div class="flex items-center gap-2">
+                                    <button onclick="selectManagerScore('mgr-kpi3', 1)" data-score="1" class="mgr-score-btn w-10 h-10 rounded-lg border border-gray-300 text-gray-600 bg-white hover:bg-gray-100 transition-all">1</button>
+                                    <button onclick="selectManagerScore('mgr-kpi3', 2)" data-score="2" class="mgr-score-btn w-10 h-10 rounded-lg border border-gray-300 text-gray-600 bg-white hover:bg-gray-100 transition-all">2</button>
+                                    <button onclick="selectManagerScore('mgr-kpi3', 3)" data-score="3" class="mgr-score-btn w-10 h-10 rounded-lg border border-gray-300 text-gray-600 bg-white hover:bg-gray-100 transition-all">3</button>
+                                    <button onclick="selectManagerScore('mgr-kpi3', 4)" data-score="4" class="mgr-score-btn w-10 h-10 rounded-lg border border-gray-300 text-gray-600 bg-white hover:bg-gray-100 transition-all">4</button>
+                                    <button onclick="selectManagerScore('mgr-kpi3', 5)" data-score="5" data-emp-score="5" class="mgr-score-btn w-10 h-10 rounded-lg bg-amber-600 border-2 border-blue-500 text-white font-bold">5</button>
+                                </div>
+                                <div class="flex items-center gap-2 ml-4 text-sm text-gray-500">
+                                    <span class="w-4 h-4 rounded border-2 border-blue-500"></span>
+                                    <span>Employee's Score</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Employee's Comment -->
+                        <div class="mb-3">
+                            <label class="block text-sm text-gray-600 mb-1">Employee's Comment</label>
+                            <div class="bg-white rounded-lg px-4 py-3 border border-gray-200 text-gray-700 text-sm">
+                                Consistently responded to bugs within the target time. Implemented automated alerts to improve response efficiency.
+                            </div>
+                        </div>
+
+                        <!-- Manager's Comment -->
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">Your Comment</label>
+                            <textarea rows="2" placeholder="Add your feedback..." class="w-full bg-white text-gray-800 rounded-lg px-4 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-amber-500 text-sm">Excellent performance on bug response. The automated alerts initiative was great.</textarea>
+                        </div>
+                    </div>
+
+                    <!-- Overall Score Summary -->
+                    <div class="p-4 bg-gradient-to-r from-amber-50 to-amber-100 rounded-lg border border-amber-300">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+                            <div>
+                                <p class="text-gray-600 text-sm mb-1">Employee Average</p>
+                                <p class="text-2xl font-bold text-blue-600">4.0</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-600 text-sm mb-1">Your Average</p>
+                                <p class="text-2xl font-bold text-amber-600">4.0</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-600 text-sm mb-1">Difference</p>
+                                <p class="text-2xl font-bold text-emerald-600">0.0</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Overall Manager Comments -->
+                <div class="mt-6">
+                    <label class="block text-sm text-gray-600 mb-2">Overall Feedback</label>
+                    <textarea rows="3" placeholder="Provide overall feedback and development suggestions for this employee..." class="w-full bg-white text-gray-800 rounded-lg px-4 py-3 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-amber-500"></textarea>
+                </div>
+
+                <div class="flex justify-end gap-3 mt-6">
+                    <button class="px-6 py-3 bg-gray-300 hover:bg-gray-400 text-gray-700 rounded-lg font-semibold transition-all">
+                        Save Draft
+                    </button>
+                    <button class="px-6 py-3 bg-gradient-to-r from-amber-600 to-amber-700 hover:from-amber-700 hover:to-amber-800 text-white rounded-lg font-bold transition-all">
+                        Submit Evaluation
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

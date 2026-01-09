@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Asset - IT Asset Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Sarabun', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-slate-900 text-white flex-shrink-0 flex flex-col">
+            <div class="p-4 border-b border-slate-700">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-cyan-600 rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-white font-bold text-lg">IT Asset</h1>
+                        <p class="text-slate-400 text-xs">Management System</p>
+                    </div>
+                </div>
+            </div>
+            <nav class="mt-4 flex-1">
+                <a href="01-asset-dashboard.html" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 hover:text-white">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                    </svg>
+                    Dashboard
+                </a>
+                <a href="02-asset-list.html" class="flex items-center px-4 py-3 text-slate-300 hover:bg-slate-800 hover:text-white">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
+                    </svg>
+                    Asset List
+                </a>
+                <a href="04-asset-form.html" class="flex items-center px-4 py-3 bg-slate-800 text-white border-r-4 border-cyan-500">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                    </svg>
+                    Add Asset
+                </a>
+            </nav>
+
+            <div class="p-4 border-t border-slate-700">
+                <a href="../index.html" class="flex items-center text-slate-300 hover:text-white">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                    </svg>
+                    กลับหน้าหลัก
+                </a>
+            </div>
+
+            <div class="p-4 border-t border-slate-700">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 bg-cyan-600 rounded-full flex items-center justify-center text-white text-sm font-medium">IT</div>
+                    <div class="flex-1">
+                        <p class="text-sm text-white">IT Admin</p>
+                        <p class="text-xs text-slate-400">Administrator</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 overflow-y-auto">
+            <!-- Header -->
+            <header class="bg-white shadow-sm border-b border-gray-200">
+                <div class="flex items-center justify-between px-6 py-4">
+                    <div class="flex items-center gap-4">
+                        <a href="02-asset-list.html" class="text-gray-400 hover:text-gray-600">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                            </svg>
+                        </a>
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-800">Add New Asset</h2>
+                            <p class="text-gray-500">บันทึกทรัพย์สินใหม่เข้าระบบ</p>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="p-6">
+                <form class="max-w-4xl">
+                    <!-- Asset ID (Auto) -->
+                    <div class="bg-cyan-50 border border-cyan-200 rounded-xl p-4 mb-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-cyan-600 font-medium">Asset ID (Auto-generated)</p>
+                                <p class="text-2xl font-bold text-cyan-800">IT-2567-0486</p>
+                            </div>
+                            <div class="w-12 h-12 bg-cyan-100 rounded-lg flex items-center justify-center">
+                                <svg class="w-6 h-6 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Basic Info Section -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+                        <h3 class="font-bold text-gray-800 mb-6 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/>
+                            </svg>
+                            ข้อมูลทรัพย์สิน
+                        </h3>
+                        <div class="grid grid-cols-2 gap-6">
+                            <!-- Asset Name -->
+                            <div class="col-span-2">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">ชื่อทรัพย์สิน <span class="text-red-500">*</span></label>
+                                <input type="text" placeholder="เช่น MacBook Pro 14 M3, Dell Monitor U2723QE" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500">
+                            </div>
+                            <!-- Category -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">หมวดหมู่ <span class="text-red-500">*</span></label>
+                                <select class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500">
+                                    <option value="">-- เลือกหมวดหมู่ --</option>
+                                    <option value="computer">Computer</option>
+                                    <option value="server">Server</option>
+                                    <option value="network">Network</option>
+                                    <option value="peripheral">Peripheral</option>
+                                    <option value="license">License</option>
+                                </select>
+                            </div>
+                            <!-- Sub-category -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">ประเภทย่อย</label>
+                                <select class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500">
+                                    <option value="">-- เลือกประเภทย่อย --</option>
+                                    <option value="desktop">Desktop</option>
+                                    <option value="laptop">Laptop</option>
+                                    <option value="workstation">Workstation</option>
+                                </select>
+                            </div>
+                            <!-- Brand -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">ยี่ห้อ <span class="text-red-500">*</span></label>
+                                <input type="text" placeholder="เช่น Apple, Dell, HP, Lenovo" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500">
+                            </div>
+                            <!-- Model -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">รุ่น <span class="text-red-500">*</span></label>
+                                <input type="text" placeholder="เช่น MacBook Pro 14 M3 Pro" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500">
+                            </div>
+                            <!-- Serial Number -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Serial Number</label>
+                                <input type="text" placeholder="เช่น C02FP1XKMD6T" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500">
+                            </div>
+                            <!-- Specifications -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Specifications</label>
+                                <input type="text" placeholder="เช่น M3 Pro, 18GB RAM, 512GB SSD" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Purchase Info Section -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+                        <h3 class="font-bold text-gray-800 mb-6 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            ข้อมูลการจัดซื้อ
+                        </h3>
+                        <div class="grid grid-cols-2 gap-6">
+                            <!-- Purchase Date -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">วันที่ซื้อ <span class="text-red-500">*</span></label>
+                                <input type="date" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500">
+                            </div>
+                            <!-- Purchase Price -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">ราคาซื้อ (บาท) <span class="text-red-500">*</span></label>
+                                <input type="number" placeholder="0.00" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500">
+                            </div>
+                            <!-- Supplier -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">ผู้ขาย / Supplier</label>
+                                <input type="text" placeholder="เช่น iStudio by SPVi" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500">
+                            </div>
+                            <!-- PO Number -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">เลขที่ใบสั่งซื้อ (PO)</label>
+                                <input type="text" placeholder="เช่น PO-2567-001234" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500">
+                            </div>
+                            <!-- Warranty Expiry -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">วันหมดประกัน</label>
+                                <input type="date" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500">
+                            </div>
+                            <!-- Warranty Type -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">ประเภทประกัน</label>
+                                <input type="text" placeholder="เช่น AppleCare+ 3 Years" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Assignment Info Section -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+                        <h3 class="font-bold text-gray-800 mb-6 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                            </svg>
+                            ข้อมูลการใช้งาน
+                        </h3>
+                        <div class="grid grid-cols-2 gap-6">
+                            <!-- Status -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">สถานะ <span class="text-red-500">*</span></label>
+                                <select class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500">
+                                    <option value="active">Active - ใช้งานปกติ</option>
+                                    <option value="maintenance">Maintenance - กำลังซ่อมบำรุง</option>
+                                    <option value="retired">Retired - ปลดระวาง</option>
+                                    <option value="lost">Lost - สูญหาย</option>
+                                </select>
+                            </div>
+                            <!-- Assigned To -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">มอบหมายให้</label>
+                                <select class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500">
+                                    <option value="">-- ยังไม่มอบหมาย --</option>
+                                    <option value="1">สมชาย ใจดี (IT Development)</option>
+                                    <option value="2">วิภา สุขใจ (Marketing)</option>
+                                    <option value="3">ประยุทธ์ รักษ์ดี (Sales)</option>
+                                </select>
+                            </div>
+                            <!-- Department -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">แผนก</label>
+                                <select class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500">
+                                    <option value="">-- เลือกแผนก --</option>
+                                    <option value="it">IT</option>
+                                    <option value="sales">Sales</option>
+                                    <option value="marketing">Marketing</option>
+                                    <option value="hr">HR</option>
+                                    <option value="finance">Finance</option>
+                                </select>
+                            </div>
+                            <!-- Location -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">สถานที่</label>
+                                <select class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500">
+                                    <option value="">-- เลือกสถานที่ --</option>
+                                    <option value="a5">อาคาร A ชั้น 5</option>
+                                    <option value="a3">อาคาร A ชั้น 3</option>
+                                    <option value="b1">อาคาร B ชั้น 1 (Server Room)</option>
+                                    <option value="b2">อาคาร B ชั้น 2</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Depreciation Info Section -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+                        <h3 class="font-bold text-gray-800 mb-6 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                            </svg>
+                            ข้อมูลค่าเสื่อมราคา
+                        </h3>
+                        <div class="grid grid-cols-3 gap-6">
+                            <!-- Useful Life -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">อายุการใช้งาน (ปี)</label>
+                                <select class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500">
+                                    <option value="3">3 ปี</option>
+                                    <option value="5" selected>5 ปี</option>
+                                    <option value="7">7 ปี</option>
+                                    <option value="10">10 ปี</option>
+                                </select>
+                            </div>
+                            <!-- Salvage Value -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">มูลค่าซาก (บาท)</label>
+                                <input type="number" value="1" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500">
+                            </div>
+                            <!-- Depreciation Method -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">วิธีคิดค่าเสื่อม</label>
+                                <select class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500">
+                                    <option value="straight-line">Straight-line (เส้นตรง)</option>
+                                    <option value="declining">Declining Balance</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Documents Section -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+                        <h3 class="font-bold text-gray-800 mb-6 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                            </svg>
+                            เอกสารแนบ
+                        </h3>
+                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
+                            <svg class="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                            </svg>
+                            <p class="text-gray-600 mb-2">ลากไฟล์มาวางที่นี่ หรือ</p>
+                            <button type="button" class="text-cyan-600 font-medium hover:underline">เลือกไฟล์</button>
+                            <p class="text-xs text-gray-400 mt-2">รองรับ PDF, JPG, PNG ไม่เกิน 10MB</p>
+                        </div>
+                    </div>
+
+                    <!-- Notes -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+                        <h3 class="font-bold text-gray-800 mb-4">หมายเหตุ</h3>
+                        <textarea rows="3" placeholder="หมายเหตุเพิ่มเติม..." class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500"></textarea>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex items-center justify-between bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                        <a href="02-asset-list.html" class="px-6 py-3 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 font-medium">
+                            ยกเลิก
+                        </a>
+                        <div class="flex items-center gap-3">
+                            <button type="button" class="px-6 py-3 text-cyan-600 bg-cyan-50 border border-cyan-200 rounded-lg hover:bg-cyan-100 font-medium">
+                                บันทึกและเพิ่มอีก
+                            </button>
+                            <button type="submit" class="px-8 py-3 text-white bg-cyan-600 rounded-lg hover:bg-cyan-700 font-medium flex items-center gap-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                </svg>
+                                บันทึก Asset
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knowledge Base - IT Service Desk</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { font-family: 'Sarabun', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen">
+    <!-- Sidebar -->
+    <aside class="fixed left-0 top-0 h-full w-64 bg-gradient-to-b from-indigo-900 to-indigo-950 text-white shadow-xl z-10">
+        <div class="p-6 border-b border-indigo-700">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight">IT Service Desk</h1>
+                    <p class="text-indigo-300 text-xs">SENA Development</p>
+                </div>
+            </div>
+        </div>
+
+        <nav class="p-4 space-y-2">
+            <a href="01-dashboard.html" class="flex items-center gap-3 px-4 py-3 hover:bg-white/10 rounded-lg text-indigo-200 transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
+                </svg>
+                <span>Dashboard</span>
+            </a>
+            <a href="02-ticket-list.html" class="flex items-center gap-3 px-4 py-3 hover:bg-white/10 rounded-lg text-indigo-200 transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                </svg>
+                <span>Ticket List</span>
+            </a>
+            <a href="04-new-ticket.html" class="flex items-center gap-3 px-4 py-3 hover:bg-white/10 rounded-lg text-indigo-200 transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                </svg>
+                <span>New Ticket</span>
+            </a>
+            <a href="09-it-staff-kanban.html" class="flex items-center gap-3 px-4 py-3 hover:bg-white/10 rounded-lg text-indigo-200 transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"/>
+                </svg>
+                <span>งานของฉัน (My Tasks)</span>
+            </a>
+            <a href="06-knowledge-base.html" class="flex items-center gap-3 px-4 py-3 bg-white/20 rounded-lg text-white">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                </svg>
+                <span class="font-medium">Knowledge Base</span>
+            </a>
+            <a href="07-reports.html" class="flex items-center gap-3 px-4 py-3 hover:bg-white/10 rounded-lg text-indigo-200 transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                </svg>
+                <span>Reports</span>
+            </a>
+
+            <div class="border-t border-indigo-700 my-4"></div>
+
+            <a href="08-employee-portal.html" class="flex items-center gap-3 px-4 py-3 hover:bg-white/10 rounded-lg text-indigo-200 transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                </svg>
+                <span>Employee Portal</span>
+            </a>
+
+            <div class="border-t border-indigo-700 my-4"></div>
+
+            <a href="../index.html" class="flex items-center gap-3 px-4 py-3 hover:bg-white/10 rounded-lg text-indigo-200 transition">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 17l-5-5m0 0l5-5m-5 5h12"/>
+                </svg>
+                <span>กลับหน้าหลัก</span>
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="ml-64 p-8">
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-800">Knowledge Base</h1>
+                <p class="text-gray-500">ฐานความรู้และวิธีแก้ปัญหา</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <button class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
+                    <i class="fas fa-plus mr-2"></i>เพิ่มบทความ
+                </button>
+            </div>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+            <div class="flex gap-4">
+                <div class="flex-1 relative">
+                    <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                    <input type="text" placeholder="ค้นหาวิธีแก้ปัญหา... เช่น 'VPN ไม่เชื่อมต่อ' หรือ 'ลืมรหัสผ่าน'"
+                           class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-lg">
+                </div>
+                <button class="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
+                    <i class="fas fa-search mr-2"></i>ค้นหา
+                </button>
+            </div>
+            <div class="mt-3 flex gap-2">
+                <span class="text-gray-500 text-sm">ค้นหายอดนิยม:</span>
+                <button class="text-indigo-600 text-sm hover:underline">VPN</button>
+                <button class="text-indigo-600 text-sm hover:underline">รหัสผ่าน</button>
+                <button class="text-indigo-600 text-sm hover:underline">WiFi</button>
+                <button class="text-indigo-600 text-sm hover:underline">Printer</button>
+                <button class="text-indigo-600 text-sm hover:underline">Email</button>
+            </div>
+        </div>
+
+        <!-- Categories -->
+        <div class="grid grid-cols-4 gap-4 mb-8">
+            <div class="bg-white rounded-xl shadow-sm p-5 hover:shadow-md transition-shadow cursor-pointer border-2 border-transparent hover:border-red-200">
+                <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center mb-3">
+                    <i class="fas fa-desktop text-red-600 text-xl"></i>
+                </div>
+                <h3 class="font-semibold text-gray-800">Hardware</h3>
+                <p class="text-gray-500 text-sm">คอมพิวเตอร์, Printer, อุปกรณ์</p>
+                <div class="mt-2 text-indigo-600 text-sm font-medium">24 บทความ</div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm p-5 hover:shadow-md transition-shadow cursor-pointer border-2 border-transparent hover:border-blue-200">
+                <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-3">
+                    <i class="fas fa-box text-blue-600 text-xl"></i>
+                </div>
+                <h3 class="font-semibold text-gray-800">Software</h3>
+                <p class="text-gray-500 text-sm">โปรแกรม, License, การติดตั้ง</p>
+                <div class="mt-2 text-indigo-600 text-sm font-medium">36 บทความ</div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm p-5 hover:shadow-md transition-shadow cursor-pointer border-2 border-transparent hover:border-orange-200">
+                <div class="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center mb-3">
+                    <i class="fas fa-wifi text-orange-600 text-xl"></i>
+                </div>
+                <h3 class="font-semibold text-gray-800">Network</h3>
+                <p class="text-gray-500 text-sm">WiFi, VPN, Internet</p>
+                <div class="mt-2 text-indigo-600 text-sm font-medium">18 บทความ</div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-sm p-5 hover:shadow-md transition-shadow cursor-pointer border-2 border-transparent hover:border-purple-200">
+                <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-3">
+                    <i class="fas fa-key text-purple-600 text-xl"></i>
+                </div>
+                <h3 class="font-semibold text-gray-800">Account & Access</h3>
+                <p class="text-gray-500 text-sm">รหัสผ่าน, สิทธิ์การเข้าถึง</p>
+                <div class="mt-2 text-indigo-600 text-sm font-medium">15 บทความ</div>
+            </div>
+        </div>
+
+        <!-- Popular Articles -->
+        <div class="bg-white rounded-xl shadow-sm overflow-hidden mb-6">
+            <div class="p-5 border-b border-gray-100 flex items-center justify-between">
+                <h2 class="text-lg font-bold text-gray-800">
+                    <i class="fas fa-fire text-orange-500 mr-2"></i>บทความยอดนิยม
+                </h2>
+                <a href="#" class="text-indigo-600 text-sm hover:underline">ดูทั้งหมด</a>
+            </div>
+            <div class="divide-y divide-gray-100">
+                <!-- Article 1 -->
+                <div class="p-5 hover:bg-gray-50 transition-colors cursor-pointer">
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-wifi text-orange-600"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2 mb-1">
+                                <h3 class="font-semibold text-gray-800 hover:text-indigo-600">วิธีเชื่อมต่อ VPN สำหรับ Work From Home</h3>
+                                <span class="bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded">แนะนำ</span>
+                            </div>
+                            <p class="text-gray-500 text-sm mb-2">ขั้นตอนการติดตั้งและเชื่อมต่อ VPN เพื่อทำงานจากที่บ้านอย่างปลอดภัย รวมถึงการแก้ปัญหาเมื่อเชื่อมต่อไม่ได้</p>
+                            <div class="flex items-center gap-4 text-xs text-gray-400">
+                                <span><i class="fas fa-eye mr-1"></i>1,245 views</span>
+                                <span><i class="fas fa-thumbs-up mr-1"></i>98% helpful</span>
+                                <span><i class="fas fa-clock mr-1"></i>อัพเดท: 3 วันที่แล้ว</span>
+                            </div>
+                        </div>
+                        <span class="bg-orange-100 text-orange-700 text-xs px-2 py-1 rounded">Network</span>
+                    </div>
+                </div>
+
+                <!-- Article 2 -->
+                <div class="p-5 hover:bg-gray-50 transition-colors cursor-pointer">
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-key text-purple-600"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2 mb-1">
+                                <h3 class="font-semibold text-gray-800 hover:text-indigo-600">วิธีรีเซ็ตรหัสผ่าน AD (Active Directory) ด้วยตัวเอง</h3>
+                            </div>
+                            <p class="text-gray-500 text-sm mb-2">ขั้นตอนการรีเซ็ตรหัสผ่านด้วยตัวเองผ่าน Self-Service Portal โดยไม่ต้องติดต่อ IT</p>
+                            <div class="flex items-center gap-4 text-xs text-gray-400">
+                                <span><i class="fas fa-eye mr-1"></i>982 views</span>
+                                <span><i class="fas fa-thumbs-up mr-1"></i>95% helpful</span>
+                                <span><i class="fas fa-clock mr-1"></i>อัพเดท: 1 สัปดาห์ที่แล้ว</span>
+                            </div>
+                        </div>
+                        <span class="bg-purple-100 text-purple-700 text-xs px-2 py-1 rounded">Account</span>
+                    </div>
+                </div>
+
+                <!-- Article 3 -->
+                <div class="p-5 hover:bg-gray-50 transition-colors cursor-pointer">
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-print text-red-600"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2 mb-1">
+                                <h3 class="font-semibold text-gray-800 hover:text-indigo-600">การแก้ปัญหา Printer ไม่พิมพ์งาน / ติดกระดาษ</h3>
+                            </div>
+                            <p class="text-gray-500 text-sm mb-2">วิธีตรวจสอบและแก้ไขปัญหา Printer เบื้องต้น ทั้งกรณีไม่พิมพ์งาน กระดาษติด หรือพิมพ์ไม่คมชัด</p>
+                            <div class="flex items-center gap-4 text-xs text-gray-400">
+                                <span><i class="fas fa-eye mr-1"></i>756 views</span>
+                                <span><i class="fas fa-thumbs-up mr-1"></i>92% helpful</span>
+                                <span><i class="fas fa-clock mr-1"></i>อัพเดท: 2 สัปดาห์ที่แล้ว</span>
+                            </div>
+                        </div>
+                        <span class="bg-red-100 text-red-700 text-xs px-2 py-1 rounded">Hardware</span>
+                    </div>
+                </div>
+
+                <!-- Article 4 -->
+                <div class="p-5 hover:bg-gray-50 transition-colors cursor-pointer">
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-envelope text-blue-600"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2 mb-1">
+                                <h3 class="font-semibold text-gray-800 hover:text-indigo-600">วิธีตั้งค่า Email บนมือถือ (iOS/Android)</h3>
+                            </div>
+                            <p class="text-gray-500 text-sm mb-2">ขั้นตอนการตั้งค่าอีเมลองค์กรบน iPhone และ Android รวมถึงการแก้ไขปัญหาเมื่อไม่สามารถรับ-ส่งอีเมลได้</p>
+                            <div class="flex items-center gap-4 text-xs text-gray-400">
+                                <span><i class="fas fa-eye mr-1"></i>654 views</span>
+                                <span><i class="fas fa-thumbs-up mr-1"></i>89% helpful</span>
+                                <span><i class="fas fa-clock mr-1"></i>อัพเดท: 1 เดือนที่แล้ว</span>
+                            </div>
+                        </div>
+                        <span class="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded">Software</span>
+                    </div>
+                </div>
+
+                <!-- Article 5 -->
+                <div class="p-5 hover:bg-gray-50 transition-colors cursor-pointer">
+                    <div class="flex items-start gap-4">
+                        <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-wifi text-orange-600"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2 mb-1">
+                                <h3 class="font-semibold text-gray-800 hover:text-indigo-600">แก้ปัญหา WiFi ช้า / หลุดบ่อยในออฟฟิศ</h3>
+                            </div>
+                            <p class="text-gray-500 text-sm mb-2">วิธีตรวจสอบและแก้ไขปัญหา WiFi สัญญาณอ่อน หรือเชื่อมต่อแล้วหลุดบ่อยในพื้นที่ต่างๆ ของออฟฟิศ</p>
+                            <div class="flex items-center gap-4 text-xs text-gray-400">
+                                <span><i class="fas fa-eye mr-1"></i>523 views</span>
+                                <span><i class="fas fa-thumbs-up mr-1"></i>87% helpful</span>
+                                <span><i class="fas fa-clock mr-1"></i>อัพเดท: 5 วันที่แล้ว</span>
+                            </div>
+                        </div>
+                        <span class="bg-orange-100 text-orange-700 text-xs px-2 py-1 rounded">Network</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recently Added -->
+        <div class="grid grid-cols-2 gap-6">
+            <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                <div class="p-5 border-b border-gray-100">
+                    <h2 class="text-lg font-bold text-gray-800">
+                        <i class="fas fa-clock text-blue-500 mr-2"></i>เพิ่มล่าสุด
+                    </h2>
+                </div>
+                <div class="p-5 space-y-4">
+                    <div class="flex items-center gap-3 cursor-pointer hover:bg-gray-50 p-2 -m-2 rounded-lg">
+                        <div class="w-8 h-8 bg-blue-100 rounded flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-file-alt text-blue-600 text-sm"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="font-medium text-gray-800 truncate">วิธีใช้งาน Microsoft Teams เบื้องต้น</div>
+                            <div class="text-xs text-gray-400">เพิ่มเมื่อวาน</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3 cursor-pointer hover:bg-gray-50 p-2 -m-2 rounded-lg">
+                        <div class="w-8 h-8 bg-green-100 rounded flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-file-alt text-green-600 text-sm"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="font-medium text-gray-800 truncate">การตั้งค่า Multi-Factor Authentication (MFA)</div>
+                            <div class="text-xs text-gray-400">เพิ่มเมื่อ 3 วันที่แล้ว</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3 cursor-pointer hover:bg-gray-50 p-2 -m-2 rounded-lg">
+                        <div class="w-8 h-8 bg-purple-100 rounded flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-file-alt text-purple-600 text-sm"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="font-medium text-gray-800 truncate">ขอสิทธิ์เข้าถึง Shared Folder</div>
+                            <div class="text-xs text-gray-400">เพิ่มเมื่อ 5 วันที่แล้ว</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3 cursor-pointer hover:bg-gray-50 p-2 -m-2 rounded-lg">
+                        <div class="w-8 h-8 bg-orange-100 rounded flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-file-alt text-orange-600 text-sm"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <div class="font-medium text-gray-800 truncate">การเปลี่ยน Network Printer</div>
+                            <div class="text-xs text-gray-400">เพิ่มเมื่อ 1 สัปดาห์ที่แล้ว</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                <div class="p-5 border-b border-gray-100">
+                    <h2 class="text-lg font-bold text-gray-800">
+                        <i class="fas fa-link text-indigo-500 mr-2"></i>ลิงก์ที่เป็นประโยชน์
+                    </h2>
+                </div>
+                <div class="p-5 space-y-3">
+                    <a href="#" class="flex items-center gap-3 p-3 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors">
+                        <i class="fas fa-key text-indigo-600"></i>
+                        <span class="font-medium text-indigo-800">Self-Service Password Reset</span>
+                        <i class="fas fa-external-link-alt ml-auto text-indigo-400"></i>
+                    </a>
+                    <a href="#" class="flex items-center gap-3 p-3 bg-green-50 rounded-lg hover:bg-green-100 transition-colors">
+                        <i class="fas fa-download text-green-600"></i>
+                        <span class="font-medium text-green-800">Software Center (ดาวน์โหลดโปรแกรม)</span>
+                        <i class="fas fa-external-link-alt ml-auto text-green-400"></i>
+                    </a>
+                    <a href="#" class="flex items-center gap-3 p-3 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
+                        <i class="fas fa-cloud text-blue-600"></i>
+                        <span class="font-medium text-blue-800">OneDrive / SharePoint</span>
+                        <i class="fas fa-external-link-alt ml-auto text-blue-400"></i>
+                    </a>
+                    <a href="#" class="flex items-center gap-3 p-3 bg-orange-50 rounded-lg hover:bg-orange-100 transition-colors">
+                        <i class="fas fa-shield-alt text-orange-600"></i>
+                        <span class="font-medium text-orange-800">VPN Client Download</span>
+                        <i class="fas fa-external-link-alt ml-auto text-orange-400"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Article Statistics -->
+        <div class="mt-6 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl p-6 text-white">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="text-lg font-bold mb-1">สถิติ Knowledge Base</h3>
+                    <p class="text-indigo-100 text-sm">ช่วยลดปริมาณ Ticket ได้ 35% ต่อเดือน</p>
+                </div>
+                <div class="flex gap-8">
+                    <div class="text-center">
+                        <div class="text-3xl font-bold">93</div>
+                        <div class="text-indigo-200 text-sm">บทความทั้งหมด</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold">5.2K</div>
+                        <div class="text-indigo-200 text-sm">เข้าชมเดือนนี้</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold">91%</div>
+                        <div class="text-indigo-200 text-sm">ความพึงพอใจ</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-3xl font-bold">245</div>
+                        <div class="text-indigo-200 text-sm">แก้ปัญหาด้วยตนเอง</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

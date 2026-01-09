@@ -1,0 +1,1533 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My KPI - KPI System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Sarabun', sans-serif; }
+        .pulse-dot { animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+    </style>
+    <script>
+        const roles = {
+            employee: {
+                name: 'นางสาวสุดา พรหมชัย',
+                initials: 'สด',
+                position: 'Full-stack Developer',
+                team: 'Development Team',
+                department: 'IT Department',
+                empId: 'EMP-0042',
+                level: 'employee',
+                permissions: ['dashboard', 'my-kpi', 'alignment', 'evaluation']
+            },
+            team_lead: {
+                name: 'นายสมศักดิ์ รักษ์ชาติ',
+                initials: 'สศ',
+                position: 'Team Lead',
+                team: 'Development Team',
+                department: 'IT Department',
+                empId: 'MGR-0012',
+                level: 'team_lead',
+                permissions: ['dashboard', 'my-kpi', 'team-kpi', 'alignment', 'approval', 'evaluation']
+            },
+            dept_head: {
+                name: 'นางสาวจิราพร วงศ์ไพศาล',
+                initials: 'จว',
+                position: 'IT Director',
+                team: 'IT Management',
+                department: 'IT Department',
+                empId: 'DIR-0003',
+                level: 'dept_head',
+                permissions: ['dashboard', 'my-kpi', 'dept-kpi', 'team-kpi', 'alignment', 'approval', 'evaluation', 'reports']
+            },
+            kpi_admin: {
+                name: 'นายประสิทธิ์ มั่นคง',
+                initials: 'ปม',
+                position: 'KPI Admin',
+                team: 'KPI Management',
+                department: 'KPI Administration',
+                empId: 'HR-0001',
+                level: 'kpi_admin',
+                permissions: ['dashboard', 'my-kpi', 'corporate-kpi', 'alignment', 'approval', 'evaluation', 'reports', 'freeze-control']
+            }
+        };
+
+        let currentRole = 'employee';
+
+        function switchRole(roleKey) {
+            currentRole = roleKey;
+            localStorage.setItem('selectedRole', roleKey);
+            updateUI();
+        }
+
+        function updateUI() {
+            const role = roles[currentRole];
+            document.getElementById('userName').textContent = role.name;
+            document.getElementById('userPosition').textContent = role.position;
+            document.getElementById('userDept').textContent = role.department;
+            document.getElementById('userInitials').textContent = role.initials;
+
+            // Update navigation visibility
+            document.querySelectorAll('[data-permission]').forEach(item => {
+                const perm = item.dataset.permission;
+                item.classList.toggle('hidden', !role.permissions.includes(perm));
+            });
+
+            // Update sidebar menu label based on role
+            const sidebarKpiLabel = document.getElementById('sidebarKpiLabel');
+            if (role.level === 'employee' || role.level === 'kpi_admin') {
+                sidebarKpiLabel.textContent = 'My KPI';
+            } else if (role.level === 'team_lead') {
+                sidebarKpiLabel.textContent = 'Team KPI';
+            } else if (role.level === 'dept_head') {
+                sidebarKpiLabel.textContent = 'Dept KPI';
+            }
+
+            // Update page title based on role
+            const pageTitle = document.getElementById('pageTitle');
+            const pageSubtitle = document.getElementById('pageSubtitle');
+
+            // Show/hide sections based on role
+            const myKpiSection = document.getElementById('myKpiSection');
+            const teamKpiSection = document.getElementById('teamKpiSection');
+            const deptKpiSection = document.getElementById('deptKpiSection');
+            const individualKpiSection = document.getElementById('individualKpiSection');
+
+            // Hide all sections first
+            myKpiSection?.classList.add('hidden');
+            teamKpiSection?.classList.add('hidden');
+            deptKpiSection?.classList.add('hidden');
+            individualKpiSection?.classList.add('hidden');
+
+            if (role.level === 'employee') {
+                pageTitle.textContent = 'My KPI';
+                pageSubtitle.textContent = 'Manage your individual KPIs and track progress';
+                myKpiSection?.classList.remove('hidden');
+            } else if (role.level === 'kpi_admin') {
+                pageTitle.textContent = 'My KPI';
+                pageSubtitle.textContent = 'Manage your individual KPIs and track progress';
+                myKpiSection?.classList.remove('hidden');
+            } else if (role.level === 'team_lead') {
+                pageTitle.textContent = 'Team KPI';
+                pageSubtitle.textContent = 'Manage team KPIs and individual performance';
+                teamKpiSection?.classList.remove('hidden');
+                individualKpiSection?.classList.remove('hidden');
+            } else if (role.level === 'dept_head') {
+                pageTitle.textContent = 'Dept KPI';
+                pageSubtitle.textContent = 'Manage department KPIs and individual performance';
+                deptKpiSection?.classList.remove('hidden');
+                individualKpiSection?.classList.remove('hidden');
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const saved = localStorage.getItem('selectedRole') || 'employee';
+            currentRole = saved;
+            document.getElementById('roleSelector').value = saved;
+            updateUI();
+        });
+
+        function openModal(type, kpiId = null) {
+            const modal = document.getElementById('kpiModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const kpiTypeSelect = document.getElementById('kpiType');
+            const visibilitySection = document.getElementById('visibilitySection');
+            const teamAssignSection = document.getElementById('teamAssignSection');
+
+            // Set KPI Type options based on role
+            if (currentRole === 'team_lead') {
+                // Team Lead: Can create Team KPI and Individual KPI
+                kpiTypeSelect.innerHTML = `
+                    <option value="team">Team KPI (T-KPI)</option>
+                    <option value="individual">Individual KPI (E-KPI)</option>
+                `;
+            } else if (currentRole === 'employee') {
+                // Employee: Can only create Individual KPI
+                kpiTypeSelect.innerHTML = `
+                    <option value="individual">Individual KPI (E-KPI)</option>
+                `;
+            } else {
+                // Dept Head / KPI Admin: Can create all types
+                kpiTypeSelect.innerHTML = `
+                    <option value="dept">Dept KPI (D-KPI)</option>
+                    <option value="team">Team KPI (T-KPI)</option>
+                    <option value="individual">Individual KPI (E-KPI)</option>
+                `;
+            }
+
+            // Always hide visibility section for Team Lead and Employee (it's for Dept KPI)
+            if (currentRole === 'team_lead' || currentRole === 'employee') {
+                visibilitySection.classList.add('hidden');
+            }
+
+            if (type === 'add') {
+                modalTitle.textContent = 'Add New KPI';
+                // Clear form fields
+                document.getElementById('kpiName').value = '';
+                document.getElementById('kpiDescription').value = '';
+                document.getElementById('kpiTarget').value = '';
+                document.getElementById('kpiActual').value = '';
+                document.getElementById('kpiWeight').value = '';
+            } else if (type === 'edit') {
+                modalTitle.textContent = 'Edit KPI';
+                // Populate with existing data (demo)
+                document.getElementById('kpiName').value = 'API Endpoints Delivered';
+                document.getElementById('kpiDescription').value = 'Number of completed and deployed API endpoints';
+                document.getElementById('kpiTarget').value = '15';
+                document.getElementById('kpiActual').value = '12';
+                document.getElementById('kpiWeight').value = '25';
+            }
+
+            modal.classList.remove('hidden');
+            // Trigger changeKpiType to set correct reference options
+            changeKpiType();
+        }
+
+        function closeModal() {
+            document.getElementById('kpiModal').classList.add('hidden');
+        }
+
+        function saveKpi() {
+            // Demo save action
+            alert('KPI saved successfully!');
+            closeModal();
+        }
+
+        function openDeptKpiModal(type, kpiId = null) {
+            const modal = document.getElementById('deptKpiModal');
+            const modalTitle = document.getElementById('deptModalTitle');
+
+            if (type === 'add') {
+                modalTitle.textContent = 'Add Dept KPI';
+            } else if (type === 'edit') {
+                modalTitle.textContent = 'Edit Dept KPI';
+            }
+
+            modal.classList.remove('hidden');
+        }
+
+        function closeDeptKpiModal() {
+            document.getElementById('deptKpiModal').classList.add('hidden');
+        }
+
+        function saveDeptKpi() {
+            // Demo save action
+            alert('Dept KPI saved successfully!');
+            closeDeptKpiModal();
+        }
+
+        function changeKpiType() {
+            const kpiType = document.getElementById('kpiType').value;
+            const referenceLabel = document.getElementById('referenceLabel');
+            const referenceSelect = document.getElementById('referenceSelect');
+            const visibilitySection = document.getElementById('visibilitySection');
+            const teamAssignSection = document.getElementById('teamAssignSection');
+            const modalTitle = document.getElementById('modalTitle');
+
+            // D-KPI options for reference
+            const dkpiOptions = `
+                <option>Select D-KPI</option>
+                <option>[D-KPI-1] System Uptime 99.9% (IT)</option>
+                <option>[D-KPI-2] ยอดขายแผนก Sales 250M</option>
+                <option>[D-KPI-3] Lead Generation 500 leads (Marketing)</option>
+                <option>[D-KPI-4] CSAT Score 90% (Customer Service)</option>
+                <option>[D-KPI-5] Support Response < 4hrs (IT)</option>
+            `;
+
+            // T-KPI options for reference
+            const tkpiOptions = `
+                <option>Select T-KPI</option>
+                <option>[T-KPI-1] Deploy Sales Features 10 ครั้ง/Q (Dev)</option>
+                <option>[T-KPI-2] Ticket Resolution < 2hrs (Support)</option>
+                <option>[T-KPI-3] Bug Detection Rate 95% (QA)</option>
+                <option>[T-KPI-4] API Response Time < 200ms (Dev)</option>
+            `;
+
+            // D-KPI and T-KPI combined options (for Team Lead and Employee)
+            const dkpiAndTkpiOptions = `
+                <option>Select Reference KPI</option>
+                <optgroup label="D-KPI (Department)">
+                    <option>[D-KPI-1] System Uptime 99.9% (IT)</option>
+                    <option>[D-KPI-2] ยอดขายแผนก Sales 250M</option>
+                    <option>[D-KPI-3] Lead Generation 500 leads (Marketing)</option>
+                    <option>[D-KPI-4] CSAT Score 90% (Customer Service)</option>
+                    <option>[D-KPI-5] Support Response < 4hrs (IT)</option>
+                </optgroup>
+                <optgroup label="T-KPI (Team)">
+                    <option>[T-KPI-1] Deploy Sales Features 10 ครั้ง/Q (Dev)</option>
+                    <option>[T-KPI-2] Ticket Resolution < 2hrs (Support)</option>
+                    <option>[T-KPI-3] Bug Detection Rate 95% (QA)</option>
+                    <option>[T-KPI-4] API Response Time < 200ms (Dev)</option>
+                </optgroup>
+            `;
+
+            if (kpiType === 'dept') {
+                // Dept KPI references C-KPI and shows Visibility (only for Dept Head/Admin)
+                modalTitle.textContent = 'Add Dept KPI';
+                referenceLabel.textContent = 'Reference C-KPI *';
+                referenceSelect.innerHTML = `
+                    <option>Select C-KPI</option>
+                    <option>[C-KPI-1] Strengthen the Core</option>
+                    <option>[C-KPI-2] Excellent Ecosystem</option>
+                    <option>[C-KPI-3] Sustainable Impact</option>
+                    <option>[C-KPI-4] Data-Driven Operation</option>
+                    <option>[C-KPI-5] People & Commitment</option>
+                `;
+                visibilitySection.classList.remove('hidden');
+                teamAssignSection.classList.add('hidden');
+            } else if (kpiType === 'team') {
+                // Team KPI - references D-KPI/T-KPI and shows Team & Assignees
+                modalTitle.textContent = 'Add Team KPI';
+
+                // Team Lead can reference D-KPI or T-KPI
+                if (currentRole === 'team_lead') {
+                    referenceLabel.textContent = 'Reference D-KPI / T-KPI *';
+                    referenceSelect.innerHTML = dkpiAndTkpiOptions;
+                    // Team Lead can assign to team members
+                    teamAssignSection.classList.remove('hidden');
+                } else {
+                    referenceLabel.textContent = 'Reference D-KPI *';
+                    referenceSelect.innerHTML = dkpiOptions;
+                    teamAssignSection.classList.remove('hidden');
+                }
+                visibilitySection.classList.add('hidden');
+            } else {
+                // Individual KPI - references D-KPI/T-KPI
+                modalTitle.textContent = 'Add Individual KPI';
+
+                // Team Lead and Employee can reference D-KPI or T-KPI
+                if (currentRole === 'team_lead' || currentRole === 'employee') {
+                    referenceLabel.textContent = 'Reference D-KPI / T-KPI *';
+                    referenceSelect.innerHTML = dkpiAndTkpiOptions;
+                } else {
+                    referenceLabel.textContent = 'Reference T-KPI *';
+                    referenceSelect.innerHTML = tkpiOptions;
+                }
+
+                visibilitySection.classList.add('hidden');
+
+                // Team Lead can assign Individual KPI to employees, Employee cannot assign
+                if (currentRole === 'team_lead') {
+                    teamAssignSection.classList.remove('hidden');
+                } else {
+                    teamAssignSection.classList.add('hidden');
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-white min-h-screen">
+
+    <!-- Sidebar -->
+    <div class="fixed left-0 top-0 h-full w-64 bg-amber-700 shadow-lg z-20">
+        <div class="p-6">
+            <!-- Logo -->
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
+                    <svg class="w-6 h-6 text-amber-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-white font-bold text-lg">KPI System</h1>
+                    <p class="text-amber-200 text-xs">Performance Management</p>
+                </div>
+            </div>
+
+            <!-- User Profile -->
+            <div class="bg-white rounded-xl p-4 mb-6 shadow">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                        <span id="userInitials" class="text-white font-bold">สด</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p id="userName" class="text-gray-800 font-semibold text-sm truncate">นางสาวสุดา พรหมชัย</p>
+                        <p id="userPosition" class="text-gray-600 text-xs truncate">Full-stack Developer</p>
+                        <p id="userDept" class="text-amber-600 text-xs truncate">IT Department</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Role Selector (Demo) -->
+            <div class="mb-6 pb-6 border-b border-amber-600">
+                <label class="text-amber-100 text-xs mb-2 block">Demo: Switch Role</label>
+                <select id="roleSelector" onchange="switchRole(this.value)" class="w-full bg-white text-gray-800 rounded-lg px-3 py-2 text-sm border border-amber-600 focus:outline-none focus:ring-2 focus:ring-amber-500">
+                    <option value="employee">Employee</option>
+                    <option value="team_lead">Team Lead</option>
+                    <option value="dept_head">Department Head</option>
+                    <option value="kpi_admin">KPI Admin</option>
+                </select>
+            </div>
+
+            <!-- Navigation -->
+            <nav class="space-y-1">
+                <a href="01-dashboard.html" data-permission="dashboard" class="flex items-center gap-3 px-4 py-3 text-white hover:bg-amber-600 rounded-lg transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                    </svg>
+                    <span class="font-medium">Dashboard</span>
+                </a>
+
+                <a href="04-my-kpi.html" data-permission="my-kpi" class="flex items-center gap-3 px-4 py-3 bg-amber-800 text-white rounded-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                    </svg>
+                    <span id="sidebarKpiLabel" class="font-medium">My KPI</span>
+                </a>
+
+                <a href="03-alignment.html" data-permission="alignment" class="flex items-center gap-3 px-4 py-3 text-white hover:bg-amber-600 rounded-lg transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"/>
+                    </svg>
+                    <span class="font-medium">Alignment View</span>
+                </a>
+
+                <div class="border-t border-amber-600 my-3"></div>
+
+                <a href="02-corporate-kpi.html" data-permission="corporate-kpi" class="hidden flex items-center gap-3 px-4 py-3 text-white hover:bg-amber-600 rounded-lg transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                    </svg>
+                    <span class="font-medium">Corporate KPI</span>
+                </a>
+
+                <a href="05-approval.html" data-permission="approval" class="hidden flex items-center gap-3 px-4 py-3 text-white hover:bg-amber-600 rounded-lg transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <span class="font-medium">Approval Inbox</span>
+                    <span class="ml-auto bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">5</span>
+                </a>
+
+                <a href="07-evaluation.html" data-permission="evaluation" class="flex items-center gap-3 px-4 py-3 text-white hover:bg-amber-600 rounded-lg transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
+                    </svg>
+                    <span class="font-medium">Evaluation</span>
+                </a>
+
+                <a href="06-freeze-control.html" data-permission="freeze-control" class="hidden flex items-center gap-3 px-4 py-3 text-white hover:bg-amber-600 rounded-lg transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                    </svg>
+                    <span class="font-medium">Freeze Control</span>
+                </a>
+
+                <a href="08-reports.html" data-permission="reports" class="hidden flex items-center gap-3 px-4 py-3 text-white hover:bg-amber-600 rounded-lg transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    <span class="font-medium">Reports</span>
+                </a>
+            </nav>
+
+            <div class="mt-6 pt-6 border-t border-amber-600">
+                <a href="../index.html" class="flex items-center gap-3 px-4 py-3 text-amber-100 hover:bg-amber-600 rounded-lg transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                    </svg>
+                    <span class="font-medium">Back to Home</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="ml-64 p-8">
+        <!-- Header -->
+        <div class="bg-white shadow-sm rounded-lg p-6 mb-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 id="pageTitle" class="text-2xl font-bold text-gray-800">My KPI</h2>
+                    <p id="pageSubtitle" class="text-sm text-gray-600 mt-1">Manage your individual KPIs and track progress</p>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="bg-amber-50 rounded-lg px-4 py-2 border border-amber-200">
+                        <p class="text-amber-600 text-xs">Current Cycle</p>
+                        <p class="text-amber-800 font-bold">Q4/2025</p>
+                    </div>
+                    <button onclick="openModal('add')" class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-bold transition-all flex items-center gap-2 shadow">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                        </svg>
+                        Add KPI
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Row -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+            <div class="bg-white rounded-lg shadow p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                        </svg>
+                    </div>
+                    <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold">Approved</span>
+                </div>
+                <p class="text-gray-500 text-sm">Total KPIs</p>
+                <p class="text-2xl font-bold text-gray-800">5</p>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+                        </svg>
+                    </div>
+                </div>
+                <p class="text-gray-500 text-sm">Overall Progress</p>
+                <p class="text-2xl font-bold text-gray-800">72%</p>
+                <div class="mt-2 h-2 bg-gray-200 rounded-full overflow-hidden">
+                    <div class="h-full bg-green-500" style="width: 72%"></div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                </div>
+                <p class="text-gray-500 text-sm">On Track</p>
+                <p class="text-2xl font-bold text-gray-800">3 KPIs</p>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-12 h-12 bg-amber-100 rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                        </svg>
+                    </div>
+                </div>
+                <p class="text-gray-500 text-sm">Needs Attention</p>
+                <p class="text-2xl font-bold text-amber-600">2 KPIs</p>
+            </div>
+        </div>
+
+        <!-- My KPI Section (Employee & HR Admin) -->
+        <div id="myKpiSection" class="bg-white rounded-lg shadow mb-6">
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+                        <span class="px-2 py-1 bg-amber-100 text-amber-700 rounded text-xs font-bold">MY</span>
+                        My KPI
+                    </h3>
+                    <div class="flex items-center gap-2">
+                        <select class="bg-white text-gray-800 rounded-lg px-3 py-2 text-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-amber-500">
+                            <option>All Status</option>
+                            <option>On Track</option>
+                            <option>At Risk</option>
+                            <option>Behind</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="text-left text-gray-600 text-sm border-b border-gray-200 bg-gray-50">
+                            <th class="px-6 py-4 font-medium">KPI Name</th>
+                            <th class="px-6 py-4 font-medium">Ref (Parent KPI)</th>
+                            <th class="px-6 py-4 font-medium">Target</th>
+                            <th class="px-6 py-4 font-medium">Actual</th>
+                            <th class="px-6 py-4 font-medium">Unit</th>
+                            <th class="px-6 py-4 font-medium">Progress</th>
+                            <th class="px-6 py-4 font-medium">Weight</th>
+                            <th class="px-6 py-4 font-medium">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-800 text-sm">
+                        <tr class="border-b border-gray-100 hover:bg-gray-50">
+                            <td class="px-6 py-4">
+                                <div>
+                                    <p class="font-semibold">API Endpoints Delivered</p>
+                                    <p class="text-gray-500 text-xs mt-1">Number of completed and deployed API endpoints</p>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <span class="px-2 py-0.5 bg-purple-100 text-purple-700 rounded text-xs font-bold">TEAM</span>
+                                    <span class="text-gray-600 text-xs">Feature Delivery</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 font-medium">15</td>
+                            <td class="px-6 py-4 font-medium text-green-600">12</td>
+                            <td class="px-6 py-4 text-gray-600">Endpoints</td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-20 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                        <div class="h-full bg-green-500" style="width: 80%"></div>
+                                    </div>
+                                    <span class="text-green-600 font-semibold">80%</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 font-medium">25%</td>
+                            <td class="px-6 py-4">
+                                <button onclick="openModal('edit', 1)" class="p-2 hover:bg-gray-100 rounded-lg transition-all">
+                                    <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                    </svg>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr class="border-b border-gray-100 hover:bg-gray-50">
+                            <td class="px-6 py-4">
+                                <div>
+                                    <p class="font-semibold">Unit Test Coverage</p>
+                                    <p class="text-gray-500 text-xs mt-1">Maintain code quality with comprehensive testing</p>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <span class="px-2 py-0.5 bg-purple-100 text-purple-700 rounded text-xs font-bold">TEAM</span>
+                                    <span class="text-gray-600 text-xs">Code Quality</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 font-medium">90</td>
+                            <td class="px-6 py-4 font-medium text-amber-600">78</td>
+                            <td class="px-6 py-4 text-gray-600">%</td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-20 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                        <div class="h-full bg-amber-500" style="width: 87%"></div>
+                                    </div>
+                                    <span class="text-amber-600 font-semibold">87%</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 font-medium">20%</td>
+                            <td class="px-6 py-4">
+                                <button onclick="openModal('edit', 2)" class="p-2 hover:bg-gray-100 rounded-lg transition-all">
+                                    <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                    </svg>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr class="border-b border-gray-100 hover:bg-gray-50">
+                            <td class="px-6 py-4">
+                                <div>
+                                    <p class="font-semibold">Bug Fix Response Time</p>
+                                    <p class="text-gray-500 text-xs mt-1">Average time to resolve critical bugs</p>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <span class="px-2 py-0.5 bg-purple-100 text-purple-700 rounded text-xs font-bold">TEAM</span>
+                                    <span class="text-gray-600 text-xs">Support SLA</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 font-medium">4</td>
+                            <td class="px-6 py-4 font-medium text-green-600">3.2</td>
+                            <td class="px-6 py-4 text-gray-600">Hours</td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-20 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                        <div class="h-full bg-green-500" style="width: 100%"></div>
+                                    </div>
+                                    <span class="text-green-600 font-semibold">100%</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 font-medium">15%</td>
+                            <td class="px-6 py-4">
+                                <button onclick="openModal('edit', 3)" class="p-2 hover:bg-gray-100 rounded-lg transition-all">
+                                    <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                    </svg>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr class="border-b border-gray-100 hover:bg-gray-50">
+                            <td class="px-6 py-4">
+                                <div>
+                                    <p class="font-semibold">Code Review Completion</p>
+                                    <p class="text-gray-500 text-xs mt-1">Complete peer code reviews within SLA</p>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <span class="px-2 py-0.5 bg-purple-100 text-purple-700 rounded text-xs font-bold">TEAM</span>
+                                    <span class="text-gray-600 text-xs">Code Quality</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 font-medium">100</td>
+                            <td class="px-6 py-4 font-medium text-red-600">65</td>
+                            <td class="px-6 py-4 text-gray-600">%</td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-20 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                        <div class="h-full bg-red-500" style="width: 65%"></div>
+                                    </div>
+                                    <span class="text-red-600 font-semibold">65%</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 font-medium">20%</td>
+                            <td class="px-6 py-4">
+                                <button onclick="openModal('edit', 4)" class="p-2 hover:bg-gray-100 rounded-lg transition-all">
+                                    <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                    </svg>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr class="border-b border-gray-100 hover:bg-gray-50">
+                            <td class="px-6 py-4">
+                                <div>
+                                    <p class="font-semibold">Documentation Updates</p>
+                                    <p class="text-gray-500 text-xs mt-1">Keep technical documentation up to date</p>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <span class="px-2 py-0.5 bg-purple-100 text-purple-700 rounded text-xs font-bold">TEAM</span>
+                                    <span class="text-gray-600 text-xs">Knowledge Management</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 font-medium">20</td>
+                            <td class="px-6 py-4 font-medium text-amber-600">12</td>
+                            <td class="px-6 py-4 text-gray-600">Pages</td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-20 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                        <div class="h-full bg-amber-500" style="width: 60%"></div>
+                                    </div>
+                                    <span class="text-amber-600 font-semibold">60%</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 font-medium">20%</td>
+                            <td class="px-6 py-4">
+                                <button onclick="openModal('edit', 5)" class="p-2 hover:bg-gray-100 rounded-lg transition-all">
+                                    <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                    </svg>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Dept KPI Section (Dept Head only) -->
+        <div id="deptKpiSection" class="hidden bg-white rounded-lg shadow mb-6">
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+                        <span class="px-2 py-1 bg-indigo-100 text-indigo-700 rounded text-xs font-bold">DEPT</span>
+                        Dept KPI
+                    </h3>
+                    <div class="text-sm text-gray-500">KPIs you are responsible for as Department Head</div>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="text-left text-gray-600 text-sm border-b border-gray-200 bg-indigo-50">
+                            <th class="px-6 py-4 font-medium">KPI Name</th>
+                            <th class="px-6 py-4 font-medium">Ref (Core KPI)</th>
+                            <th class="px-6 py-4 font-medium">Visibility</th>
+                            <th class="px-6 py-4 font-medium">Target</th>
+                            <th class="px-6 py-4 font-medium">Actual</th>
+                            <th class="px-6 py-4 font-medium">Progress</th>
+                            <th class="px-6 py-4 font-medium">Weight</th>
+                            <th class="px-6 py-4 font-medium">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-800 text-sm">
+                        <!-- Dept KPI 1 - Assigned to specific teams -->
+                        <tr class="border-b border-gray-100 hover:bg-indigo-50/50">
+                            <td class="px-6 py-4">
+                                <div>
+                                    <p class="font-semibold">IT Department Revenue</p>
+                                    <p class="text-gray-500 text-xs mt-1">Total revenue from IT solutions and services</p>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <span class="px-2 py-0.5 bg-indigo-100 text-indigo-700 rounded text-xs font-bold">CORE</span>
+                                    <span class="text-gray-600 text-xs">Revenue Growth 20%</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex flex-col gap-1">
+                                    <div class="flex items-center gap-1 flex-wrap">
+                                        <span class="px-2 py-0.5 bg-purple-100 text-purple-700 rounded text-xs">Dev Team</span>
+                                        <span class="px-2 py-0.5 bg-purple-100 text-purple-700 rounded text-xs">Sales Team</span>
+                                    </div>
+                                    <span class="text-gray-400 text-xs">2 teams assigned</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 font-medium">100M</td>
+                            <td class="px-6 py-4 font-medium text-green-600">78M</td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-16 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                        <div class="h-full bg-green-500" style="width: 78%"></div>
+                                    </div>
+                                    <span class="text-green-600 font-semibold">78%</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 font-medium">30%</td>
+                            <td class="px-6 py-4">
+                                <button onclick="openDeptKpiModal('edit', 10)" class="p-2 hover:bg-gray-100 rounded-lg transition-all">
+                                    <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                    </svg>
+                                </button>
+                            </td>
+                        </tr>
+                        <!-- Dept KPI 2 - All Teams (Anyone can refer) -->
+                        <tr class="border-b border-gray-100 hover:bg-indigo-50/50">
+                            <td class="px-6 py-4">
+                                <div>
+                                    <p class="font-semibold">Digital Transformation Progress</p>
+                                    <p class="text-gray-500 text-xs mt-1">Digitize core business processes</p>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <span class="px-2 py-0.5 bg-indigo-100 text-indigo-700 rounded text-xs font-bold">CORE</span>
+                                    <span class="text-gray-600 text-xs">Digital Transformation</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex flex-col gap-1">
+                                    <span class="px-2 py-1 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-lg text-xs font-bold inline-flex items-center gap-1 w-fit">
+                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                        </svg>
+                                        All Teams
+                                    </span>
+                                    <span class="text-gray-400 text-xs italic">Anyone can refer</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 font-medium">80%</td>
+                            <td class="px-6 py-4 font-medium text-amber-600">65%</td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-16 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                        <div class="h-full bg-amber-500" style="width: 81%"></div>
+                                    </div>
+                                    <span class="text-amber-600 font-semibold">81%</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 font-medium">25%</td>
+                            <td class="px-6 py-4">
+                                <button onclick="openDeptKpiModal('edit', 11)" class="p-2 hover:bg-gray-100 rounded-lg transition-all">
+                                    <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                    </svg>
+                                </button>
+                            </td>
+                        </tr>
+                        <!-- Dept KPI 3 - Assigned to specific person -->
+                        <tr class="border-b border-gray-100 hover:bg-indigo-50/50">
+                            <td class="px-6 py-4">
+                                <div>
+                                    <p class="font-semibold">System Uptime</p>
+                                    <p class="text-gray-500 text-xs mt-1">Maintain high availability of IT systems</p>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <span class="px-2 py-0.5 bg-indigo-100 text-indigo-700 rounded text-xs font-bold">CORE</span>
+                                    <span class="text-gray-600 text-xs">Customer Satisfaction</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex flex-col gap-1">
+                                    <div class="flex items-center gap-1 flex-wrap">
+                                        <span class="px-2 py-0.5 bg-amber-100 text-amber-700 rounded text-xs flex items-center gap-1">
+                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                                            </svg>
+                                            Infra Team
+                                        </span>
+                                    </div>
+                                    <span class="text-gray-400 text-xs">Assigned to team lead</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 font-medium">99.9%</td>
+                            <td class="px-6 py-4 font-medium text-green-600">99.7%</td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-16 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                        <div class="h-full bg-green-500" style="width: 99.8%"></div>
+                                    </div>
+                                    <span class="text-green-600 font-semibold">99.8%</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 font-medium">20%</td>
+                            <td class="px-6 py-4">
+                                <button onclick="openDeptKpiModal('edit', 12)" class="p-2 hover:bg-gray-100 rounded-lg transition-all">
+                                    <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                    </svg>
+                                </button>
+                            </td>
+                        </tr>
+                        <!-- Dept KPI 4 - New - All Teams example -->
+                        <tr class="border-b border-gray-100 hover:bg-indigo-50/50">
+                            <td class="px-6 py-4">
+                                <div>
+                                    <p class="font-semibold">Cost Optimization</p>
+                                    <p class="text-gray-500 text-xs mt-1">Reduce operational costs through efficiency</p>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <span class="px-2 py-0.5 bg-indigo-100 text-indigo-700 rounded text-xs font-bold">CORE</span>
+                                    <span class="text-gray-600 text-xs">Operational Excellence</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex flex-col gap-1">
+                                    <span class="px-2 py-1 bg-gradient-to-r from-cyan-500 to-blue-500 text-white rounded-lg text-xs font-bold inline-flex items-center gap-1 w-fit">
+                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                        </svg>
+                                        All Teams
+                                    </span>
+                                    <span class="text-gray-400 text-xs italic">Anyone can refer</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 font-medium">15%</td>
+                            <td class="px-6 py-4 font-medium text-green-600">12%</td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-16 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                        <div class="h-full bg-green-500" style="width: 80%"></div>
+                                    </div>
+                                    <span class="text-green-600 font-semibold">80%</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 font-medium">25%</td>
+                            <td class="px-6 py-4">
+                                <button onclick="openDeptKpiModal('edit', 13)" class="p-2 hover:bg-gray-100 rounded-lg transition-all">
+                                    <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                    </svg>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Team KPI Section (Team Lead only) -->
+        <div id="teamKpiSection" class="hidden bg-white rounded-lg shadow mb-6">
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+                        <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs font-bold">TEAM</span>
+                        Team KPI
+                    </h3>
+                    <div class="text-sm text-gray-500">KPIs you are responsible for as Team Lead</div>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="text-left text-gray-600 text-sm border-b border-gray-200 bg-purple-50">
+                            <th class="px-6 py-4 font-medium">KPI Name</th>
+                            <th class="px-6 py-4 font-medium">Ref (Dept KPI)</th>
+                            <th class="px-6 py-4 font-medium">Target</th>
+                            <th class="px-6 py-4 font-medium">Actual</th>
+                            <th class="px-6 py-4 font-medium">Unit</th>
+                            <th class="px-6 py-4 font-medium">Progress</th>
+                            <th class="px-6 py-4 font-medium">Weight</th>
+                            <th class="px-6 py-4 font-medium">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-800 text-sm">
+                        <tr class="border-b border-gray-100 hover:bg-purple-50/50">
+                            <td class="px-6 py-4">
+                                <div>
+                                    <p class="font-semibold">Sprint Feature Delivery</p>
+                                    <p class="text-gray-500 text-xs mt-1">Complete features per sprint according to plan</p>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <span class="px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs font-bold">DEPT</span>
+                                    <span class="text-gray-600 text-xs">Project Delivery</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 font-medium">8</td>
+                            <td class="px-6 py-4 font-medium text-green-600">8</td>
+                            <td class="px-6 py-4 text-gray-600">Features/Sprint</td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-20 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                        <div class="h-full bg-green-500" style="width: 100%"></div>
+                                    </div>
+                                    <span class="text-green-600 font-semibold">100%</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 font-medium">30%</td>
+                            <td class="px-6 py-4">
+                                <button onclick="openModal('edit', 20)" class="p-2 hover:bg-gray-100 rounded-lg transition-all">
+                                    <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                    </svg>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr class="border-b border-gray-100 hover:bg-purple-50/50">
+                            <td class="px-6 py-4">
+                                <div>
+                                    <p class="font-semibold">Team Code Quality Score</p>
+                                    <p class="text-gray-500 text-xs mt-1">Maintain high code quality standards across team</p>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <span class="px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs font-bold">DEPT</span>
+                                    <span class="text-gray-600 text-xs">Quality Standards</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 font-medium">85</td>
+                            <td class="px-6 py-4 font-medium text-amber-600">78</td>
+                            <td class="px-6 py-4 text-gray-600">Score</td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-20 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                        <div class="h-full bg-amber-500" style="width: 92%"></div>
+                                    </div>
+                                    <span class="text-amber-600 font-semibold">92%</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 font-medium">25%</td>
+                            <td class="px-6 py-4">
+                                <button onclick="openModal('edit', 21)" class="p-2 hover:bg-gray-100 rounded-lg transition-all">
+                                    <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                    </svg>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr class="border-b border-gray-100 hover:bg-purple-50/50">
+                            <td class="px-6 py-4">
+                                <div>
+                                    <p class="font-semibold">Team Revenue Contribution</p>
+                                    <p class="text-gray-500 text-xs mt-1">Development team's revenue target</p>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <span class="px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs font-bold">DEPT</span>
+                                    <span class="text-gray-600 text-xs">IT Revenue</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 font-medium">40</td>
+                            <td class="px-6 py-4 font-medium text-green-600">32</td>
+                            <td class="px-6 py-4 text-gray-600">Million THB</td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-20 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                        <div class="h-full bg-green-500" style="width: 80%"></div>
+                                    </div>
+                                    <span class="text-green-600 font-semibold">80%</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 font-medium">25%</td>
+                            <td class="px-6 py-4">
+                                <button onclick="openModal('edit', 22)" class="p-2 hover:bg-gray-100 rounded-lg transition-all">
+                                    <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                    </svg>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Individual KPI Section (Team Lead & Dept Head) -->
+        <div id="individualKpiSection" class="hidden bg-white rounded-lg shadow mb-6">
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+                        <span class="px-2 py-1 bg-amber-100 text-amber-700 rounded text-xs font-bold">INDIVIDUAL</span>
+                        Individual KPI
+                    </h3>
+                    <div class="text-sm text-gray-500">Your personal KPIs</div>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="text-left text-gray-600 text-sm border-b border-gray-200 bg-amber-50">
+                            <th class="px-6 py-4 font-medium">KPI Name</th>
+                            <th class="px-6 py-4 font-medium">Ref (Parent KPI)</th>
+                            <th class="px-6 py-4 font-medium">Target</th>
+                            <th class="px-6 py-4 font-medium">Actual</th>
+                            <th class="px-6 py-4 font-medium">Unit</th>
+                            <th class="px-6 py-4 font-medium">Progress</th>
+                            <th class="px-6 py-4 font-medium">Weight</th>
+                            <th class="px-6 py-4 font-medium">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-800 text-sm">
+                        <tr class="border-b border-gray-100 hover:bg-amber-50/50">
+                            <td class="px-6 py-4">
+                                <div>
+                                    <p class="font-semibold">Leadership Development</p>
+                                    <p class="text-gray-500 text-xs mt-1">Complete leadership training programs</p>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <span class="px-2 py-0.5 bg-indigo-100 text-indigo-700 rounded text-xs font-bold">CORE</span>
+                                    <span class="text-gray-600 text-xs">Employee Development</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 font-medium">4</td>
+                            <td class="px-6 py-4 font-medium text-green-600">3</td>
+                            <td class="px-6 py-4 text-gray-600">Courses</td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-20 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                        <div class="h-full bg-green-500" style="width: 75%"></div>
+                                    </div>
+                                    <span class="text-green-600 font-semibold">75%</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 font-medium">15%</td>
+                            <td class="px-6 py-4">
+                                <button onclick="openModal('edit', 30)" class="p-2 hover:bg-gray-100 rounded-lg transition-all">
+                                    <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                    </svg>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr class="border-b border-gray-100 hover:bg-amber-50/50">
+                            <td class="px-6 py-4">
+                                <div>
+                                    <p class="font-semibold">Team Member Satisfaction</p>
+                                    <p class="text-gray-500 text-xs mt-1">Maintain high team satisfaction scores</p>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <span class="px-2 py-0.5 bg-indigo-100 text-indigo-700 rounded text-xs font-bold">CORE</span>
+                                    <span class="text-gray-600 text-xs">Employee Engagement</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 font-medium">85</td>
+                            <td class="px-6 py-4 font-medium text-green-600">88</td>
+                            <td class="px-6 py-4 text-gray-600">%</td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-20 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                        <div class="h-full bg-green-500" style="width: 100%"></div>
+                                    </div>
+                                    <span class="text-green-600 font-semibold">103%</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 font-medium">20%</td>
+                            <td class="px-6 py-4">
+                                <button onclick="openModal('edit', 31)" class="p-2 hover:bg-gray-100 rounded-lg transition-all">
+                                    <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                    </svg>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Weight Summary -->
+        <div class="bg-amber-50 rounded-lg border border-amber-200 p-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <span class="text-amber-800 font-medium">Total Weight:</span>
+                    <span class="text-amber-900 font-bold text-lg">100%</span>
+                </div>
+                <div class="text-amber-700 text-sm">
+                    All KPI weights must sum to 100%
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- KPI Modal -->
+    <div id="kpiModal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-start justify-center pt-10 pb-10 overflow-y-auto">
+        <div class="bg-white rounded-2xl w-full max-w-7xl shadow-2xl">
+            <!-- Header with gradient -->
+            <div class="bg-gradient-to-r from-amber-500 to-amber-600 p-5 rounded-t-2xl">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 id="modalTitle" class="text-lg font-bold text-white">Add New KPI</h3>
+                            <p class="text-amber-100 text-xs">เพิ่ม KPI ใหม่</p>
+                        </div>
+                    </div>
+                    <button onclick="closeModal()" class="text-white/80 hover:text-white hover:bg-white/20 p-2 rounded-lg transition-all">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="p-6">
+                <div class="space-y-4">
+                    <!-- KPI Type (Options dynamically set based on role) -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">KPI Type *</label>
+                        <select id="kpiType" onchange="changeKpiType()" class="w-full bg-gray-50 text-gray-800 rounded-xl px-4 py-3 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent">
+                            <option value="individual">Individual KPI (E-KPI)</option>
+                        </select>
+                    </div>
+
+                    <!-- Reference KPI (Dynamic based on role and KPI type) -->
+                    <div id="referenceSection">
+                        <label id="referenceLabel" class="block text-sm font-medium text-gray-700 mb-1">Reference D-KPI / T-KPI *</label>
+                        <select id="referenceSelect" class="w-full bg-gray-50 text-gray-800 rounded-xl px-4 py-3 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent">
+                            <option>Select Reference KPI</option>
+                            <optgroup label="D-KPI (Department)">
+                                <option>[D-KPI-1] System Uptime 99.9% (IT)</option>
+                                <option>[D-KPI-2] ยอดขายแผนก Sales 250M</option>
+                                <option>[D-KPI-3] Lead Generation 500 leads (Marketing)</option>
+                            </optgroup>
+                            <optgroup label="T-KPI (Team)">
+                                <option>[T-KPI-1] Deploy Sales Features 10 ครั้ง/Q (Dev)</option>
+                                <option>[T-KPI-2] Ticket Resolution < 2hrs (Support)</option>
+                            </optgroup>
+                        </select>
+                    </div>
+
+                    <!-- KPI Name -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">KPI Name *</label>
+                        <input id="kpiName" type="text" placeholder="Enter KPI name" class="w-full bg-gray-50 text-gray-800 rounded-xl px-4 py-3 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent">
+                    </div>
+
+                    <!-- Description -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                        <textarea id="kpiDescription" rows="3" placeholder="Enter KPI description" class="w-full bg-gray-50 text-gray-800 rounded-xl px-4 py-3 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"></textarea>
+                    </div>
+
+                    <!-- Target Setting Section -->
+                    <div class="bg-amber-50 rounded-xl p-4 border border-amber-200">
+                        <h4 class="text-sm font-bold text-amber-800 mb-3 flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            Target Setting
+                        </h4>
+                        <div class="grid grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-xs font-medium text-gray-600 mb-1">Target Value *</label>
+                                <input id="kpiTarget" type="number" placeholder="e.g., 100" class="w-full bg-white text-gray-800 rounded-lg px-3 py-2.5 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-gray-600 mb-1">Unit *</label>
+                                <select class="w-full bg-white text-gray-800 rounded-lg px-3 py-2.5 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent">
+                                    <option>Select Unit</option>
+                                    <option>%</option>
+                                    <option>Number</option>
+                                    <option>Hours</option>
+                                    <option>Days</option>
+                                    <option>Score</option>
+                                    <option>Million THB</option>
+                                    <option>Cases</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-gray-600 mb-1">Weight (%) *</label>
+                                <input id="kpiWeight" type="number" placeholder="e.g., 20" class="w-full bg-white text-gray-800 rounded-lg px-3 py-2.5 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Actual Value Section (Locked) -->
+                    <div class="bg-gray-100 rounded-xl p-4 border border-gray-300 opacity-60">
+                        <div class="flex items-center justify-between mb-3">
+                            <h4 class="text-sm font-bold text-gray-500 flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                                </svg>
+                                Actual Value
+                            </h4>
+                            <span class="px-2 py-1 bg-gray-200 text-gray-500 rounded-full text-xs font-medium">Locked</span>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-400 mb-1">Actual Value</label>
+                            <input id="kpiActual" type="number" placeholder="จะเปิดให้กรอกเมื่อถึงช่วงเวลาที่ HR กำหนด" disabled class="w-full bg-gray-200 text-gray-400 rounded-lg px-3 py-2.5 border border-gray-300 cursor-not-allowed">
+                        </div>
+                        <p class="text-xs text-gray-400 mt-2 flex items-center gap-1">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            จะเปิดให้กรอกเมื่อถึงช่วงเวลาที่ HR กำหนด
+                        </p>
+                    </div>
+
+                    <!-- Measurement Type -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Measurement Type</label>
+                        <div class="flex items-center gap-4 mt-2">
+                            <label class="flex items-center gap-2 p-3 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition-all border border-gray-200">
+                                <input type="radio" name="measureType" value="higher" checked class="text-amber-600 focus:ring-amber-500">
+                                <span class="text-gray-700 text-sm">Higher is better</span>
+                            </label>
+                            <label class="flex items-center gap-2 p-3 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition-all border border-gray-200">
+                                <input type="radio" name="measureType" value="lower" class="text-amber-600 focus:ring-amber-500">
+                                <span class="text-gray-700 text-sm">Lower is better</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Visibility Section (Only for Dept KPI - hidden by default for Team Lead/Employee) -->
+                    <div id="visibilitySection" class="hidden">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Visibility *</label>
+                        <div class="flex items-center gap-4 mt-2">
+                            <label class="flex items-center gap-2 p-3 bg-cyan-50 rounded-xl cursor-pointer hover:bg-cyan-100 transition-all border border-cyan-200">
+                                <input type="radio" name="kpiVisibility" value="all" checked class="text-cyan-600 focus:ring-cyan-500">
+                                <span class="text-gray-800 text-sm font-medium">All Teams</span>
+                            </label>
+                            <label class="flex items-center gap-2 p-3 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition-all border border-gray-200">
+                                <input type="radio" name="kpiVisibility" value="specific" class="text-amber-600 focus:ring-amber-500">
+                                <span class="text-gray-800 text-sm font-medium">Specific Teams</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Team & Assignees Section (Only for Team KPI) -->
+                    <div id="teamAssignSection" class="hidden space-y-4">
+                        <!-- Team Selection -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Team *</label>
+                            <select id="teamSelect" class="w-full bg-gray-50 text-gray-800 rounded-xl px-4 py-3 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent">
+                                <option>Select Team</option>
+                                <option>Development Team (IT Dept)</option>
+                                <option>Support Team (IT Dept)</option>
+                                <option>QA Team (IT Dept)</option>
+                                <option>Sales Team A (Sales Dept)</option>
+                                <option>Sales Team B (Sales Dept)</option>
+                                <option>Digital Marketing (Marketing Dept)</option>
+                            </select>
+                        </div>
+
+                        <!-- Assignees Selection -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Assignees *</label>
+                            <div class="border border-gray-200 rounded-xl p-4 bg-gray-50 grid grid-cols-2 gap-3">
+                                <label class="flex items-center gap-2 p-2 bg-white hover:bg-gray-100 rounded-lg cursor-pointer transition-all">
+                                    <input type="checkbox" class="w-4 h-4 text-amber-600 rounded focus:ring-amber-500">
+                                    <div class="w-7 h-7 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-xs font-bold">สด</div>
+                                    <span class="text-gray-800 text-sm">สุดา พ.</span>
+                                </label>
+                                <label class="flex items-center gap-2 p-2 bg-white hover:bg-gray-100 rounded-lg cursor-pointer transition-all">
+                                    <input type="checkbox" class="w-4 h-4 text-amber-600 rounded focus:ring-amber-500">
+                                    <div class="w-7 h-7 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-full flex items-center justify-center text-white text-xs font-bold">วร</div>
+                                    <span class="text-gray-800 text-sm">วรพล ส.</span>
+                                </label>
+                                <label class="flex items-center gap-2 p-2 bg-white hover:bg-gray-100 rounded-lg cursor-pointer transition-all">
+                                    <input type="checkbox" class="w-4 h-4 text-amber-600 rounded focus:ring-amber-500">
+                                    <div class="w-7 h-7 bg-gradient-to-br from-pink-500 to-rose-600 rounded-full flex items-center justify-center text-white text-xs font-bold">มน</div>
+                                    <span class="text-gray-800 text-sm">มณีรัตน์ ก.</span>
+                                </label>
+                                <label class="flex items-center gap-2 p-2 bg-white hover:bg-gray-100 rounded-lg cursor-pointer transition-all">
+                                    <input type="checkbox" class="w-4 h-4 text-amber-600 rounded focus:ring-amber-500">
+                                    <div class="w-7 h-7 bg-gradient-to-br from-orange-500 to-amber-600 rounded-full flex items-center justify-center text-white text-xs font-bold">ธว</div>
+                                    <span class="text-gray-800 text-sm">ธวัชชัย ม.</span>
+                                </label>
+                                <label class="flex items-center gap-2 p-2 bg-white hover:bg-gray-100 rounded-lg cursor-pointer transition-all">
+                                    <input type="checkbox" class="w-4 h-4 text-amber-600 rounded focus:ring-amber-500">
+                                    <div class="w-7 h-7 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold">วช</div>
+                                    <span class="text-gray-800 text-sm">วิชัย ใ.</span>
+                                </label>
+                                <label class="flex items-center gap-2 p-2 bg-white hover:bg-gray-100 rounded-lg cursor-pointer transition-all">
+                                    <input type="checkbox" class="w-4 h-4 text-amber-600 rounded focus:ring-amber-500">
+                                    <div class="w-7 h-7 bg-gradient-to-br from-cyan-500 to-teal-600 rounded-full flex items-center justify-center text-white text-xs font-bold">สน</div>
+                                    <span class="text-gray-800 text-sm">สุนีย์ ม.</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="px-6 py-4 bg-gray-50 rounded-b-2xl flex items-center justify-end gap-3">
+                <button onclick="closeModal()" class="px-5 py-2.5 text-gray-600 hover:text-gray-800 font-semibold transition-all">
+                    Cancel
+                </button>
+                <button onclick="saveKpi()" class="px-6 py-2.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl font-bold transition-all shadow-lg shadow-amber-200">
+                    Save KPI
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dept KPI Modal - 2 Column Layout -->
+    <div id="deptKpiModal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl w-full max-w-7xl shadow-2xl">
+            <!-- Header with gradient -->
+            <div class="bg-gradient-to-r from-indigo-500 to-purple-600 p-5 rounded-t-2xl">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 id="deptModalTitle" class="text-lg font-bold text-white">Add Dept KPI</h3>
+                            <p class="text-indigo-100 text-xs">เพิ่ม KPI ระดับฝ่าย</p>
+                        </div>
+                    </div>
+                    <button onclick="closeDeptKpiModal()" class="text-white/80 hover:text-white hover:bg-white/20 p-2 rounded-lg transition-all">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div class="p-6">
+                <div class="grid grid-cols-2 gap-6">
+                    <!-- Reference C-KPI -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Reference C-KPI *</label>
+                        <select class="w-full bg-white text-gray-800 rounded-lg px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option>Select C-KPI</option>
+                            <option>[C-KPI-1] Strengthen the Core</option>
+                            <option>[C-KPI-2] Excellent Ecosystem</option>
+                            <option>[C-KPI-3] Sustainable Impact</option>
+                            <option>[C-KPI-4] Data-Driven Operation</option>
+                            <option>[C-KPI-5] People & Commitment</option>
+                        </select>
+                    </div>
+
+                    <!-- Visibility -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Visibility *</label>
+                        <div class="flex items-center gap-4">
+                            <label class="flex items-center gap-2 p-2 bg-cyan-50 rounded-lg cursor-pointer hover:bg-cyan-100 border border-cyan-200">
+                                <input type="radio" name="deptVisibility" value="all" checked class="text-cyan-600 focus:ring-cyan-500">
+                                <span class="text-gray-800 text-sm font-medium">All Teams</span>
+                            </label>
+                            <label class="flex items-center gap-2 p-2 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 border border-gray-200">
+                                <input type="radio" name="deptVisibility" value="specific" class="text-indigo-600 focus:ring-indigo-500">
+                                <span class="text-gray-800 text-sm font-medium">Specific Teams</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- KPI Name - Full Width -->
+                    <div class="col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">KPI Name *</label>
+                        <input type="text" placeholder="Enter KPI name" class="w-full bg-white text-gray-800 rounded-lg px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+
+                    <!-- Description - Full Width -->
+                    <div class="col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                        <textarea rows="2" placeholder="Enter description" class="w-full bg-white text-gray-800 rounded-lg px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+                    </div>
+
+                    <!-- Target Value -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Target Value *</label>
+                        <input type="number" placeholder="e.g., 100" class="w-full bg-white text-gray-800 rounded-lg px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+
+                    <!-- Unit -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Unit *</label>
+                        <select class="w-full bg-white text-gray-800 rounded-lg px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option>Select Unit</option>
+                            <option>Million THB</option>
+                            <option>%</option>
+                            <option>Score</option>
+                            <option>Number</option>
+                            <option>Days</option>
+                            <option>Cases</option>
+                        </select>
+                    </div>
+
+                    <!-- Weight -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Weight (%) *</label>
+                        <input type="number" placeholder="e.g., 25" class="w-full bg-white text-gray-800 rounded-lg px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+
+                    <!-- Measurement Type -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Measurement Type</label>
+                        <select class="w-full bg-white text-gray-800 rounded-lg px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option>Higher is better</option>
+                            <option>Lower is better</option>
+                        </select>
+                    </div>
+
+                    <!-- Assign Teams - Full Width -->
+                    <div class="col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Assign Teams</label>
+                        <div class="flex flex-wrap gap-3">
+                            <label class="flex items-center gap-2 px-3 py-2 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 border">
+                                <input type="checkbox" class="rounded border-gray-300 text-indigo-600 w-4 h-4">
+                                <span class="text-sm">Dev Team</span>
+                            </label>
+                            <label class="flex items-center gap-2 px-3 py-2 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 border">
+                                <input type="checkbox" class="rounded border-gray-300 text-indigo-600 w-4 h-4">
+                                <span class="text-sm">QA Team</span>
+                            </label>
+                            <label class="flex items-center gap-2 px-3 py-2 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 border">
+                                <input type="checkbox" class="rounded border-gray-300 text-indigo-600 w-4 h-4">
+                                <span class="text-sm">Infra Team</span>
+                            </label>
+                            <label class="flex items-center gap-2 px-3 py-2 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 border">
+                                <input type="checkbox" class="rounded border-gray-300 text-indigo-600 w-4 h-4">
+                                <span class="text-sm">Support Team</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="px-6 py-4 bg-gray-50 rounded-b-2xl flex items-center justify-end gap-3">
+                <button onclick="closeDeptKpiModal()" class="px-5 py-2.5 text-gray-600 hover:text-gray-800 font-semibold transition-all">
+                    Cancel
+                </button>
+                <button onclick="saveDeptKpi()" class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold transition-all shadow-lg shadow-indigo-200">
+                    Save Dept KPI
+                </button>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
