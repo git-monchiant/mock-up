@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>D-KPI Monthly Update - KPI System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        html { overflow-y: scroll; }
+        body { font-family: 'Prompt', sans-serif; }
+        input, select, textarea, button { font-family: inherit; }
+        .pulse-dot { animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .input-actual:focus { outline: none; box-shadow: 0 0 0 2px rgba(217, 119, 6, 0.3); }
+    </style>
+    <script>
+        const roles = {
+            dept_head: {
+                name: 'นางสาวจิราพร วงศ์ไพศาล',
+                initials: 'จว',
+                position: 'IT Director',
+                team: 'IT Management',
+                department: 'IT Department',
+                empId: 'DIR-0003',
+                level: 'dept_head',
+                permissions: ['dashboard', 'my-kpi', 'dept-kpi', 'team-kpi', 'alignment', 'approval', 'evaluation', 'reports', 'monthly-update']
+            }
+        };
+
+        let currentRole = 'dept_head';
+
+        function updateUI() {
+            const role = roles[currentRole];
+            document.getElementById('userName').textContent = role.name;
+            document.getElementById('userPosition').textContent = role.position;
+            document.getElementById('userDept').textContent = role.department;
+            document.getElementById('userInitials').textContent = role.initials;
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            updateUI();
+        });
+
+        // D-KPI Data for Monthly Update
+        const dkpiData = [
+            {
+                id: 1,
+                name: 'System Uptime Rate',
+                description: 'อัตราการทำงานของระบบ',
+                target: 99.9,
+                unit: '%',
+                weight: 25,
+                monthly: {
+                    jan: { actual: 99.8, confirmed: true },
+                    feb: { actual: 99.9, confirmed: true },
+                    mar: { actual: 99.7, confirmed: true },
+                    apr: { actual: 99.9, confirmed: true },
+                    may: { actual: 99.8, confirmed: true },
+                    jun: { actual: 99.9, confirmed: true },
+                    jul: { actual: null, confirmed: false },
+                    aug: { actual: null, confirmed: false },
+                    sep: { actual: null, confirmed: false },
+                    oct: { actual: null, confirmed: false },
+                    nov: { actual: null, confirmed: false },
+                    dec: { actual: null, confirmed: false }
+                }
+            },
+            {
+                id: 2,
+                name: 'Customer Satisfaction Score',
+                description: 'คะแนนความพึงพอใจลูกค้า',
+                target: 90,
+                unit: '%',
+                weight: 20,
+                monthly: {
+                    jan: { actual: 88, confirmed: true },
+                    feb: { actual: 89, confirmed: true },
+                    mar: { actual: 91, confirmed: true },
+                    apr: { actual: 90, confirmed: true },
+                    may: { actual: 92, confirmed: true },
+                    jun: { actual: 91, confirmed: true },
+                    jul: { actual: null, confirmed: false },
+                    aug: { actual: null, confirmed: false },
+                    sep: { actual: null, confirmed: false },
+                    oct: { actual: null, confirmed: false },
+                    nov: { actual: null, confirmed: false },
+                    dec: { actual: null, confirmed: false }
+                }
+            },
+            {
+                id: 3,
+                name: 'IT Support Response Time',
+                description: 'อัตราตอบสนอง IT Support ภายใน SLA',
+                target: 95,
+                unit: '%',
+                weight: 20,
+                monthly: {
+                    jan: { actual: 94, confirmed: true },
+                    feb: { actual: 96, confirmed: true },
+                    mar: { actual: 95, confirmed: true },
+                    apr: { actual: 97, confirmed: true },
+                    may: { actual: 96, confirmed: true },
+                    jun: { actual: 95, confirmed: true },
+                    jul: { actual: null, confirmed: false },
+                    aug: { actual: null, confirmed: false },
+                    sep: { actual: null, confirmed: false },
+                    oct: { actual: null, confirmed: false },
+                    nov: { actual: null, confirmed: false },
+                    dec: { actual: null, confirmed: false }
+                }
+            },
+            {
+                id: 4,
+                name: 'IT Budget Utilization',
+                description: 'งบประมาณ IT ที่ใช้จริง',
+                target: 280000000,
+                unit: 'บาท',
+                weight: 15,
+                monthly: {
+                    jan: { actual: 22500000, confirmed: true },
+                    feb: { actual: 21800000, confirmed: true },
+                    mar: { actual: 24200000, confirmed: true },
+                    apr: { actual: 23500000, confirmed: true },
+                    may: { actual: 22900000, confirmed: true },
+                    jun: { actual: 24100000, confirmed: true },
+                    jul: { actual: null, confirmed: false },
+                    aug: { actual: null, confirmed: false },
+                    sep: { actual: null, confirmed: false },
+                    oct: { actual: null, confirmed: false },
+                    nov: { actual: null, confirmed: false },
+                    dec: { actual: null, confirmed: false }
+                }
+            },
+            {
+                id: 5,
+                name: 'Security Incident Rate',
+                description: 'อัตราเหตุการณ์ด้านความปลอดภัย (ยิ่งต่ำยิ่งดี)',
+                target: 0.5,
+                unit: '%',
+                weight: 20,
+                monthly: {
+                    jan: { actual: 0.3, confirmed: true },
+                    feb: { actual: 0.2, confirmed: true },
+                    mar: { actual: 0.4, confirmed: true },
+                    apr: { actual: 0.1, confirmed: true },
+                    may: { actual: 0.2, confirmed: true },
+                    jun: { actual: 0.3, confirmed: true },
+                    jul: { actual: null, confirmed: false },
+                    aug: { actual: null, confirmed: false },
+                    sep: { actual: null, confirmed: false },
+                    oct: { actual: null, confirmed: false },
+                    nov: { actual: null, confirmed: false },
+                    dec: { actual: null, confirmed: false }
+                }
+            }
+        ];
+
+        const months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+        const monthNames = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+
+        let selectedMonth = 'jul'; // Current month to update
+        let editingValues = {};
+
+        function selectMonth(month) {
+            selectedMonth = month;
+            document.querySelectorAll('.month-tab').forEach(tab => {
+                if (tab.dataset.month === month) {
+                    tab.classList.add('bg-amber-600', 'text-white');
+                    tab.classList.remove('bg-white', 'text-gray-600', 'hover:bg-amber-50');
+                } else {
+                    tab.classList.remove('bg-amber-600', 'text-white');
+                    tab.classList.add('bg-white', 'text-gray-600', 'hover:bg-amber-50');
+                }
+            });
+            renderTable();
+        }
+
+        function formatNumber(num, unit) {
+            if (num === null || num === undefined) return '-';
+            if (unit === 'บาท') {
+                return num.toLocaleString('th-TH');
+            }
+            return num.toString();
+        }
+
+        function getStatusColor(actual, target, unit) {
+            if (actual === null) return 'bg-gray-100 text-gray-500';
+            const ratio = actual / target;
+            if (unit === '%' && actual >= target * 0.95) return 'bg-green-100 text-green-700';
+            if (unit === '%' && actual >= target * 0.8) return 'bg-amber-100 text-amber-700';
+            if (unit === 'บาท' && actual <= target) return 'bg-green-100 text-green-700';
+            return 'bg-red-100 text-red-700';
+        }
+
+        function handleActualChange(kpiId, value) {
+            editingValues[kpiId] = value;
+        }
+
+        function confirmKpi(kpiId) {
+            const kpi = dkpiData.find(k => k.id === kpiId);
+            const value = editingValues[kpiId];
+
+            if (!value && value !== 0) {
+                alert('กรุณากรอกค่า Actual ก่อนยืนยัน');
+                return;
+            }
+
+            kpi.monthly[selectedMonth].actual = parseFloat(value);
+            kpi.monthly[selectedMonth].confirmed = true;
+
+            delete editingValues[kpiId];
+            renderTable();
+
+            showToast(`ยืนยัน ${kpi.name} สำเร็จ`);
+        }
+
+        function confirmAll() {
+            let hasUnconfirmed = false;
+            dkpiData.forEach(kpi => {
+                if (!kpi.monthly[selectedMonth].confirmed) {
+                    const value = editingValues[kpi.id];
+                    if (value || value === 0) {
+                        kpi.monthly[selectedMonth].actual = parseFloat(value);
+                        kpi.monthly[selectedMonth].confirmed = true;
+                        hasUnconfirmed = true;
+                    }
+                }
+            });
+
+            if (hasUnconfirmed) {
+                editingValues = {};
+                renderTable();
+                showToast('ยืนยัน D-KPI ทั้งหมดสำเร็จ');
+            } else {
+                alert('ไม่มีรายการที่ต้องยืนยัน หรือกรุณากรอกค่า Actual ก่อน');
+            }
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+                toast.classList.remove('translate-y-0', 'opacity-100');
+            }, 3000);
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('kpiTableBody');
+            const monthIndex = months.indexOf(selectedMonth);
+            const monthLabel = monthNames[monthIndex];
+
+            // Update header
+            document.getElementById('selectedMonthHeader').textContent = monthLabel + ' 2025';
+
+            let html = '';
+            dkpiData.forEach(kpi => {
+                const monthData = kpi.monthly[selectedMonth];
+                const isConfirmed = monthData.confirmed;
+                const currentActual = monthData.actual;
+
+                // Calculate YTD
+                let ytdTotal = 0;
+                let ytdCount = 0;
+                months.slice(0, monthIndex + 1).forEach(m => {
+                    if (kpi.monthly[m].actual !== null) {
+                        ytdTotal += kpi.monthly[m].actual;
+                        ytdCount++;
+                    }
+                });
+                const ytdAvg = ytdCount > 0 ? (kpi.unit === 'บาท' ? ytdTotal : ytdTotal / ytdCount) : null;
+
+                html += `
+                    <tr class="border-b border-gray-100 hover:bg-gray-50">
+                        <td class="px-4 py-4">
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <span class="w-6 h-6 bg-indigo-100 text-indigo-600 rounded flex items-center justify-center flex-shrink-0">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                                        </svg>
+                                    </span>
+                                    <p class="font-semibold text-gray-800">${kpi.name}</p>
+                                </div>
+                                <p class="text-gray-500 text-xs mt-1 ml-8">${kpi.description}</p>
+                            </div>
+                        </td>
+                        <td class="px-4 py-4 text-center">
+                            <span class="font-semibold text-gray-800">${formatNumber(kpi.target, kpi.unit)}</span>
+                            <span class="text-gray-500 text-xs ml-1">${kpi.unit}</span>
+                        </td>
+                        <td class="px-4 py-4 text-center">
+                            ${isConfirmed ? `
+                                <span class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg ${getStatusColor(currentActual, kpi.target, kpi.unit)} font-semibold">
+                                    ${formatNumber(currentActual, kpi.unit)}
+                                    <span class="text-xs font-normal">${kpi.unit}</span>
+                                </span>
+                            ` : `
+                                <input type="number"
+                                    class="input-actual w-28 px-3 py-2 border border-gray-300 rounded-lg text-center text-sm font-medium"
+                                    placeholder="กรอกค่า"
+                                    value="${editingValues[kpi.id] || ''}"
+                                    onchange="handleActualChange(${kpi.id}, this.value)"
+                                    step="${kpi.unit === '%' ? '0.1' : '1000'}">
+                            `}
+                        </td>
+                        <td class="px-4 py-4 text-center">
+                            ${ytdAvg !== null ? `
+                                <span class="text-gray-700 font-medium">${formatNumber(Math.round(ytdAvg * 100) / 100, kpi.unit)}</span>
+                                <span class="text-gray-400 text-xs ml-1">${kpi.unit}</span>
+                            ` : '-'}
+                        </td>
+                        <td class="px-4 py-4 text-center">
+                            <span class="text-gray-600">${kpi.weight}%</span>
+                        </td>
+                        <td class="px-4 py-4 text-center">
+                            ${isConfirmed ? `
+                                <span class="inline-flex items-center gap-1 px-3 py-1.5 bg-green-100 text-green-700 rounded-lg text-sm font-medium">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                    </svg>
+                                    Confirmed
+                                </span>
+                            ` : `
+                                <button onclick="confirmKpi(${kpi.id})"
+                                    class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-sm font-medium transition-all flex items-center gap-1 mx-auto">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                    </svg>
+                                    Confirm
+                                </button>
+                            `}
+                        </td>
+                    </tr>
+                `;
+            });
+
+            tbody.innerHTML = html;
+
+            // Update summary stats
+            updateStats();
+        }
+
+        function updateStats() {
+            const monthIndex = months.indexOf(selectedMonth);
+            let confirmed = 0;
+            let pending = 0;
+
+            dkpiData.forEach(kpi => {
+                if (kpi.monthly[selectedMonth].confirmed) {
+                    confirmed++;
+                } else {
+                    pending++;
+                }
+            });
+
+            document.getElementById('statConfirmed').textContent = confirmed;
+            document.getElementById('statPending').textContent = pending;
+            document.getElementById('statTotal').textContent = dkpiData.length;
+
+            // Update progress bar
+            const progress = (confirmed / dkpiData.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            updateUI();
+            renderTable();
+        });
+    </script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <!-- Sidebar -->
+    <div class="fixed left-0 top-0 h-full w-64 bg-gradient-to-b from-amber-700 to-amber-900 text-white">
+        <div class="p-6">
+            <div class="flex items-center gap-3 mb-8">
+                <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
+                    <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg">KPI System</h1>
+                    <p class="text-amber-200 text-xs">Performance Management</p>
+                </div>
+            </div>
+
+            <!-- User Profile -->
+            <div class="bg-amber-800 rounded-lg p-4 mb-6">
+                <div class="flex items-center gap-3">
+                    <div id="userInitials" class="w-10 h-10 bg-amber-600 rounded-full flex items-center justify-center font-bold">จว</div>
+                    <div class="flex-1 min-w-0">
+                        <p id="userName" class="font-semibold text-sm truncate">นางสาวจิราพร วงศ์ไพศาล</p>
+                        <p id="userPosition" class="text-amber-200 text-xs truncate">IT Director</p>
+                        <p id="userDept" class="text-amber-300 text-xs truncate">IT Department</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <nav class="space-y-2">
+                <a href="01-dashboard.html" class="flex items-center gap-3 px-4 py-3 text-white hover:bg-amber-600 rounded-lg transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                    </svg>
+                    <span class="font-medium">Dashboard</span>
+                </a>
+
+                <a href="04-my-kpi.html" class="flex items-center gap-3 px-4 py-3 text-white hover:bg-amber-600 rounded-lg transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                    </svg>
+                    <span class="font-medium">Dept KPI</span>
+                </a>
+
+                <a href="09-monthly-update.html" class="flex items-center gap-3 px-4 py-3 bg-amber-800 text-white rounded-lg">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                    <span class="font-medium">Monthly Update</span>
+                    <span class="ml-auto bg-amber-500 text-white text-xs px-2 py-0.5 rounded-full">New</span>
+                </a>
+
+                <a href="03-alignment.html" class="flex items-center gap-3 px-4 py-3 text-white hover:bg-amber-600 rounded-lg transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"/>
+                    </svg>
+                    <span class="font-medium">Alignment View</span>
+                </a>
+
+                <div class="border-t border-amber-600 my-3"></div>
+
+                <a href="05-approval.html" class="flex items-center gap-3 px-4 py-3 text-white hover:bg-amber-600 rounded-lg transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <span class="font-medium">Approval Inbox</span>
+                </a>
+
+                <a href="07-evaluation.html" class="flex items-center gap-3 px-4 py-3 text-white hover:bg-amber-600 rounded-lg transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
+                    </svg>
+                    <span class="font-medium">Evaluation</span>
+                </a>
+
+                <a href="08-reports.html" class="flex items-center gap-3 px-4 py-3 text-white hover:bg-amber-600 rounded-lg transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    <span class="font-medium">Reports</span>
+                </a>
+            </nav>
+
+            <div class="mt-6 pt-6 border-t border-amber-600">
+                <a href="../index.html" class="flex items-center gap-3 px-4 py-3 text-amber-100 hover:bg-amber-600 rounded-lg transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                    </svg>
+                    <span class="font-medium">Back to Home</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="ml-64 px-6 pt-2 pb-6">
+        <!-- Header -->
+        <div class="bg-white shadow-sm rounded-lg p-6 mb-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-800 flex items-center gap-3">
+                        <span class="w-10 h-10 bg-indigo-100 text-indigo-600 rounded-lg flex items-center justify-center">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            </svg>
+                        </span>
+                        D-KPI Monthly Update
+                    </h2>
+                    <p class="text-sm text-gray-600 mt-1 ml-13">Update actual values for department KPIs each month</p>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="bg-amber-50 rounded-lg px-4 py-2 border border-amber-200">
+                        <p class="text-amber-600 text-xs">Current Cycle</p>
+                        <p class="text-amber-800 font-bold">H2/2025</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Row -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+            <div class="bg-white rounded-lg shadow p-5">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                        </svg>
+                    </div>
+                </div>
+                <p class="text-gray-500 text-sm">Total D-KPIs</p>
+                <p id="statTotal" class="text-2xl font-bold text-gray-800">5</p>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-5">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                        </svg>
+                    </div>
+                </div>
+                <p class="text-gray-500 text-sm">Confirmed</p>
+                <p id="statConfirmed" class="text-2xl font-bold text-green-600">0</p>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-5">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                </div>
+                <p class="text-gray-500 text-sm">Pending</p>
+                <p id="statPending" class="text-2xl font-bold text-amber-600">5</p>
+            </div>
+
+            <div class="bg-white rounded-lg shadow p-5">
+                <div class="flex items-center justify-between mb-3">
+                    <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                        </svg>
+                    </div>
+                </div>
+                <p class="text-gray-500 text-sm">Monthly Progress</p>
+                <div class="flex items-center gap-2 mt-1">
+                    <div class="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+                        <div id="progressBar" class="h-full bg-purple-500 transition-all duration-300" style="width: 0%"></div>
+                    </div>
+                    <span class="text-sm font-semibold text-purple-600">0%</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Month Selector -->
+        <div class="bg-white rounded-lg shadow mb-6">
+            <div class="p-4 border-b border-gray-200">
+                <h3 class="text-sm font-semibold text-gray-700 mb-3">Select Month to Update</h3>
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="selectMonth('jan')" data-month="jan" class="month-tab px-4 py-2 rounded-lg text-sm font-medium border border-gray-200 bg-white text-gray-600 hover:bg-amber-50 transition-all">ม.ค.</button>
+                    <button onclick="selectMonth('feb')" data-month="feb" class="month-tab px-4 py-2 rounded-lg text-sm font-medium border border-gray-200 bg-white text-gray-600 hover:bg-amber-50 transition-all">ก.พ.</button>
+                    <button onclick="selectMonth('mar')" data-month="mar" class="month-tab px-4 py-2 rounded-lg text-sm font-medium border border-gray-200 bg-white text-gray-600 hover:bg-amber-50 transition-all">มี.ค.</button>
+                    <button onclick="selectMonth('apr')" data-month="apr" class="month-tab px-4 py-2 rounded-lg text-sm font-medium border border-gray-200 bg-white text-gray-600 hover:bg-amber-50 transition-all">เม.ย.</button>
+                    <button onclick="selectMonth('may')" data-month="may" class="month-tab px-4 py-2 rounded-lg text-sm font-medium border border-gray-200 bg-white text-gray-600 hover:bg-amber-50 transition-all">พ.ค.</button>
+                    <button onclick="selectMonth('jun')" data-month="jun" class="month-tab px-4 py-2 rounded-lg text-sm font-medium border border-gray-200 bg-white text-gray-600 hover:bg-amber-50 transition-all">มิ.ย.</button>
+                    <button onclick="selectMonth('jul')" data-month="jul" class="month-tab px-4 py-2 rounded-lg text-sm font-medium border border-gray-200 bg-amber-600 text-white transition-all">ก.ค.</button>
+                    <button onclick="selectMonth('aug')" data-month="aug" class="month-tab px-4 py-2 rounded-lg text-sm font-medium border border-gray-200 bg-white text-gray-600 hover:bg-amber-50 transition-all">ส.ค.</button>
+                    <button onclick="selectMonth('sep')" data-month="sep" class="month-tab px-4 py-2 rounded-lg text-sm font-medium border border-gray-200 bg-white text-gray-600 hover:bg-amber-50 transition-all">ก.ย.</button>
+                    <button onclick="selectMonth('oct')" data-month="oct" class="month-tab px-4 py-2 rounded-lg text-sm font-medium border border-gray-200 bg-white text-gray-600 hover:bg-amber-50 transition-all">ต.ค.</button>
+                    <button onclick="selectMonth('nov')" data-month="nov" class="month-tab px-4 py-2 rounded-lg text-sm font-medium border border-gray-200 bg-white text-gray-600 hover:bg-amber-50 transition-all">พ.ย.</button>
+                    <button onclick="selectMonth('dec')" data-month="dec" class="month-tab px-4 py-2 rounded-lg text-sm font-medium border border-gray-200 bg-white text-gray-600 hover:bg-amber-50 transition-all">ธ.ค.</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- KPI Table -->
+        <div class="bg-white rounded-lg shadow">
+            <div class="p-6 border-b border-gray-200">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+                        <span class="w-7 h-7 bg-indigo-100 text-indigo-600 rounded-lg flex items-center justify-center">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                            </svg>
+                        </span>
+                        Department KPIs - <span id="selectedMonthHeader" class="text-amber-600">ก.ค. 2025</span>
+                    </h3>
+                    <button onclick="confirmAll()" class="px-5 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-lg font-bold transition-all flex items-center gap-2 shadow">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                        </svg>
+                        Confirm All
+                    </button>
+                </div>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead>
+                        <tr class="text-left text-gray-600 text-sm border-b border-gray-200 bg-gray-50">
+                            <th class="px-4 py-4 font-medium">KPI Name</th>
+                            <th class="px-4 py-4 font-medium text-center">Target</th>
+                            <th class="px-4 py-4 font-medium text-center">Actual (Monthly)</th>
+                            <th class="px-4 py-4 font-medium text-center">YTD</th>
+                            <th class="px-4 py-4 font-medium text-center">Weight</th>
+                            <th class="px-4 py-4 font-medium text-center">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="kpiTableBody" class="text-gray-800 text-sm">
+                        <!-- Dynamic content -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Footer Notes -->
+            <div class="p-4 bg-gray-50 border-t border-gray-200">
+                <div class="flex items-start gap-2 text-sm text-gray-600">
+                    <svg class="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <div>
+                        <p class="font-medium text-gray-700">หมายเหตุ:</p>
+                        <ul class="list-disc list-inside mt-1 space-y-1">
+                            <li>กรอกค่า Actual ของแต่ละ D-KPI และกด Confirm เพื่อบันทึก</li>
+                            <li>เมื่อ Confirm แล้วจะไม่สามารถแก้ไขได้ (ต้องติดต่อ KPI Admin)</li>
+                            <li>YTD คำนวณจากค่าเฉลี่ยของเดือนที่ผ่านมา (หรือผลรวมสำหรับหน่วย บาท)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-6 right-6 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg font-medium transform translate-y-20 opacity-0 transition-all duration-300 flex items-center gap-2">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+        </svg>
+        <span>Saved successfully</span>
+    </div>
+</body>
+</html>
