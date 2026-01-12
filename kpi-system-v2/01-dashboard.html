@@ -5,9 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - KPI System</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Sarabun', sans-serif; }
+        html { overflow-y: scroll; }
+        body { font-family: 'Prompt', sans-serif; }
+        input, select, textarea, button { font-family: inherit; }
         .pulse-dot { animation: pulse 2s infinite; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
     </style>
@@ -235,13 +237,13 @@
     </div>
 
     <!-- Main Content -->
-    <div class="ml-64 p-8">
+    <div class="ml-64 px-6 pt-2 pb-6">
         <!-- Header -->
         <div class="bg-white shadow-sm rounded-lg p-6 mb-6">
             <div class="flex items-center justify-between">
                 <div>
                     <h2 class="text-2xl font-bold text-gray-800">Dashboard</h2>
-                    <p class="text-sm text-gray-600 mt-1">Q4/2025 - KPI Performance</p>
+                    <p class="text-sm text-gray-600 mt-1">H2/2025 - KPI Performance</p>
                 </div>
                 <div class="flex items-center gap-4">
                     <button class="relative p-2 bg-gray-100 rounded-lg hover:bg-gray-200">
@@ -252,7 +254,7 @@
                     </button>
                     <div class="bg-amber-50 rounded-lg px-4 py-2 border border-amber-200">
                         <p class="text-amber-600 text-xs">Current Cycle</p>
-                        <p class="text-amber-800 font-bold">Q4/2025</p>
+                        <p class="text-amber-800 font-bold">H2/2025</p>
                     </div>
                 </div>
             </div>
@@ -410,7 +412,11 @@
                 <div id="deptKpiSection" class="hidden bg-white rounded-lg shadow p-6">
                     <div class="flex items-center justify-between mb-6">
                         <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2">
-                            <span class="px-2 py-1 bg-indigo-100 text-indigo-700 rounded text-xs font-bold">DEPT</span>
+                            <span class="w-7 h-7 bg-indigo-100 text-indigo-600 rounded-lg flex items-center justify-center">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                                </svg>
+                            </span>
                             Dept KPI
                         </h3>
                         <a href="04-my-kpi.html" class="text-amber-600 hover:text-amber-700 text-sm font-semibold">View All →</a>
@@ -432,11 +438,11 @@
                                 <div class="space-y-1 text-sm">
                                     <div class="flex justify-between">
                                         <span class="text-gray-600">Development Team</span>
-                                        <span class="font-medium">8/10 Features</span>
+                                        <span class="font-medium">92%</span>
                                     </div>
                                     <div class="flex justify-between">
                                         <span class="text-gray-600">Support Team</span>
-                                        <span class="font-medium">1.8/2 hrs Avg</span>
+                                        <span class="font-medium">95%</span>
                                     </div>
                                 </div>
                             </div>
@@ -448,7 +454,11 @@
                 <div id="teamKpiSection" class="hidden bg-white rounded-lg shadow p-6">
                     <div class="flex items-center justify-between mb-6">
                         <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2">
-                            <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded text-xs font-bold">TEAM</span>
+                            <span class="w-7 h-7 bg-purple-100 text-purple-600 rounded-lg flex items-center justify-center">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                                </svg>
+                            </span>
                             Team KPI
                         </h3>
                         <a href="04-my-kpi.html" class="text-amber-600 hover:text-amber-700 text-sm font-semibold">View All →</a>
@@ -490,6 +500,11 @@
                 <div class="bg-white rounded-lg shadow p-6">
                     <div class="flex items-center justify-between mb-6">
                         <h3 id="kpiSectionTitle" class="text-lg font-bold text-gray-800 flex items-center gap-2">
+                            <span class="w-7 h-7 bg-amber-100 text-amber-600 rounded-lg flex items-center justify-center">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                                </svg>
+                            </span>
                             My KPI
                         </h3>
                         <a href="04-my-kpi.html" class="text-amber-600 hover:text-amber-700 text-sm font-semibold">View All →</a>
@@ -548,12 +563,12 @@
                                 <tr class="border-b border-gray-100">
                                     <td class="py-3">
                                         <div>
-                                            <p>Bug Fix Response Time</p>
+                                            <p>On-Time Bug Resolution Rate</p>
                                             <p class="text-xs text-gray-400">Ref: Team KPI - Support SLA</p>
                                         </div>
                                     </td>
-                                    <td class="py-3">&lt; 4 hrs</td>
-                                    <td class="py-3">3.2 hrs</td>
+                                    <td class="py-3">95%</td>
+                                    <td class="py-3">100%</td>
                                     <td class="py-3">
                                         <div class="flex items-center gap-2">
                                             <div class="w-16 h-2 bg-gray-200 rounded-full overflow-hidden">
@@ -604,7 +619,7 @@
                                     <div class="w-8 h-8 bg-purple-500 rounded flex items-center justify-center text-white text-xs font-bold">T</div>
                                     <div class="flex-1">
                                         <p class="text-purple-600 text-xs">Team KPI</p>
-                                        <p class="text-gray-800 font-medium">Deploy Sales Features 10 ครั้ง/Q</p>
+                                        <p class="text-gray-800 font-medium">Feature Completion Rate 100%</p>
                                     </div>
                                     <span class="text-purple-600 text-sm font-semibold">80%</span>
                                 </div>
@@ -613,7 +628,7 @@
                                         <div class="w-8 h-8 bg-amber-500 rounded flex items-center justify-center text-white text-xs font-bold">I</div>
                                         <div class="flex-1">
                                             <p class="text-amber-600 text-xs">My KPI</p>
-                                            <p class="text-gray-800 font-medium">API Endpoints Delivered 15</p>
+                                            <p class="text-gray-800 font-medium">Feature Completion Rate 100%</p>
                                         </div>
                                         <span class="text-amber-600 text-sm font-semibold">80%</span>
                                     </div>
@@ -717,7 +732,7 @@
                         <div class="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
                             <div class="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
                             <div>
-                                <p class="text-gray-800 text-sm">KPI cycle Q4/2025 has started</p>
+                                <p class="text-gray-800 text-sm">KPI cycle H2/2025 has started</p>
                                 <p class="text-gray-400 text-xs">2 hours ago</p>
                             </div>
                         </div>

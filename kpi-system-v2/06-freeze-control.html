@@ -5,9 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Freeze Control - KPI System</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Sarabun', sans-serif; }
+        html { overflow-y: scroll; }
+        body { font-family: 'Prompt', sans-serif; }
+        input, select, textarea, button { font-family: inherit; }
         @keyframes countdown { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
         .countdown-pulse { animation: countdown 2s ease-in-out infinite; }
     </style>
@@ -172,7 +174,7 @@
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
                     </svg>
-                    <span class="font-medium">My KPI</span>
+                    <span id="sidebarKpiLabel" class="font-medium">My KPI</span>
                 </a>
 
                 <a href="03-alignment.html" data-permission="alignment" class="flex items-center gap-3 px-4 py-3 text-white hover:bg-amber-600 rounded-lg transition-all">
@@ -233,7 +235,7 @@
     </div>
 
     <!-- Main Content -->
-    <div class="ml-64 p-8">
+    <div class="ml-64 px-6 pt-2 pb-6">
         <!-- Access Denied -->
         <div id="accessDenied" class="hidden">
             <div class="bg-red-50 border-2 border-red-200 rounded-xl p-8 text-center max-w-md mx-auto mt-20">
@@ -262,7 +264,7 @@
                     <div class="flex items-center gap-4">
                         <div class="bg-amber-50 rounded-lg px-4 py-2 border border-amber-200">
                             <p class="text-amber-600 text-xs">Current Cycle</p>
-                            <p class="text-amber-800 font-bold">Q4/2025</p>
+                            <p class="text-amber-800 font-bold">H2/2025</p>
                         </div>
                         <button onclick="openFreezeModal()" class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-bold transition-all flex items-center gap-2">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -299,7 +301,7 @@
 
                 <!-- Current Cycle Status -->
                 <div class="bg-white rounded-lg shadow p-6">
-                    <h3 class="text-lg font-bold text-gray-800 mb-6">Q4/2025 Submission Summary</h3>
+                    <h3 class="text-lg font-bold text-gray-800 mb-6">H2/2025 Submission Summary</h3>
                     <div class="space-y-4">
                         <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                             <div class="flex items-center gap-3">
@@ -499,7 +501,7 @@
                                 </svg>
                             </div>
                             <div>
-                                <p class="text-gray-800 text-sm">Q4/2025 freeze date set to Dec 31</p>
+                                <p class="text-gray-800 text-sm">H2/2025 freeze date set to Dec 31</p>
                                 <p class="text-gray-500 text-xs">By: Prasit Mankong - Dec 1, 2025 10:30</p>
                             </div>
                         </div>
@@ -521,7 +523,7 @@
                                 </svg>
                             </div>
                             <div>
-                                <p class="text-gray-800 text-sm">Q4/2025 cycle created</p>
+                                <p class="text-gray-800 text-sm">H2/2025 cycle created</p>
                                 <p class="text-gray-500 text-xs">By: Prasit Mankong - Oct 1, 2025 08:00</p>
                             </div>
                         </div>
@@ -699,8 +701,8 @@
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-2">Cycle</label>
                         <select class="w-full bg-gray-50 text-gray-800 rounded-xl px-4 py-3 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent focus:bg-white transition-all">
-                            <option>Q4/2025</option>
-                            <option>Q1/2026</option>
+                            <option>H2/2025</option>
+                            <option>H1/2026</option>
                         </select>
                     </div>
                     <div>

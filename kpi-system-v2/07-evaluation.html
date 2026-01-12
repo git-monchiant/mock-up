@@ -5,9 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Evaluation - KPI System</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Sarabun', sans-serif; }
+        html { overflow-y: scroll; }
+        body { font-family: 'Prompt', sans-serif; }
+        input, select, textarea, button { font-family: inherit; }
     </style>
     <script>
         const roles = {
@@ -19,7 +21,7 @@
                 department: 'IT Department',
                 empId: 'EMP-0042',
                 level: 'employee',
-                permissions: ['my-kpi', 'alignment', 'evaluation']
+                permissions: ['dashboard', 'my-kpi', 'alignment', 'evaluation']
             },
             team_lead: {
                 name: 'นายสมศักดิ์ รักษ์ชาติ',
@@ -29,7 +31,7 @@
                 department: 'IT Department',
                 empId: 'MGR-0012',
                 level: 'team_lead',
-                permissions: ['my-kpi', 'team-kpi', 'alignment', 'approval', 'evaluation']
+                permissions: ['dashboard', 'my-kpi', 'team-kpi', 'alignment', 'approval', 'evaluation']
             },
             dept_head: {
                 name: 'นางสาวจิราพร วงศ์ไพศาล',
@@ -39,7 +41,7 @@
                 department: 'IT Department',
                 empId: 'DIR-0003',
                 level: 'dept_head',
-                permissions: ['my-kpi', 'dept-kpi', 'team-kpi', 'alignment', 'approval', 'evaluation', 'reports']
+                permissions: ['dashboard', 'my-kpi', 'dept-kpi', 'team-kpi', 'alignment', 'approval', 'evaluation', 'reports']
             },
             kpi_admin: {
                 name: 'นายประสิทธิ์ มั่นคง',
@@ -49,11 +51,11 @@
                 department: 'KPI Administration',
                 empId: 'HR-0001',
                 level: 'kpi_admin',
-                permissions: ['my-kpi', 'corporate-kpi', 'alignment', 'approval', 'evaluation', 'reports', 'freeze-control']
+                permissions: ['dashboard', 'my-kpi', 'corporate-kpi', 'alignment', 'approval', 'evaluation', 'reports', 'freeze-control']
             }
         };
 
-        let currentRole = 'employee';
+        let currentRole = 'kpi_admin';
         let currentTab = 'my';
 
         function switchRole(roleKey) {
@@ -164,7 +166,7 @@
         }
 
         window.addEventListener('DOMContentLoaded', () => {
-            const saved = localStorage.getItem('selectedRole') || 'employee';
+            const saved = localStorage.getItem('selectedRole') || 'kpi_admin';
             currentRole = saved;
             document.getElementById('roleSelector').value = saved;
             updateUI();
@@ -288,7 +290,7 @@
     </div>
 
     <!-- Main Content -->
-    <div class="ml-64 p-8">
+    <div class="ml-64 px-6 pt-2 pb-6">
         <!-- Header -->
         <div class="bg-white shadow-sm rounded-lg p-6 mb-6">
             <div class="flex items-center justify-between">
@@ -299,7 +301,7 @@
                 <div class="flex items-center gap-4">
                     <div class="bg-amber-50 rounded-lg px-4 py-2 border border-amber-200">
                         <p class="text-amber-600 text-xs">Evaluation Period</p>
-                        <p class="text-amber-800 font-bold">Q4/2025</p>
+                        <p class="text-amber-800 font-bold">H2/2025</p>
                     </div>
                     <span class="px-4 py-2 bg-amber-100 text-amber-700 rounded-lg font-semibold">
                         In Progress
@@ -331,7 +333,7 @@
                         </div>
                         <div>
                             <h3 class="text-gray-800 font-bold text-lg">Self-Assessment Required</h3>
-                            <p class="text-amber-700">Please complete your self-assessment for Q4/2025 before January 15, 2026</p>
+                            <p class="text-amber-700">Please complete your self-assessment for H2/2025 before January 15, 2026</p>
                         </div>
                     </div>
                     <span class="text-gray-800 font-bold text-xl">7 Days Left</span>
@@ -426,8 +428,8 @@
                             <div class="flex items-center justify-between mb-4">
                                 <div>
                                     <span class="px-2 py-0.5 bg-teal-100 text-teal-700 rounded text-xs font-bold">KPI-3</span>
-                                    <h4 class="text-gray-800 font-semibold mt-1">Bug Fix Response Time</h4>
-                                    <p class="text-gray-500 text-sm">Target: &lt; 4 hrs | Actual: 3.2 hrs | Achievement: 100%</p>
+                                    <h4 class="text-gray-800 font-semibold mt-1">On-Time Bug Resolution Rate</h4>
+                                    <p class="text-gray-500 text-sm">Target: 95% | Actual: 100% | Achievement: 100%</p>
                                 </div>
                                 <span class="text-emerald-600 font-bold">100%</span>
                             </div>
@@ -819,8 +821,8 @@
                         <div class="flex items-center justify-between mb-4">
                             <div>
                                 <span class="px-2 py-0.5 bg-teal-100 text-teal-700 rounded text-xs font-bold">KPI-3</span>
-                                <h4 class="text-gray-800 font-semibold mt-1">Bug Fix Response Time</h4>
-                                <p class="text-gray-500 text-sm">Target: &lt; 4 hrs | Actual: 3.2 hrs | Achievement: 100%</p>
+                                <h4 class="text-gray-800 font-semibold mt-1">On-Time Bug Resolution Rate</h4>
+                                <p class="text-gray-500 text-sm">Target: 95% | Actual: 100% | Achievement: 100%</p>
                             </div>
                             <span class="text-emerald-600 font-bold">100%</span>
                         </div>

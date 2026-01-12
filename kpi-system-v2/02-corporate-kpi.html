@@ -5,9 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Core KPI - KPI System</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Sarabun', sans-serif; }
+        html { overflow-y: scroll; }
+        body { font-family: 'Prompt', sans-serif; }
+        input, select, textarea, button { font-family: inherit; }
         .pulse-dot { animation: pulse 2s infinite; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
     </style>
@@ -70,20 +72,25 @@
             document.getElementById('userDept').textContent = role.department;
             document.getElementById('userInitials').textContent = role.initials;
 
-            // Update sidebar menu label
-            const sidebarKpiLabel = document.getElementById('sidebarKpiLabel');
-            if (role.level === 'employee' || role.level === 'kpi_admin') {
-                sidebarKpiLabel.textContent = 'My KPI';
-            } else if (role.level === 'team_lead') {
-                sidebarKpiLabel.textContent = 'Team KPI';
-            } else if (role.level === 'dept_head') {
-                sidebarKpiLabel.textContent = 'Dept KPI';
-            }
-
+            // Update navigation visibility
             document.querySelectorAll('[data-permission]').forEach(item => {
                 const perm = item.dataset.permission;
                 item.classList.toggle('hidden', !role.permissions.includes(perm));
             });
+
+            // Update sidebar menu label and icon based on role
+            const sidebarKpiLabel = document.getElementById('sidebarKpiLabel');
+            const sidebarKpiIcon = document.getElementById('sidebarKpiIcon');
+            if (role.level === 'employee' || role.level === 'kpi_admin') {
+                sidebarKpiLabel.textContent = 'My KPI';
+                sidebarKpiIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>';
+            } else if (role.level === 'team_lead') {
+                sidebarKpiLabel.textContent = 'Team KPI';
+                sidebarKpiIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>';
+            } else if (role.level === 'dept_head') {
+                sidebarKpiLabel.textContent = 'Dept KPI';
+                sidebarKpiIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>';
+            }
 
             // Access check for this page
             if (!role.permissions.includes('corporate-kpi')) {
@@ -133,12 +140,12 @@
             <div class="bg-white rounded-xl p-4 mb-6 shadow">
                 <div class="flex items-center gap-3">
                     <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-                        <span id="userInitials" class="text-white font-bold">ปม</span>
+                        <span id="userInitials" class="text-white font-bold">สด</span>
                     </div>
                     <div class="flex-1 min-w-0">
-                        <p id="userName" class="text-gray-800 font-semibold text-sm truncate">นายประสิทธิ์ มั่นคง</p>
-                        <p id="userPosition" class="text-gray-600 text-xs truncate">HR Director</p>
-                        <p id="userDept" class="text-amber-600 text-xs truncate">Human Resources</p>
+                        <p id="userName" class="text-gray-800 font-semibold text-sm truncate">นางสาวสุดา พรหมชัย</p>
+                        <p id="userPosition" class="text-gray-600 text-xs truncate">Full-stack Developer</p>
+                        <p id="userDept" class="text-amber-600 text-xs truncate">IT Department</p>
                     </div>
                 </div>
             </div>
@@ -228,7 +235,7 @@
     </div>
 
     <!-- Main Content -->
-    <div class="ml-64 p-8">
+    <div class="ml-64 px-6 pt-2 pb-6">
         <!-- Access Denied Message -->
         <div id="accessDenied" class="hidden">
             <div class="bg-red-50 border-2 border-red-300 rounded-xl p-8 text-center max-w-md mx-auto mt-20">
@@ -247,23 +254,25 @@
 
         <!-- Main Content Area -->
         <div id="mainContent">
-            <!-- Top Bar -->
-            <div class="flex items-center justify-between mb-6">
-                <div>
-                    <h2 class="text-2xl font-bold text-gray-800">Core Strategic Management</h2>
-                    <p class="text-gray-600">จัดการ 5 กลยุทธ์หลักขององค์กร พร้อม Key Action Plan สำหรับ cascade ไปยังหน่วยงาน</p>
-                </div>
-                <div class="flex items-center gap-4">
-                    <div class="bg-white rounded-lg px-4 py-2 shadow border border-gray-200">
-                        <p class="text-gray-500 text-xs">Current Cycle</p>
-                        <p class="text-gray-800 font-bold">Q4/2025</p>
+            <!-- Header -->
+            <div class="bg-white shadow-sm rounded-lg p-6 mb-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-800">Core Strategic Management</h2>
+                        <p class="text-sm text-gray-600 mt-1">จัดการ 5 กลยุทธ์หลักขององค์กร พร้อม Key Action Plan สำหรับ cascade ไปยังหน่วยงาน</p>
                     </div>
-                    <button onclick="openModal('kpi')" class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-bold transition-all flex items-center gap-2 shadow">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
-                        </svg>
-                        New Core Strategic
-                    </button>
+                    <div class="flex items-center gap-4">
+                        <div class="bg-amber-50 rounded-lg px-4 py-2 border border-amber-200">
+                            <p class="text-amber-600 text-xs">Current Cycle</p>
+                            <p class="text-amber-800 font-bold">H2/2025</p>
+                        </div>
+                        <button onclick="openModal('kpi')" class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-bold transition-all flex items-center gap-2 shadow">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                            </svg>
+                            New Core Strategic
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -324,7 +333,14 @@
             <!-- Core Strategic KPI List -->
             <div class="bg-white rounded-xl p-6 shadow mb-8">
                 <div class="flex items-center justify-between mb-6">
-                    <h3 class="text-lg font-bold text-gray-800">Core Strategic 2025 (5 กลยุทธ์หลัก)</h3>
+                    <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+                        <span class="w-7 h-7 bg-green-100 text-green-600 rounded-lg flex items-center justify-center">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
+                            </svg>
+                        </span>
+                        Core Strategic 2025 (5 กลยุทธ์หลัก)
+                    </h3>
                     <div class="flex items-center gap-2">
                         <select class="bg-white text-gray-800 rounded-lg px-3 py-2 text-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-amber-500">
                             <option>All Status</option>
@@ -364,6 +380,16 @@
                             <div class="h-3 bg-gray-200 rounded-full overflow-hidden">
                                 <div class="h-full bg-emerald-500" style="width: 92%"></div>
                             </div>
+                        </div>
+
+                        <!-- Cascade Status (Compact) -->
+                        <div class="flex items-center gap-3 mb-4 text-xs">
+                            <span class="text-gray-500">Cascaded:</span>
+                            <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded font-semibold">48 Depts</span>
+                            <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded font-semibold">156 Teams</span>
+                            <span class="px-2 py-1 bg-orange-100 text-orange-700 rounded font-semibold">1,247 Emp</span>
+                            <span class="text-gray-400">|</span>
+                            <span class="text-emerald-600 font-bold">Avg 92%</span>
                         </div>
 
                         <div class="flex items-center justify-between pt-4 border-t border-gray-200">
@@ -410,6 +436,16 @@
                             </div>
                         </div>
 
+                        <!-- Cascade Status (Compact) -->
+                        <div class="flex items-center gap-3 mb-4 text-xs">
+                            <span class="text-gray-500">Cascaded:</span>
+                            <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded font-semibold">52 Depts</span>
+                            <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded font-semibold">189 Teams</span>
+                            <span class="px-2 py-1 bg-orange-100 text-orange-700 rounded font-semibold">1,456 Emp</span>
+                            <span class="text-gray-400">|</span>
+                            <span class="text-emerald-600 font-bold">Avg 85%</span>
+                        </div>
+
                         <div class="flex items-center justify-between pt-4 border-t border-gray-200">
                             <div class="flex items-center gap-2">
                                 <span class="text-gray-600 text-sm">Visibility:</span>
@@ -452,6 +488,16 @@
                             <div class="h-3 bg-gray-200 rounded-full overflow-hidden">
                                 <div class="h-full bg-amber-500" style="width: 78%"></div>
                             </div>
+                        </div>
+
+                        <!-- Cascade Status (Compact) -->
+                        <div class="flex items-center gap-3 mb-4 text-xs">
+                            <span class="text-gray-500">Cascaded:</span>
+                            <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded font-semibold">35 Depts</span>
+                            <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded font-semibold">98 Teams</span>
+                            <span class="px-2 py-1 bg-orange-100 text-orange-700 rounded font-semibold">892 Emp</span>
+                            <span class="text-gray-400">|</span>
+                            <span class="text-amber-600 font-bold">Avg 78%</span>
                         </div>
 
                         <div class="flex items-center justify-between pt-4 border-t border-gray-200">
@@ -498,6 +544,16 @@
                             </div>
                         </div>
 
+                        <!-- Cascade Status (Compact) -->
+                        <div class="flex items-center gap-3 mb-4 text-xs">
+                            <span class="text-gray-500">Cascaded:</span>
+                            <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded font-semibold">42 Depts</span>
+                            <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded font-semibold">134 Teams</span>
+                            <span class="px-2 py-1 bg-orange-100 text-orange-700 rounded font-semibold">1,089 Emp</span>
+                            <span class="text-gray-400">|</span>
+                            <span class="text-emerald-600 font-bold">Avg 88%</span>
+                        </div>
+
                         <div class="flex items-center justify-between pt-4 border-t border-gray-200">
                             <div class="flex items-center gap-2">
                                 <span class="text-gray-600 text-sm">Visibility:</span>
@@ -542,6 +598,16 @@
                             </div>
                         </div>
 
+                        <!-- Cascade Status (Compact) -->
+                        <div class="flex items-center gap-3 mb-4 text-xs">
+                            <span class="text-gray-500">Cascaded:</span>
+                            <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded font-semibold">58 Depts</span>
+                            <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded font-semibold">201 Teams</span>
+                            <span class="px-2 py-1 bg-orange-100 text-orange-700 rounded font-semibold">1,623 Emp</span>
+                            <span class="text-gray-400">|</span>
+                            <span class="text-emerald-600 font-bold">Avg 91%</span>
+                        </div>
+
                         <div class="flex items-center justify-between pt-4 border-t border-gray-200">
                             <div class="flex items-center gap-2">
                                 <span class="text-gray-600 text-sm">Visibility:</span>
@@ -560,7 +626,14 @@
 
             <!-- Department KPI Coverage -->
             <div class="bg-white rounded-xl p-6 shadow">
-                <h3 class="text-lg font-bold text-gray-800 mb-6">Department KPI Alignment Status</h3>
+                <h3 class="text-lg font-bold text-gray-800 mb-6 flex items-center gap-2">
+                    <span class="w-7 h-7 bg-indigo-100 text-indigo-600 rounded-lg flex items-center justify-center">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                        </svg>
+                    </span>
+                    Department KPI Alignment Status
+                </h3>
                 <div class="overflow-x-auto">
                     <table class="w-full">
                         <thead>
@@ -676,8 +749,9 @@
     </div>
 
     <!-- New Core Strategic Modal -->
-    <div id="kpiModal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl w-full max-w-7xl shadow-2xl">
+    <div id="kpiModal" class="hidden fixed inset-0 bg-black/50 z-50 overflow-y-auto">
+        <div class="flex items-start justify-center min-h-full p-4 pt-6 pb-6">
+        <div class="bg-white rounded-2xl w-full max-w-6xl shadow-2xl">
             <!-- Header with gradient -->
             <div class="bg-gradient-to-r from-amber-500 to-amber-600 p-5 rounded-t-2xl">
                 <div class="flex items-center justify-between">
@@ -700,84 +774,235 @@
                 </div>
             </div>
 
-            <!-- Form Content -->
-            <div class="p-6 space-y-4">
-                <!-- Strategy Name -->
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Strategy Name *</label>
-                    <input type="text" placeholder="e.g., Strengthen the Core" class="w-full bg-gray-50 text-gray-800 rounded-xl px-4 py-3 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent focus:bg-white transition-all">
-                </div>
-
-                <!-- Description -->
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Description</label>
-                    <textarea rows="2" placeholder="อธิบายกลยุทธ์โดยย่อ..." class="w-full bg-gray-50 text-gray-800 rounded-xl px-4 py-3 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent focus:bg-white transition-all resize-none"></textarea>
-                </div>
-
-                <!-- Owner & Cycle Row -->
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Owner *</label>
-                        <select class="w-full bg-gray-50 text-gray-800 rounded-xl px-4 py-3 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white transition-all appearance-none cursor-pointer">
-                            <option>CEO</option>
-                            <option>COO</option>
-                            <option>CFO</option>
-                            <option>CHRO</option>
-                            <option>CTO</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1.5">Cycle *</label>
-                        <select class="w-full bg-gray-50 text-gray-800 rounded-xl px-4 py-3 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white transition-all appearance-none cursor-pointer">
-                            <option>Q4/2025</option>
-                            <option>Q1/2026</option>
-                            <option>Annual 2025</option>
-                        </select>
-                    </div>
-                </div>
-
-                <!-- Target Section -->
-                <div class="bg-gray-50 rounded-xl p-4 border border-gray-200">
-                    <label class="block text-sm font-semibold text-gray-700 mb-3">Target Setting</label>
-                    <div class="grid grid-cols-3 gap-3">
+            <!-- Form Content - 3:2 column layout -->
+            <div class="p-6">
+                <div class="grid grid-cols-5 gap-6">
+                    <!-- Left Column: Form Inputs (3 parts) -->
+                    <div class="col-span-3 space-y-4">
+                        <!-- Strategy Name -->
                         <div>
-                            <label class="block text-xs text-gray-500 mb-1">Target</label>
-                            <input type="number" placeholder="100" class="w-full bg-white text-gray-800 rounded-lg px-3 py-2 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-amber-500 text-center font-semibold">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Strategy Name *</label>
+                            <input type="text" placeholder="เช่น Strengthen the Core" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
                         </div>
+
+                        <!-- Description -->
                         <div>
-                            <label class="block text-xs text-gray-500 mb-1">Unit</label>
-                            <select class="w-full bg-white text-gray-800 rounded-lg px-3 py-2 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-amber-500 text-center">
-                                <option>%</option>
-                                <option>Million THB</option>
-                                <option>Score</option>
-                                <option>Number</option>
-                            </select>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                            <textarea rows="2" placeholder="อธิบายกลยุทธ์โดยย่อ..." class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 resize-none"></textarea>
                         </div>
-                        <div>
-                            <label class="block text-xs text-gray-500 mb-1">Weight</label>
-                            <div class="relative">
-                                <input type="number" placeholder="20" class="w-full bg-white text-gray-800 rounded-lg px-3 py-2 border border-gray-200 focus:outline-none focus:ring-2 focus:ring-amber-500 text-center font-semibold pr-6">
-                                <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">%</span>
+
+                        <!-- Owner + Cycle -->
+                        <div class="grid grid-cols-3 gap-4">
+                            <div class="col-span-2">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Owner *</label>
+                                <select class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
+                                    <option value="Corporate">Corporate</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Cycle *</label>
+                                <select class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
+                                    <option selected>H1/2026</option>
+                                    <option>H2/2026</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Target Setting Section -->
+                        <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                            <h4 class="text-sm font-bold text-gray-700 mb-3 flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                Target Setting
+                            </h4>
+                            <!-- 2 columns: Target + Weight -->
+                            <div class="grid grid-cols-2 gap-4 mb-3">
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-600 mb-1">Target Value *</label>
+                                    <input type="number" placeholder="e.g., 100" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-600 mb-1">Weight (%) *</label>
+                                    <input type="number" placeholder="e.g., 20" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
+                                </div>
+                            </div>
+                            <!-- Unit + Measurement Type -->
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-600 mb-1">Unit *</label>
+                                    <select class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
+                                        <option>Select</option>
+                                        <option>%</option>
+                                        <option>บาท</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-600 mb-1">Measurement Type</label>
+                                    <select class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500">
+                                        <option>มากดี</option>
+                                        <option>น้อยดี</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Department Selector (2 parts) -->
+                    <div class="col-span-2">
+                        <!-- Visibility Group Box -->
+                        <div class="bg-gray-50 rounded-lg p-4 border border-gray-200 h-full flex flex-col">
+                            <h4 class="text-sm font-bold text-gray-700 mb-3 flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5"/>
+                                </svg>
+                                Visibility - Departments
+                            </h4>
+
+                            <!-- Department Selector Container -->
+                            <div class="border border-gray-300 rounded-lg bg-white flex flex-col overflow-hidden flex-1 min-h-0">
+                                <!-- Search & Select All Header -->
+                                <div class="p-2.5 border-b border-gray-200 bg-gray-50">
+                                    <div class="relative mb-2">
+                                        <svg class="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                                        </svg>
+                                        <input type="text" id="deptSearch" oninput="filterDepts()" placeholder="ค้นหาแผนก..." class="w-full pl-9 pr-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 bg-white">
+                                    </div>
+                                    <label class="flex items-center gap-2 cursor-pointer hover:text-amber-600 transition-colors">
+                                        <input type="checkbox" id="selectAllDept" onchange="toggleSelectAllDept()" class="w-4 h-4 text-amber-600 border-gray-300 rounded focus:ring-amber-500 focus:ring-2">
+                                        <span class="text-sm font-medium text-gray-700">Select All</span>
+                                        <span class="text-xs text-amber-600 font-medium ml-auto" id="selectedDeptCount">0 / 12</span>
+                                    </label>
+                                </div>
+
+                                <!-- Department List (scrollable) -->
+                                <div class="flex-1 overflow-y-auto p-2" id="deptOptions">
+                                    <!-- Departments will be populated by JS -->
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <!-- Visibility -->
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">Visibility</label>
-                    <div class="flex gap-3">
-                        <label class="flex-1 flex items-center justify-center gap-2 p-3 bg-amber-50 rounded-xl cursor-pointer hover:bg-amber-100 transition-all border-2 border-amber-300">
-                            <input type="radio" name="visibility" value="all" checked class="text-amber-600 focus:ring-amber-500">
-                            <span class="text-sm font-medium text-amber-700">All Departments</span>
-                        </label>
-                        <label class="flex-1 flex items-center justify-center gap-2 p-3 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition-all border-2 border-transparent">
-                            <input type="radio" name="visibility" value="specific" class="text-gray-600 focus:ring-gray-500">
-                            <span class="text-sm font-medium text-gray-600">Specific Only</span>
-                        </label>
-                    </div>
-                </div>
             </div>
+
+                <script>
+                // Department data
+                const departments = [
+                    'IT Department', 'Sales', 'Marketing', 'Human Resources', 'Finance', 'Operations',
+                    'Legal', 'Procurement', 'R&D', 'Customer Service', 'Accounting', 'Treasury'
+                ];
+
+                let selectedDepts = new Set();
+
+                // Initialize department options
+                function initDeptOptions() {
+                    const container = document.getElementById('deptOptions');
+                    container.innerHTML = departments.map(dept => `
+                        <label class="dept-item flex items-center gap-2 p-2 hover:bg-amber-50 rounded-lg cursor-pointer transition-colors" data-dept="${dept.toLowerCase()}">
+                            <input type="checkbox" value="${dept}" onchange="toggleDept('${dept}')" class="dept-checkbox w-4 h-4 text-amber-600 border-gray-300 rounded focus:ring-amber-500 focus:ring-2">
+                            <span class="text-sm text-gray-700">${dept}</span>
+                        </label>
+                    `).join('');
+                }
+
+                function toggleDept(dept) {
+                    if (selectedDepts.has(dept)) {
+                        selectedDepts.delete(dept);
+                    } else {
+                        selectedDepts.add(dept);
+                    }
+                    updateDeptUI();
+                }
+
+                // Owner Multi-select functions
+                let selectedOwners = new Set(['CEO']);
+
+                function addOwner(selectEl) {
+                    const value = selectEl.value;
+                    if (value && !selectedOwners.has(value)) {
+                        selectedOwners.add(value);
+                        updateOwnerUI();
+                    }
+                    selectEl.value = '';
+                }
+
+                function removeOwner(owner) {
+                    selectedOwners.delete(owner);
+                    updateOwnerUI();
+                }
+
+                function updateOwnerUI() {
+                    const chipsContainer = document.getElementById('ownerChips');
+                    const select = document.getElementById('ownerSelect');
+
+                    // Update chips
+                    if (selectedOwners.size === 0) {
+                        chipsContainer.innerHTML = '<span class="text-gray-400 text-xs">ยังไม่ได้เลือก Owner</span>';
+                    } else {
+                        chipsContainer.innerHTML = Array.from(selectedOwners).map(owner => `
+                            <span class="inline-flex items-center gap-1 px-2 py-1 bg-amber-100 text-amber-700 rounded-full text-xs font-medium">
+                                ${owner}
+                                <button type="button" onclick="removeOwner('${owner}')" class="hover:text-amber-900">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                    </svg>
+                                </button>
+                            </span>
+                        `).join('');
+                    }
+
+                    // Update dropdown options
+                    Array.from(select.options).forEach(opt => {
+                        if (opt.value) {
+                            if (selectedOwners.has(opt.value)) {
+                                opt.disabled = true;
+                                opt.textContent = opt.value + ' ✓';
+                            } else {
+                                opt.disabled = false;
+                                opt.textContent = opt.value;
+                            }
+                        }
+                    });
+                }
+
+                function toggleSelectAllDept() {
+                    const selectAll = document.getElementById('selectAllDept');
+                    if (selectAll.checked) {
+                        departments.forEach(d => selectedDepts.add(d));
+                    } else {
+                        selectedDepts.clear();
+                    }
+                    document.querySelectorAll('.dept-checkbox').forEach(cb => cb.checked = selectAll.checked);
+                    updateDeptUI();
+                }
+
+                function filterDepts() {
+                    const search = document.getElementById('deptSearch').value.toLowerCase();
+                    document.querySelectorAll('.dept-item').forEach(item => {
+                        const match = item.dataset.dept.includes(search);
+                        item.style.display = match ? 'flex' : 'none';
+                    });
+                }
+
+                function updateDeptUI() {
+                    const countEl = document.getElementById('selectedDeptCount');
+                    const selectAll = document.getElementById('selectAllDept');
+                    const selected = Array.from(selectedDepts);
+
+                    // Update counter
+                    if (countEl) countEl.textContent = `${selected.length} / ${departments.length}`;
+
+                    // Update select all checkbox
+                    if (selectAll) {
+                        selectAll.checked = selected.length === departments.length;
+                        selectAll.indeterminate = selected.length > 0 && selected.length < departments.length;
+                    }
+                }
+
+                // Initialize on load
+                document.addEventListener('DOMContentLoaded', initDeptOptions);
+                </script>
 
             <!-- Footer -->
             <div class="p-4 border-t border-gray-100 flex items-center justify-between bg-gray-50 rounded-b-2xl">
@@ -793,6 +1018,7 @@
                     </button>
                 </div>
             </div>
+        </div>
         </div>
     </div>
 
