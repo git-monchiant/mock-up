@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>D-KPI Monthly Update - KPI System</title>
+    <title>Monthly Monitoring & Update - KPI System</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -12,10 +12,33 @@
         input, select, textarea, button { font-family: inherit; }
         .pulse-dot { animation: pulse 2s infinite; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-        .input-actual:focus { outline: none; box-shadow: 0 0 0 2px rgba(217, 119, 6, 0.3); }
+        .input-actual:focus { outline: none; box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.2); border-color: #d97706; }
+        .month-bar { transition: all 0.3s ease; }
+        .month-bar:hover { transform: scaleY(1.1); }
+        .progress-ring { transition: stroke-dashoffset 0.5s ease; }
     </style>
     <script>
         const roles = {
+            employee: {
+                name: 'นางสาวสุดา พรหมชัย',
+                initials: 'สด',
+                position: 'Full-stack Developer',
+                team: 'Development Team',
+                department: 'IT Department',
+                empId: 'EMP-0042',
+                level: 'employee',
+                permissions: ['dashboard', 'my-kpi', 'alignment', 'evaluation']
+            },
+            team_lead: {
+                name: 'นายสมศักดิ์ รักษ์ชาติ',
+                initials: 'สศ',
+                position: 'Team Lead',
+                team: 'Development Team',
+                department: 'IT Department',
+                empId: 'MGR-0012',
+                level: 'team_lead',
+                permissions: ['dashboard', 'my-kpi', 'team-kpi', 'alignment', 'approval', 'evaluation']
+            },
             dept_head: {
                 name: 'นางสาวจิราพร วงศ์ไพศาล',
                 initials: 'จว',
@@ -25,10 +48,26 @@
                 empId: 'DIR-0003',
                 level: 'dept_head',
                 permissions: ['dashboard', 'my-kpi', 'dept-kpi', 'team-kpi', 'alignment', 'approval', 'evaluation', 'reports', 'monthly-update']
+            },
+            kpi_admin: {
+                name: 'นายประสิทธิ์ มั่นคง',
+                initials: 'ปม',
+                position: 'KPI Admin',
+                team: 'KPI Management',
+                department: 'KPI Administration',
+                empId: 'HR-0001',
+                level: 'kpi_admin',
+                permissions: ['dashboard', 'my-kpi', 'corporate-kpi', 'alignment', 'approval', 'evaluation', 'reports', 'freeze-control']
             }
         };
 
         let currentRole = 'dept_head';
+
+        function switchRole(roleKey) {
+            currentRole = roleKey;
+            localStorage.setItem('selectedRole', roleKey);
+            updateUI();
+        }
 
         function updateUI() {
             const role = roles[currentRole];
@@ -36,13 +75,77 @@
             document.getElementById('userPosition').textContent = role.position;
             document.getElementById('userDept').textContent = role.department;
             document.getElementById('userInitials').textContent = role.initials;
+
+            // Update navigation visibility
+            document.querySelectorAll('[data-permission]').forEach(item => {
+                const perm = item.dataset.permission;
+                item.classList.toggle('hidden', !role.permissions.includes(perm));
+            });
+
+            // Update sidebar menu label based on role
+            const sidebarKpiLabel = document.getElementById('sidebarKpiLabel');
+            if (role.level === 'employee' || role.level === 'kpi_admin') {
+                sidebarKpiLabel.textContent = 'My KPI';
+            } else if (role.level === 'team_lead') {
+                sidebarKpiLabel.textContent = 'Team KPI';
+            } else if (role.level === 'dept_head') {
+                sidebarKpiLabel.textContent = 'Dept KPI';
+            }
         }
 
-        window.addEventListener('DOMContentLoaded', () => {
-            updateUI();
-        });
+        // All available D-KPIs from Dept KPI page (source data)
+        const allAvailableDKPIs = [
+            {
+                id: 101,
+                name: 'Digital Transformation Index',
+                description: 'ดัชนีการเปลี่ยนผ่านสู่ดิจิทัล',
+                target: 85,
+                unit: '%',
+                weight: 15,
+                lowerIsBetter: false
+            },
+            {
+                id: 102,
+                name: 'Employee Training Hours',
+                description: 'ชั่วโมงอบรมพนักงานเฉลี่ยต่อคน',
+                target: 40,
+                unit: '%',
+                weight: 10,
+                lowerIsBetter: false
+            },
+            {
+                id: 103,
+                name: 'Process Automation Rate',
+                description: 'อัตราการทำงานอัตโนมัติ',
+                target: 60,
+                unit: '%',
+                weight: 15,
+                lowerIsBetter: false
+            },
+            {
+                id: 104,
+                name: 'Cloud Migration Progress',
+                description: 'ความคืบหน้าการย้ายระบบสู่ Cloud',
+                target: 75,
+                unit: '%',
+                weight: 10,
+                lowerIsBetter: false
+            },
+            {
+                id: 105,
+                name: 'IT Cost Reduction',
+                description: 'การลดต้นทุน IT เทียบกับปีก่อน',
+                target: 15,
+                unit: '%',
+                weight: 10,
+                lowerIsBetter: false
+            }
+        ];
 
-        // D-KPI Data for Monthly Update
+        // KPIs currently being monitored (added by user)
+        let monitoringKPIs = new Set([1, 2, 3, 4, 5]); // IDs of KPIs in monitoring
+
+        // D-KPI Data for Monthly Monitoring
         const dkpiData = [
             {
                 id: 1,
@@ -51,6 +154,7 @@
                 target: 99.9,
                 unit: '%',
                 weight: 25,
+                lowerIsBetter: false,
                 monthly: {
                     jan: { actual: 99.8, confirmed: true },
                     feb: { actual: 99.9, confirmed: true },
@@ -73,6 +177,7 @@
                 target: 90,
                 unit: '%',
                 weight: 20,
+                lowerIsBetter: false,
                 monthly: {
                     jan: { actual: 88, confirmed: true },
                     feb: { actual: 89, confirmed: true },
@@ -95,6 +200,7 @@
                 target: 95,
                 unit: '%',
                 weight: 20,
+                lowerIsBetter: false,
                 monthly: {
                     jan: { actual: 94, confirmed: true },
                     feb: { actual: 96, confirmed: true },
@@ -117,6 +223,7 @@
                 target: 280000000,
                 unit: 'บาท',
                 weight: 15,
+                lowerIsBetter: true,
                 monthly: {
                     jan: { actual: 22500000, confirmed: true },
                     feb: { actual: 21800000, confirmed: true },
@@ -139,6 +246,7 @@
                 target: 0.5,
                 unit: '%',
                 weight: 20,
+                lowerIsBetter: true,
                 monthly: {
                     jan: { actual: 0.3, confirmed: true },
                     feb: { actual: 0.2, confirmed: true },
@@ -158,88 +266,320 @@
 
         const months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
         const monthNames = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+        const monthFullNames = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
 
-        let selectedMonth = 'jul'; // Current month to update
+        let currentMonthIndex = 6; // July (ก.ค.) - index 6
         let editingValues = {};
-
-        function selectMonth(month) {
-            selectedMonth = month;
-            document.querySelectorAll('.month-tab').forEach(tab => {
-                if (tab.dataset.month === month) {
-                    tab.classList.add('bg-amber-600', 'text-white');
-                    tab.classList.remove('bg-white', 'text-gray-600', 'hover:bg-amber-50');
-                } else {
-                    tab.classList.remove('bg-amber-600', 'text-white');
-                    tab.classList.add('bg-white', 'text-gray-600', 'hover:bg-amber-50');
-                }
-            });
-            renderTable();
-        }
 
         function formatNumber(num, unit) {
             if (num === null || num === undefined) return '-';
             if (unit === 'บาท') {
+                if (num >= 1000000) {
+                    return (num / 1000000).toFixed(2) + 'M';
+                }
                 return num.toLocaleString('th-TH');
             }
-            return num.toString();
+            return Number(num).toFixed(2);
         }
 
-        function getStatusColor(actual, target, unit) {
-            if (actual === null) return 'bg-gray-100 text-gray-500';
-            const ratio = actual / target;
-            if (unit === '%' && actual >= target * 0.95) return 'bg-green-100 text-green-700';
-            if (unit === '%' && actual >= target * 0.8) return 'bg-amber-100 text-amber-700';
-            if (unit === 'บาท' && actual <= target) return 'bg-green-100 text-green-700';
-            return 'bg-red-100 text-red-700';
-        }
-
-        function handleActualChange(kpiId, value) {
-            editingValues[kpiId] = value;
-        }
-
-        function confirmKpi(kpiId) {
-            const kpi = dkpiData.find(k => k.id === kpiId);
-            const value = editingValues[kpiId];
-
-            if (!value && value !== 0) {
-                alert('กรุณากรอกค่า Actual ก่อนยืนยัน');
-                return;
+        function formatFullNumber(num, unit) {
+            if (num === null || num === undefined) return '-';
+            if (unit === 'บาท') {
+                return num.toLocaleString('th-TH') + ' บาท';
             }
-
-            kpi.monthly[selectedMonth].actual = parseFloat(value);
-            kpi.monthly[selectedMonth].confirmed = true;
-
-            delete editingValues[kpiId];
-            renderTable();
-
-            showToast(`ยืนยัน ${kpi.name} สำเร็จ`);
+            return num + unit;
         }
 
-        function confirmAll() {
-            let hasUnconfirmed = false;
-            dkpiData.forEach(kpi => {
-                if (!kpi.monthly[selectedMonth].confirmed) {
-                    const value = editingValues[kpi.id];
-                    if (value || value === 0) {
-                        kpi.monthly[selectedMonth].actual = parseFloat(value);
-                        kpi.monthly[selectedMonth].confirmed = true;
-                        hasUnconfirmed = true;
+        function calculateYTD(kpi) {
+            let total = 0;
+            let count = 0;
+            months.forEach((m, idx) => {
+                if (kpi.monthly[m].actual !== null) {
+                    total += kpi.monthly[m].actual;
+                    count++;
+                }
+            });
+            if (count === 0) return null;
+            if (kpi.unit === 'บาท') return total;
+            return total / count;
+        }
+
+        function getProgressPercent(kpi) {
+            const ytd = calculateYTD(kpi);
+            if (ytd === null) return 0;
+
+            if (kpi.unit === 'บาท') {
+                // For budget, we show how much has been used relative to target
+                const percent = (ytd / kpi.target) * 100;
+                return Math.min(percent, 100);
+            }
+            // For percentage KPIs
+            const percent = (ytd / kpi.target) * 100;
+            return Math.min(percent, 120);
+        }
+
+        function getProgressColor(kpi) {
+            const ytd = calculateYTD(kpi);
+            if (ytd === null) return 'gray';
+
+            if (kpi.lowerIsBetter) {
+                // For lower-is-better KPIs (Security, Budget)
+                if (ytd <= kpi.target) return 'green';
+                if (ytd <= kpi.target * 1.2) return 'amber';
+                return 'red';
+            } else {
+                // For higher-is-better KPIs
+                const ratio = ytd / kpi.target;
+                if (ratio >= 0.95) return 'green';
+                if (ratio >= 0.8) return 'amber';
+                return 'red';
+            }
+        }
+
+        function getMonthBarHeight(kpi, monthIndex) {
+            const monthKey = months[monthIndex];
+            const actual = kpi.monthly[monthKey].actual;
+            if (actual === null) return 0;
+
+            // Normalize to 0-100 range based on target
+            if (kpi.unit === 'บาท') {
+                const monthlyTarget = kpi.target / 12;
+                return Math.min((actual / monthlyTarget) * 100, 150);
+            }
+            return Math.min((actual / kpi.target) * 100, 120);
+        }
+
+        function getMonthBarColor(kpi, monthIndex) {
+            const monthKey = months[monthIndex];
+            const data = kpi.monthly[monthKey];
+
+            if (data.actual === null) return 'bg-gray-200';
+            if (!data.confirmed) return 'bg-amber-400';
+
+            // Compare to target
+            if (kpi.lowerIsBetter) {
+                if (data.actual <= kpi.target) return 'bg-green-500';
+                return 'bg-red-400';
+            } else {
+                const ratio = data.actual / kpi.target;
+                if (ratio >= 0.95) return 'bg-green-500';
+                if (ratio >= 0.8) return 'bg-amber-400';
+                return 'bg-red-400';
+            }
+        }
+
+        function generateLineChart(kpi) {
+            const chartWidth = 300;
+            const chartHeight = 70;
+            const padding = 6;
+            const pointRadius = 4;
+            const xStep = (chartWidth - padding * 2) / 11;
+
+            // Calculate cumulative values
+            let cumulativeActual = [];
+            let cumulativeTarget = [];
+            let runningActual = 0;
+            let actualCount = 0;
+
+            months.forEach((m, idx) => {
+                const monthNum = idx + 1;
+
+                if (kpi.unit === 'บาท') {
+                    // For budget: cumulative sum
+                    const monthlyTarget = kpi.target / 12;
+                    cumulativeTarget.push(monthlyTarget * monthNum);
+
+                    if (kpi.monthly[m].actual !== null) {
+                        runningActual += kpi.monthly[m].actual;
+                        cumulativeActual.push({ value: runningActual, monthIdx: idx, confirmed: kpi.monthly[m].confirmed });
+                    }
+                } else {
+                    // For % KPIs: running average
+                    cumulativeTarget.push(kpi.target); // Target stays constant
+
+                    if (kpi.monthly[m].actual !== null) {
+                        runningActual += kpi.monthly[m].actual;
+                        actualCount++;
+                        const avg = runningActual / actualCount;
+                        cumulativeActual.push({ value: avg, monthIdx: idx, confirmed: kpi.monthly[m].confirmed });
                     }
                 }
             });
 
-            if (hasUnconfirmed) {
-                editingValues = {};
-                renderTable();
-                showToast('ยืนยัน D-KPI ทั้งหมดสำเร็จ');
-            } else {
-                alert('ไม่มีรายการที่ต้องยืนยัน หรือกรุณากรอกค่า Actual ก่อน');
+            // Determine min/max for scaling
+            let minVal = 0;
+            let maxVal = kpi.unit === 'บาท' ? kpi.target : kpi.target * 1.1;
+
+            cumulativeActual.forEach(p => {
+                maxVal = Math.max(maxVal, p.value);
+            });
+            cumulativeTarget.forEach(v => {
+                maxVal = Math.max(maxVal, v);
+            });
+
+            maxVal = maxVal * 1.1; // Add 10% padding
+            const valueRange = maxVal - minVal || 1;
+
+            // Generate Target line path (cumulative for บาท, flat for %)
+            let targetPath = '';
+            months.forEach((m, idx) => {
+                const x = padding + idx * xStep;
+                const targetVal = cumulativeTarget[idx];
+                const y = chartHeight - padding - 12 - ((targetVal - minVal) / valueRange) * (chartHeight - padding * 2 - 12);
+
+                if (idx === 0) {
+                    targetPath = `M ${x} ${y}`;
+                } else {
+                    targetPath += ` L ${x} ${y}`;
+                }
+            });
+
+            // Generate Actual line path
+            let actualPath = '';
+            let points = [];
+
+            cumulativeActual.forEach((p, i) => {
+                const x = padding + p.monthIdx * xStep;
+                const y = chartHeight - padding - 12 - ((p.value - minVal) / valueRange) * (chartHeight - padding * 2 - 12);
+                points.push({ x, y, value: p.value, confirmed: p.confirmed, monthIdx: p.monthIdx });
+
+                if (i === 0) {
+                    actualPath = `M ${x} ${y}`;
+                } else {
+                    actualPath += ` L ${x} ${y}`;
+                }
+            });
+
+            // Build SVG
+            let svg = `
+                <svg viewBox="0 0 ${chartWidth} ${chartHeight}" class="w-full h-20">
+                    <!-- Target line (dashed) -->
+                    <path d="${targetPath}" fill="none" stroke="#d97706" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.7"/>
+            `;
+
+            // Fill area under actual line
+            if (points.length > 1) {
+                const fillPath = actualPath + ` L ${points[points.length-1].x} ${chartHeight - padding - 12} L ${points[0].x} ${chartHeight - padding - 12} Z`;
+                svg += `<path d="${fillPath}" fill="#10b981" fill-opacity="0.15"/>`;
+            }
+
+            // Draw actual line
+            if (actualPath) {
+                svg += `<path d="${actualPath}" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>`;
+            }
+
+            // Draw data points
+            points.forEach(p => {
+                const isCurrentMonth = p.monthIdx === currentMonthIndex;
+                const color = p.confirmed ? '#10b981' : '#f59e0b';
+                const strokeColor = isCurrentMonth ? '#d97706' : 'white';
+                const strokeWidth = isCurrentMonth ? 3 : 2;
+                const radius = isCurrentMonth ? 6 : pointRadius;
+                svg += `<circle cx="${p.x}" cy="${p.y}" r="${radius}" fill="${color}" stroke="${strokeColor}" stroke-width="${strokeWidth}"/>`;
+            });
+
+            // Draw month labels
+            months.forEach((m, idx) => {
+                const x = padding + idx * xStep;
+                const isCurrentMonth = idx === currentMonthIndex;
+                const fontWeight = isCurrentMonth ? 'bold' : 'normal';
+                const fillColor = isCurrentMonth ? '#d97706' : '#9ca3af';
+                svg += `<text x="${x}" y="${chartHeight - 2}" fill="${fillColor}" font-size="7" text-anchor="middle" font-weight="${fontWeight}" font-family="Prompt">${monthNames[idx].replace('.', '')}</text>`;
+            });
+
+            // Y-axis labels
+            const topLabel = kpi.unit === 'บาท' ? formatNumber(maxVal * 0.9, kpi.unit) : Math.round(maxVal * 0.9) + '%';
+            svg += `<text x="2" y="12" fill="#9ca3af" font-size="7" font-family="Prompt">${topLabel}</text>`;
+
+            svg += '</svg>';
+            return svg;
+        }
+
+        function handleInputChange(kpiId, value) {
+            editingValues[kpiId] = value;
+            updateConfirmButtonState(kpiId);
+        }
+
+        function updateConfirmButtonState(kpiId) {
+            const btn = document.getElementById(`confirmBtn-${kpiId}`);
+            const input = document.getElementById(`input-${kpiId}`);
+            if (btn && input) {
+                const hasValue = input.value !== '';
+                btn.disabled = !hasValue;
+                if (hasValue) {
+                    btn.classList.remove('bg-gray-300', 'cursor-not-allowed');
+                    btn.classList.add('bg-amber-600', 'hover:bg-amber-700', 'cursor-pointer');
+                } else {
+                    btn.classList.add('bg-gray-300', 'cursor-not-allowed');
+                    btn.classList.remove('bg-amber-600', 'hover:bg-amber-700', 'cursor-pointer');
+                }
             }
         }
 
-        function showToast(message) {
+        function confirmKpi(kpiId) {
+            const kpi = dkpiData.find(k => k.id === kpiId);
+            const input = document.getElementById(`input-${kpiId}`);
+            const value = input ? input.value : editingValues[kpiId];
+
+            if (!value && value !== 0) {
+                showToast('กรุณากรอกค่า Actual ก่อนยืนยัน', 'warning');
+                return;
+            }
+
+            const monthKey = months[currentMonthIndex];
+            kpi.monthly[monthKey].actual = parseFloat(value);
+            kpi.monthly[monthKey].confirmed = true;
+
+            delete editingValues[kpiId];
+            renderKPICards();
+            updateOverallProgress();
+
+            showToast(`ยืนยัน ${kpi.name} สำเร็จ`, 'success');
+        }
+
+        function confirmAll() {
+            const monthKey = months[currentMonthIndex];
+            let confirmed = 0;
+
+            dkpiData.forEach(kpi => {
+                if (!kpi.monthly[monthKey].confirmed) {
+                    const input = document.getElementById(`input-${kpi.id}`);
+                    const value = input ? input.value : editingValues[kpi.id];
+                    if (value || value === 0) {
+                        kpi.monthly[monthKey].actual = parseFloat(value);
+                        kpi.monthly[monthKey].confirmed = true;
+                        confirmed++;
+                    }
+                }
+            });
+
+            if (confirmed > 0) {
+                editingValues = {};
+                renderKPICards();
+                updateOverallProgress();
+                showToast(`ยืนยัน ${confirmed} รายการสำเร็จ`, 'success');
+            } else {
+                showToast('ไม่มีรายการที่ต้องยืนยัน', 'warning');
+            }
+        }
+
+        function showToast(message, type = 'success') {
             const toast = document.getElementById('toast');
-            toast.textContent = message;
+            const icon = document.getElementById('toastIcon');
+            const text = document.getElementById('toastText');
+
+            text.textContent = message;
+
+            if (type === 'success') {
+                toast.classList.remove('bg-amber-500');
+                toast.classList.add('bg-green-600');
+                icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>';
+            } else {
+                toast.classList.remove('bg-green-600');
+                toast.classList.add('bg-amber-500');
+                icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>';
+            }
+
             toast.classList.remove('translate-y-20', 'opacity-0');
             toast.classList.add('translate-y-0', 'opacity-100');
 
@@ -249,183 +589,456 @@
             }, 3000);
         }
 
-        function renderTable() {
-            const tbody = document.getElementById('kpiTableBody');
-            const monthIndex = months.indexOf(selectedMonth);
-            const monthLabel = monthNames[monthIndex];
-
-            // Update header
-            document.getElementById('selectedMonthHeader').textContent = monthLabel + ' 2025';
-
-            let html = '';
-            dkpiData.forEach(kpi => {
-                const monthData = kpi.monthly[selectedMonth];
-                const isConfirmed = monthData.confirmed;
-                const currentActual = monthData.actual;
-
-                // Calculate YTD
-                let ytdTotal = 0;
-                let ytdCount = 0;
-                months.slice(0, monthIndex + 1).forEach(m => {
-                    if (kpi.monthly[m].actual !== null) {
-                        ytdTotal += kpi.monthly[m].actual;
-                        ytdCount++;
-                    }
-                });
-                const ytdAvg = ytdCount > 0 ? (kpi.unit === 'บาท' ? ytdTotal : ytdTotal / ytdCount) : null;
-
-                html += `
-                    <tr class="border-b border-gray-100 hover:bg-gray-50">
-                        <td class="px-4 py-4">
-                            <div>
-                                <div class="flex items-center gap-2">
-                                    <span class="w-6 h-6 bg-indigo-100 text-indigo-600 rounded flex items-center justify-center flex-shrink-0">
-                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
-                                        </svg>
-                                    </span>
-                                    <p class="font-semibold text-gray-800">${kpi.name}</p>
-                                </div>
-                                <p class="text-gray-500 text-xs mt-1 ml-8">${kpi.description}</p>
-                            </div>
-                        </td>
-                        <td class="px-4 py-4 text-center">
-                            <span class="font-semibold text-gray-800">${formatNumber(kpi.target, kpi.unit)}</span>
-                            <span class="text-gray-500 text-xs ml-1">${kpi.unit}</span>
-                        </td>
-                        <td class="px-4 py-4 text-center">
-                            ${isConfirmed ? `
-                                <span class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg ${getStatusColor(currentActual, kpi.target, kpi.unit)} font-semibold">
-                                    ${formatNumber(currentActual, kpi.unit)}
-                                    <span class="text-xs font-normal">${kpi.unit}</span>
-                                </span>
-                            ` : `
-                                <input type="number"
-                                    class="input-actual w-28 px-3 py-2 border border-gray-300 rounded-lg text-center text-sm font-medium"
-                                    placeholder="กรอกค่า"
-                                    value="${editingValues[kpi.id] || ''}"
-                                    onchange="handleActualChange(${kpi.id}, this.value)"
-                                    step="${kpi.unit === '%' ? '0.1' : '1000'}">
-                            `}
-                        </td>
-                        <td class="px-4 py-4 text-center">
-                            ${ytdAvg !== null ? `
-                                <span class="text-gray-700 font-medium">${formatNumber(Math.round(ytdAvg * 100) / 100, kpi.unit)}</span>
-                                <span class="text-gray-400 text-xs ml-1">${kpi.unit}</span>
-                            ` : '-'}
-                        </td>
-                        <td class="px-4 py-4 text-center">
-                            <span class="text-gray-600">${kpi.weight}%</span>
-                        </td>
-                        <td class="px-4 py-4 text-center">
-                            ${isConfirmed ? `
-                                <span class="inline-flex items-center gap-1 px-3 py-1.5 bg-green-100 text-green-700 rounded-lg text-sm font-medium">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                                    </svg>
-                                    Confirmed
-                                </span>
-                            ` : `
-                                <button onclick="confirmKpi(${kpi.id})"
-                                    class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-sm font-medium transition-all flex items-center gap-1 mx-auto">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                                    </svg>
-                                    Confirm
-                                </button>
-                            `}
-                        </td>
-                    </tr>
-                `;
-            });
-
-            tbody.innerHTML = html;
-
-            // Update summary stats
-            updateStats();
-        }
-
-        function updateStats() {
-            const monthIndex = months.indexOf(selectedMonth);
-            let confirmed = 0;
-            let pending = 0;
+        function updateOverallProgress() {
+            const monthKey = months[currentMonthIndex];
+            let totalKPIs = dkpiData.length;
+            let confirmedCount = 0;
+            let pendingCount = 0;
 
             dkpiData.forEach(kpi => {
-                if (kpi.monthly[selectedMonth].confirmed) {
-                    confirmed++;
+                if (kpi.monthly[monthKey].confirmed) {
+                    confirmedCount++;
                 } else {
-                    pending++;
+                    pendingCount++;
                 }
             });
 
-            document.getElementById('statConfirmed').textContent = confirmed;
-            document.getElementById('statPending').textContent = pending;
-            document.getElementById('statTotal').textContent = dkpiData.length;
+            // Update stats
+            document.getElementById('statTotal').textContent = totalKPIs;
+            document.getElementById('statConfirmed').textContent = confirmedCount;
+            document.getElementById('statPending').textContent = pendingCount;
 
-            // Update progress bar
-            const progress = (confirmed / dkpiData.length) * 100;
-            document.getElementById('progressBar').style.width = progress + '%';
+            // Update progress ring
+            const progressPercent = (confirmedCount / totalKPIs) * 100;
+            document.getElementById('progressPercent').textContent = Math.round(progressPercent) + '%';
+
+            // SVG circle progress
+            const circle = document.getElementById('progressCircle');
+            const circumference = 2 * Math.PI * 45;
+            const offset = circumference - (progressPercent / 100) * circumference;
+            circle.style.strokeDashoffset = offset;
+
+            // Update Confirm All button visibility
+            const confirmAllBtn = document.getElementById('confirmAllBtn');
+            if (pendingCount > 0) {
+                confirmAllBtn.classList.remove('hidden');
+            } else {
+                confirmAllBtn.classList.add('hidden');
+            }
+        }
+
+        // Selected KPIs in Add Modal
+        let selectedKpisToAdd = new Set();
+
+        function openAddKpiModal() {
+            selectedKpisToAdd.clear();
+            renderAvailableKpis();
+            updateAddSelectedButton();
+            document.getElementById('addKpiModal').classList.remove('hidden');
+        }
+
+        function closeAddKpiModal() {
+            document.getElementById('addKpiModal').classList.add('hidden');
+            selectedKpisToAdd.clear();
+        }
+
+        function renderAvailableKpis() {
+            const container = document.getElementById('availableKpiList');
+            const noKpisMsg = document.getElementById('noAvailableKpis');
+
+            // Get IDs of KPIs already in monitoring
+            const existingIds = dkpiData.map(k => k.id);
+
+            // Filter available KPIs that are not yet in monitoring
+            const available = allAvailableDKPIs.filter(k => !existingIds.includes(k.id));
+
+            if (available.length === 0) {
+                container.innerHTML = '';
+                noKpisMsg.classList.remove('hidden');
+                return;
+            }
+
+            noKpisMsg.classList.add('hidden');
+            let html = '';
+
+            available.forEach(kpi => {
+                const isSelected = selectedKpisToAdd.has(kpi.id);
+                html += `
+                <div class="border rounded-xl p-4 cursor-pointer transition-all ${isSelected ? 'border-indigo-500 bg-indigo-50 ring-2 ring-indigo-200' : 'border-gray-200 hover:border-indigo-300 hover:bg-gray-50'}"
+                     onclick="toggleKpiSelection(${kpi.id})">
+                    <div class="flex items-center gap-4">
+                        <div class="w-6 h-6 rounded-lg border-2 flex items-center justify-center flex-shrink-0 transition-colors ${isSelected ? 'bg-indigo-600 border-indigo-600' : 'border-gray-300'}">
+                            ${isSelected ? '<svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>' : ''}
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h4 class="font-bold text-gray-800">${kpi.name}</h4>
+                            <p class="text-sm text-gray-500">${kpi.description}</p>
+                        </div>
+                        <div class="text-right flex-shrink-0">
+                            <p class="text-sm text-gray-500">Target</p>
+                            <p class="font-bold text-gray-800">${formatNumber(kpi.target, kpi.unit)} <span class="text-xs font-normal">${kpi.unit}</span></p>
+                        </div>
+                        <div class="px-3 py-1 bg-gray-100 rounded-lg text-sm text-gray-600 flex-shrink-0">
+                            Weight: ${kpi.weight}%
+                        </div>
+                    </div>
+                </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function toggleKpiSelection(kpiId) {
+            if (selectedKpisToAdd.has(kpiId)) {
+                selectedKpisToAdd.delete(kpiId);
+            } else {
+                selectedKpisToAdd.add(kpiId);
+            }
+            renderAvailableKpis();
+            updateAddSelectedButton();
+        }
+
+        function updateAddSelectedButton() {
+            const btn = document.getElementById('addSelectedBtn');
+            const countSpan = document.getElementById('selectedCount');
+            const count = selectedKpisToAdd.size;
+
+            countSpan.textContent = count;
+
+            if (count > 0) {
+                btn.disabled = false;
+                btn.classList.remove('bg-gray-300', 'cursor-not-allowed');
+                btn.classList.add('bg-indigo-600', 'hover:bg-indigo-700', 'cursor-pointer');
+            } else {
+                btn.disabled = true;
+                btn.classList.add('bg-gray-300', 'cursor-not-allowed');
+                btn.classList.remove('bg-indigo-600', 'hover:bg-indigo-700', 'cursor-pointer');
+            }
+        }
+
+        function generateMiniLineChart(kpi) {
+            const chartWidth = 300;
+            const chartHeight = 55;
+            const padding = 4;
+            const topPadding = 12; // Space for data labels
+            const bottomPadding = 14; // Space for month labels
+
+            // Short month labels in English
+            const shortMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+            // Calculate cumulative/average values
+            let cumulativeActual = [];
+            let runningActual = 0;
+            let actualCount = 0;
+
+            months.forEach((m, idx) => {
+                if (kpi.monthly[m].actual !== null) {
+                    if (kpi.unit === 'บาท') {
+                        runningActual += kpi.monthly[m].actual;
+                        cumulativeActual.push({ value: runningActual, monthIdx: idx, confirmed: kpi.monthly[m].confirmed });
+                    } else {
+                        runningActual += kpi.monthly[m].actual;
+                        actualCount++;
+                        const avg = runningActual / actualCount;
+                        cumulativeActual.push({ value: avg, monthIdx: idx, confirmed: kpi.monthly[m].confirmed });
+                    }
+                }
+            });
+
+            if (cumulativeActual.length === 0) {
+                return `<div class="h-14 flex items-center justify-center text-xs text-gray-300">No data</div>`;
+            }
+
+            // Determine min/max for scaling
+            let minVal = 0;
+            let maxVal = kpi.unit === 'บาท' ? kpi.target : kpi.target * 1.15;
+            cumulativeActual.forEach(p => {
+                maxVal = Math.max(maxVal, p.value * 1.1);
+            });
+            const valueRange = maxVal - minVal || 1;
+
+            const xStep = (chartWidth - padding * 2) / 11;
+            const chartAreaHeight = chartHeight - bottomPadding - topPadding;
+
+            // Generate actual line path
+            let actualPath = '';
+            let points = [];
+
+            cumulativeActual.forEach((p, i) => {
+                const x = padding + p.monthIdx * xStep;
+                const y = topPadding + chartAreaHeight - padding - ((p.value - minVal) / valueRange) * (chartAreaHeight - padding * 2);
+                points.push({ x, y, confirmed: p.confirmed, monthIdx: p.monthIdx, value: p.value });
+
+                if (i === 0) {
+                    actualPath = `M ${x} ${y}`;
+                } else {
+                    actualPath += ` L ${x} ${y}`;
+                }
+            });
+
+            // Target line Y position
+            const targetY = topPadding + chartAreaHeight - padding - ((kpi.target - minVal) / valueRange) * (chartAreaHeight - padding * 2);
+
+            let svg = `<svg viewBox="0 0 ${chartWidth} ${chartHeight}" class="w-full h-14">`;
+
+            // Target line (dashed)
+            svg += `<line x1="${padding}" y1="${targetY}" x2="${chartWidth - padding}" y2="${targetY}" stroke="#f59e0b" stroke-width="1" stroke-dasharray="3,2" opacity="0.6"/>`;
+
+            // Fill area under actual line
+            if (points.length > 1) {
+                const baseY = topPadding + chartAreaHeight - padding;
+                const fillPath = actualPath + ` L ${points[points.length-1].x} ${baseY} L ${points[0].x} ${baseY} Z`;
+                svg += `<path d="${fillPath}" fill="#10b981" fill-opacity="0.15"/>`;
+            }
+
+            // Actual line
+            if (actualPath) {
+                svg += `<path d="${actualPath}" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`;
+            }
+
+            // Data points and data labels
+            points.forEach((p, i) => {
+                const isLast = i === points.length - 1;
+                const color = p.confirmed ? '#10b981' : '#f59e0b';
+                const radius = isLast ? 3.5 : 2;
+                svg += `<circle cx="${p.x}" cy="${p.y}" r="${radius}" fill="${color}" stroke="white" stroke-width="1"/>`;
+
+                // Data label above point - show value
+                const labelValue = kpi.unit === 'บาท' ?
+                    (p.value >= 1000000 ? (p.value / 1000000).toFixed(1) + 'M' : Math.round(p.value / 1000) + 'K') :
+                    p.value.toFixed(1);
+                const labelColor = isLast ? '#d97706' : '#6b7280';
+                const fontWeight = isLast ? 'bold' : 'normal';
+                svg += `<text x="${p.x}" y="${p.y - 5}" fill="${labelColor}" font-size="6" text-anchor="middle" font-weight="${fontWeight}" font-family="Prompt">${labelValue}</text>`;
+            });
+
+            // Show all 12 month labels
+            for (let idx = 0; idx < 12; idx++) {
+                const x = padding + idx * xStep;
+                const isCurrent = idx === currentMonthIndex;
+                const hasData = cumulativeActual.some(p => p.monthIdx === idx);
+                const labelColor = isCurrent ? '#d97706' : (hasData ? '#6b7280' : '#d1d5db');
+                const fontWeight = isCurrent ? 'bold' : 'normal';
+                svg += `<text x="${x}" y="${chartHeight - 2}" fill="${labelColor}" font-size="7" text-anchor="middle" font-weight="${fontWeight}" font-family="Prompt">${shortMonths[idx]}</text>`;
+            }
+
+            svg += '</svg>';
+            return svg;
+        }
+
+        function addSelectedKpis() {
+            if (selectedKpisToAdd.size === 0) return;
+
+            // Create empty monthly data structure
+            const emptyMonthly = {};
+            months.forEach(m => {
+                emptyMonthly[m] = { actual: null, confirmed: false };
+            });
+
+            // Add selected KPIs to dkpiData
+            selectedKpisToAdd.forEach(kpiId => {
+                const sourceKpi = allAvailableDKPIs.find(k => k.id === kpiId);
+                if (sourceKpi) {
+                    dkpiData.push({
+                        ...sourceKpi,
+                        monthly: JSON.parse(JSON.stringify(emptyMonthly))
+                    });
+                    monitoringKPIs.add(kpiId);
+                }
+            });
+
+            const addedCount = selectedKpisToAdd.size;
+            closeAddKpiModal();
+            renderKPICards();
+            updateOverallProgress();
+            showToast(`เพิ่ม ${addedCount} KPI เข้า Monitoring สำเร็จ`, 'success');
+        }
+
+        function renderKPICards() {
+            const container = document.getElementById('kpiCardsContainer');
+            const monthKey = months[currentMonthIndex];
+
+            let html = '';
+
+            dkpiData.forEach((kpi, index) => {
+                const monthData = kpi.monthly[monthKey];
+                const isConfirmed = monthData.confirmed;
+                const ytd = calculateYTD(kpi);
+                const progressPercent = getProgressPercent(kpi);
+                const progressColor = getProgressColor(kpi);
+
+                const colorClasses = {
+                    green: { bg: 'bg-green-500', text: 'text-green-600', light: 'bg-green-100' },
+                    amber: { bg: 'bg-amber-500', text: 'text-amber-600', light: 'bg-amber-100' },
+                    red: { bg: 'bg-red-500', text: 'text-red-600', light: 'bg-red-100' },
+                    gray: { bg: 'bg-gray-300', text: 'text-gray-500', light: 'bg-gray-100' }
+                };
+                const colors = colorClasses[progressColor];
+
+                const miniChart = generateMiniLineChart(kpi);
+
+                html += `
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow ${isConfirmed ? 'border-l-4 border-l-green-500' : 'border-l-4 border-l-amber-400'}">
+                    <div class="px-5 py-3">
+                        <div class="flex items-center">
+                            <!-- KPI Number & Name - Fixed width -->
+                            <div class="flex items-center gap-3 w-[600px] flex-shrink-0">
+                                <span class="w-7 h-7 bg-indigo-100 text-indigo-600 rounded-lg flex items-center justify-center flex-shrink-0 font-bold text-sm">
+                                    ${index + 1}
+                                </span>
+                                <div class="flex-1 min-w-0">
+                                    <h3 class="font-semibold text-gray-800 truncate text-sm">${kpi.name}</h3>
+                                    <p class="text-xs text-gray-400 truncate">${kpi.description}</p>
+                                </div>
+                            </div>
+
+                            <!-- Target Info - Fixed width -->
+                            <div class="w-24 text-center border-l border-gray-100 px-3 flex-shrink-0">
+                                <p class="text-xs text-gray-400">Target</p>
+                                <p class="font-bold text-gray-800 text-sm">${formatNumber(kpi.target, kpi.unit)}</p>
+                            </div>
+
+                            <!-- YTD - Fixed width -->
+                            <div class="w-24 text-center border-l border-gray-100 px-3 flex-shrink-0">
+                                <p class="text-xs text-gray-400">YTD</p>
+                                <p class="font-bold ${colors.text} text-sm">${ytd !== null ? formatNumber(ytd, kpi.unit) : '-'}</p>
+                            </div>
+
+                            <!-- Progress % - Fixed width -->
+                            <div class="w-24 text-center border-l border-gray-100 px-3 flex-shrink-0">
+                                <p class="text-xs text-gray-400">Progress</p>
+                                <p class="font-bold ${colors.text} text-sm">${progressPercent.toFixed(2)}%</p>
+                            </div>
+
+                            <!-- Mini Line Chart - Fixed width -->
+                            <div class="w-80 border-l border-gray-100 px-3 flex-shrink-0">
+                                ${miniChart}
+                            </div>
+
+                            <!-- Input Section - Fixed width -->
+                            <div class="w-48 flex items-center justify-end gap-2 border-l border-gray-100 pl-3 flex-shrink-0">
+                                ${isConfirmed ? `
+                                    <div class="flex items-center gap-2">
+                                        <div class="text-right">
+                                            <p class="text-xs text-gray-400">${monthNames[currentMonthIndex]}</p>
+                                            <p class="font-bold text-green-600">${formatNumber(monthData.actual, kpi.unit)} ${kpi.unit}</p>
+                                        </div>
+                                        <span class="w-7 h-7 bg-green-100 text-green-600 rounded-full flex items-center justify-center flex-shrink-0">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                            </svg>
+                                        </span>
+                                    </div>
+                                ` : `
+                                    <div class="flex items-center gap-2">
+                                        <div class="relative">
+                                            <input type="number"
+                                                id="input-${kpi.id}"
+                                                class="input-actual w-24 pl-2 pr-6 py-1.5 border-2 border-amber-300 rounded-lg text-right text-sm font-semibold bg-white"
+                                                placeholder="ค่า"
+                                                value="${editingValues[kpi.id] || ''}"
+                                                oninput="handleInputChange(${kpi.id}, this.value)"
+                                                step="${kpi.unit === '%' ? '0.1' : '1000'}">
+                                            <span class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 text-xs">${kpi.unit}</span>
+                                        </div>
+                                        <button id="confirmBtn-${kpi.id}" onclick="confirmKpi(${kpi.id})"
+                                            class="w-8 h-8 bg-gray-300 text-white rounded-lg flex items-center justify-center transition-all cursor-not-allowed flex-shrink-0"
+                                            disabled title="Confirm">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                `}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                `;
+            });
+
+            container.innerHTML = html;
         }
 
         window.addEventListener('DOMContentLoaded', () => {
+            const saved = localStorage.getItem('selectedRole') || 'dept_head';
+            currentRole = saved;
+            document.getElementById('roleSelector').value = saved;
             updateUI();
-            renderTable();
+            renderKPICards();
+            updateOverallProgress();
+            // Update page subtitle with current month
+            document.getElementById('pageSubtitle').textContent = `ติดตามและ Update ค่า Actual ของ D-KPI รายเดือน - ${monthFullNames[currentMonthIndex]} 2025`;
         });
     </script>
 </head>
 <body class="bg-gray-100 min-h-screen">
     <!-- Sidebar -->
-    <div class="fixed left-0 top-0 h-full w-64 bg-gradient-to-b from-amber-700 to-amber-900 text-white">
+    <div class="fixed left-0 top-0 h-full w-64 bg-amber-700 shadow-lg z-20">
         <div class="p-6">
-            <div class="flex items-center gap-3 mb-8">
+            <!-- Logo -->
+            <div class="flex items-center gap-3 mb-6">
                 <div class="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
-                    <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    <svg class="w-6 h-6 text-amber-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
                     </svg>
                 </div>
                 <div>
-                    <h1 class="font-bold text-lg">KPI System</h1>
+                    <h1 class="text-white font-bold text-lg">KPI System</h1>
                     <p class="text-amber-200 text-xs">Performance Management</p>
                 </div>
             </div>
 
             <!-- User Profile -->
-            <div class="bg-amber-800 rounded-lg p-4 mb-6">
+            <div class="bg-white rounded-xl p-4 mb-6 shadow">
                 <div class="flex items-center gap-3">
-                    <div id="userInitials" class="w-10 h-10 bg-amber-600 rounded-full flex items-center justify-center font-bold">จว</div>
+                    <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                        <span id="userInitials" class="text-white font-bold">จว</span>
+                    </div>
                     <div class="flex-1 min-w-0">
-                        <p id="userName" class="font-semibold text-sm truncate">นางสาวจิราพร วงศ์ไพศาล</p>
-                        <p id="userPosition" class="text-amber-200 text-xs truncate">IT Director</p>
-                        <p id="userDept" class="text-amber-300 text-xs truncate">IT Department</p>
+                        <p id="userName" class="text-gray-800 font-semibold text-sm truncate">นางสาวจิราพร วงศ์ไพศาล</p>
+                        <p id="userPosition" class="text-gray-600 text-xs truncate">IT Director</p>
+                        <p id="userDept" class="text-amber-600 text-xs truncate">IT Department</p>
                     </div>
                 </div>
             </div>
 
+            <!-- Role Selector (Demo) -->
+            <div class="mb-6 pb-6 border-b border-amber-600">
+                <label class="text-amber-100 text-xs mb-2 block">Demo: Switch Role</label>
+                <select id="roleSelector" onchange="switchRole(this.value)" class="w-full bg-white text-gray-800 rounded-lg px-3 py-2 text-sm border border-amber-600 focus:outline-none focus:ring-2 focus:ring-amber-500">
+                    <option value="employee">Employee</option>
+                    <option value="team_lead">Team Lead</option>
+                    <option value="dept_head">Department Head</option>
+                    <option value="kpi_admin">KPI Admin</option>
+                </select>
+            </div>
+
             <!-- Navigation -->
-            <nav class="space-y-2">
-                <a href="01-dashboard.html" class="flex items-center gap-3 px-4 py-3 text-white hover:bg-amber-600 rounded-lg transition-all">
+            <nav class="space-y-1">
+                <a href="01-dashboard.html" data-permission="dashboard" class="flex items-center gap-3 px-4 py-3 text-white hover:bg-amber-600 rounded-lg transition-all">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
                     </svg>
                     <span class="font-medium">Dashboard</span>
                 </a>
 
-                <a href="04-my-kpi.html" class="flex items-center gap-3 px-4 py-3 text-white hover:bg-amber-600 rounded-lg transition-all">
+                <a href="04-my-kpi.html" data-permission="my-kpi" class="flex items-center gap-3 px-4 py-3 text-white hover:bg-amber-600 rounded-lg transition-all">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
                     </svg>
-                    <span class="font-medium">Dept KPI</span>
+                    <span id="sidebarKpiLabel" class="font-medium">Dept KPI</span>
                 </a>
 
-                <a href="09-monthly-update.html" class="flex items-center gap-3 px-4 py-3 bg-amber-800 text-white rounded-lg">
+                <a href="09-monthly-update.html" data-permission="monthly-update" class="hidden flex items-center gap-3 px-4 py-3 bg-amber-800 text-white rounded-lg">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                     </svg>
                     <span class="font-medium">Monthly Update</span>
-                    <span class="ml-auto bg-amber-500 text-white text-xs px-2 py-0.5 rounded-full">New</span>
                 </a>
 
-                <a href="03-alignment.html" class="flex items-center gap-3 px-4 py-3 text-white hover:bg-amber-600 rounded-lg transition-all">
+                <a href="03-alignment.html" data-permission="alignment" class="flex items-center gap-3 px-4 py-3 text-white hover:bg-amber-600 rounded-lg transition-all">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"/>
                     </svg>
@@ -434,21 +1047,36 @@
 
                 <div class="border-t border-amber-600 my-3"></div>
 
-                <a href="05-approval.html" class="flex items-center gap-3 px-4 py-3 text-white hover:bg-amber-600 rounded-lg transition-all">
+                <a href="02-corporate-kpi.html" data-permission="corporate-kpi" class="hidden flex items-center gap-3 px-4 py-3 text-white hover:bg-amber-600 rounded-lg transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                    </svg>
+                    <span class="font-medium">Corporate KPI</span>
+                </a>
+
+                <a href="05-approval.html" data-permission="approval" class="hidden flex items-center gap-3 px-4 py-3 text-white hover:bg-amber-600 rounded-lg transition-all">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
                     <span class="font-medium">Approval Inbox</span>
+                    <span class="ml-auto bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">5</span>
                 </a>
 
-                <a href="07-evaluation.html" class="flex items-center gap-3 px-4 py-3 text-white hover:bg-amber-600 rounded-lg transition-all">
+                <a href="07-evaluation.html" data-permission="evaluation" class="flex items-center gap-3 px-4 py-3 text-white hover:bg-amber-600 rounded-lg transition-all">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/>
                     </svg>
                     <span class="font-medium">Evaluation</span>
                 </a>
 
-                <a href="08-reports.html" class="flex items-center gap-3 px-4 py-3 text-white hover:bg-amber-600 rounded-lg transition-all">
+                <a href="06-freeze-control.html" data-permission="freeze-control" class="hidden flex items-center gap-3 px-4 py-3 text-white hover:bg-amber-600 rounded-lg transition-all">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                    </svg>
+                    <span class="font-medium">Freeze Control</span>
+                </a>
+
+                <a href="08-reports.html" data-permission="reports" class="hidden flex items-center gap-3 px-4 py-3 text-white hover:bg-amber-600 rounded-lg transition-all">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                     </svg>
@@ -476,112 +1104,25 @@
                     <h2 class="text-2xl font-bold text-gray-800 flex items-center gap-3">
                         <span class="w-10 h-10 bg-indigo-100 text-indigo-600 rounded-lg flex items-center justify-center">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
                             </svg>
                         </span>
-                        D-KPI Monthly Update
+                        Monthly Monitoring
                     </h2>
-                    <p class="text-sm text-gray-600 mt-1 ml-13">Update actual values for department KPIs each month</p>
+                    <p id="pageSubtitle" class="text-sm text-gray-600 mt-1 ml-13">ติดตามและ Update ค่า Actual ของ D-KPI รายเดือน</p>
                 </div>
                 <div class="flex items-center gap-4">
                     <div class="bg-amber-50 rounded-lg px-4 py-2 border border-amber-200">
                         <p class="text-amber-600 text-xs">Current Cycle</p>
                         <p class="text-amber-800 font-bold">H2/2025</p>
                     </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Stats Row -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-            <div class="bg-white rounded-lg shadow p-5">
-                <div class="flex items-center justify-between mb-3">
-                    <div class="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
-                        <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                    <button onclick="openAddKpiModal()" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-bold transition-all flex items-center gap-2 shadow">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                         </svg>
-                    </div>
-                </div>
-                <p class="text-gray-500 text-sm">Total D-KPIs</p>
-                <p id="statTotal" class="text-2xl font-bold text-gray-800">5</p>
-            </div>
-
-            <div class="bg-white rounded-lg shadow p-5">
-                <div class="flex items-center justify-between mb-3">
-                    <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                        <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                        </svg>
-                    </div>
-                </div>
-                <p class="text-gray-500 text-sm">Confirmed</p>
-                <p id="statConfirmed" class="text-2xl font-bold text-green-600">0</p>
-            </div>
-
-            <div class="bg-white rounded-lg shadow p-5">
-                <div class="flex items-center justify-between mb-3">
-                    <div class="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center">
-                        <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                    </div>
-                </div>
-                <p class="text-gray-500 text-sm">Pending</p>
-                <p id="statPending" class="text-2xl font-bold text-amber-600">5</p>
-            </div>
-
-            <div class="bg-white rounded-lg shadow p-5">
-                <div class="flex items-center justify-between mb-3">
-                    <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-                        <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-                        </svg>
-                    </div>
-                </div>
-                <p class="text-gray-500 text-sm">Monthly Progress</p>
-                <div class="flex items-center gap-2 mt-1">
-                    <div class="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
-                        <div id="progressBar" class="h-full bg-purple-500 transition-all duration-300" style="width: 0%"></div>
-                    </div>
-                    <span class="text-sm font-semibold text-purple-600">0%</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Month Selector -->
-        <div class="bg-white rounded-lg shadow mb-6">
-            <div class="p-4 border-b border-gray-200">
-                <h3 class="text-sm font-semibold text-gray-700 mb-3">Select Month to Update</h3>
-                <div class="flex flex-wrap gap-2">
-                    <button onclick="selectMonth('jan')" data-month="jan" class="month-tab px-4 py-2 rounded-lg text-sm font-medium border border-gray-200 bg-white text-gray-600 hover:bg-amber-50 transition-all">ม.ค.</button>
-                    <button onclick="selectMonth('feb')" data-month="feb" class="month-tab px-4 py-2 rounded-lg text-sm font-medium border border-gray-200 bg-white text-gray-600 hover:bg-amber-50 transition-all">ก.พ.</button>
-                    <button onclick="selectMonth('mar')" data-month="mar" class="month-tab px-4 py-2 rounded-lg text-sm font-medium border border-gray-200 bg-white text-gray-600 hover:bg-amber-50 transition-all">มี.ค.</button>
-                    <button onclick="selectMonth('apr')" data-month="apr" class="month-tab px-4 py-2 rounded-lg text-sm font-medium border border-gray-200 bg-white text-gray-600 hover:bg-amber-50 transition-all">เม.ย.</button>
-                    <button onclick="selectMonth('may')" data-month="may" class="month-tab px-4 py-2 rounded-lg text-sm font-medium border border-gray-200 bg-white text-gray-600 hover:bg-amber-50 transition-all">พ.ค.</button>
-                    <button onclick="selectMonth('jun')" data-month="jun" class="month-tab px-4 py-2 rounded-lg text-sm font-medium border border-gray-200 bg-white text-gray-600 hover:bg-amber-50 transition-all">มิ.ย.</button>
-                    <button onclick="selectMonth('jul')" data-month="jul" class="month-tab px-4 py-2 rounded-lg text-sm font-medium border border-gray-200 bg-amber-600 text-white transition-all">ก.ค.</button>
-                    <button onclick="selectMonth('aug')" data-month="aug" class="month-tab px-4 py-2 rounded-lg text-sm font-medium border border-gray-200 bg-white text-gray-600 hover:bg-amber-50 transition-all">ส.ค.</button>
-                    <button onclick="selectMonth('sep')" data-month="sep" class="month-tab px-4 py-2 rounded-lg text-sm font-medium border border-gray-200 bg-white text-gray-600 hover:bg-amber-50 transition-all">ก.ย.</button>
-                    <button onclick="selectMonth('oct')" data-month="oct" class="month-tab px-4 py-2 rounded-lg text-sm font-medium border border-gray-200 bg-white text-gray-600 hover:bg-amber-50 transition-all">ต.ค.</button>
-                    <button onclick="selectMonth('nov')" data-month="nov" class="month-tab px-4 py-2 rounded-lg text-sm font-medium border border-gray-200 bg-white text-gray-600 hover:bg-amber-50 transition-all">พ.ย.</button>
-                    <button onclick="selectMonth('dec')" data-month="dec" class="month-tab px-4 py-2 rounded-lg text-sm font-medium border border-gray-200 bg-white text-gray-600 hover:bg-amber-50 transition-all">ธ.ค.</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- KPI Table -->
-        <div class="bg-white rounded-lg shadow">
-            <div class="p-6 border-b border-gray-200">
-                <div class="flex items-center justify-between">
-                    <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2">
-                        <span class="w-7 h-7 bg-indigo-100 text-indigo-600 rounded-lg flex items-center justify-center">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
-                            </svg>
-                        </span>
-                        Department KPIs - <span id="selectedMonthHeader" class="text-amber-600">ก.ค. 2025</span>
-                    </h3>
-                    <button onclick="confirmAll()" class="px-5 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-lg font-bold transition-all flex items-center gap-2 shadow">
+                        Add Monitoring KPI
+                    </button>
+                    <button id="confirmAllBtn" onclick="confirmAll()" class="px-5 py-2.5 bg-green-600 hover:bg-green-700 text-white rounded-lg font-bold transition-all flex items-center gap-2 shadow">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                         </svg>
@@ -589,38 +1130,113 @@
                     </button>
                 </div>
             </div>
+        </div>
 
-            <div class="overflow-x-auto">
-                <table class="w-full">
-                    <thead>
-                        <tr class="text-left text-gray-600 text-sm border-b border-gray-200 bg-gray-50">
-                            <th class="px-4 py-4 font-medium">KPI Name</th>
-                            <th class="px-4 py-4 font-medium text-center">Target</th>
-                            <th class="px-4 py-4 font-medium text-center">Actual (Monthly)</th>
-                            <th class="px-4 py-4 font-medium text-center">YTD</th>
-                            <th class="px-4 py-4 font-medium text-center">Weight</th>
-                            <th class="px-4 py-4 font-medium text-center">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody id="kpiTableBody" class="text-gray-800 text-sm">
-                        <!-- Dynamic content -->
-                    </tbody>
-                </table>
+        <!-- Overview Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+            <!-- Progress Ring -->
+            <div class="bg-white rounded-xl shadow-sm p-6 flex items-center gap-6">
+                <div class="relative w-24 h-24">
+                    <svg class="w-24 h-24 -rotate-90">
+                        <circle cx="48" cy="48" r="45" fill="none" stroke="#e5e7eb" stroke-width="8"/>
+                        <circle id="progressCircle" cx="48" cy="48" r="45" fill="none" stroke="#10b981" stroke-width="8"
+                                stroke-linecap="round" stroke-dasharray="282.7" stroke-dashoffset="282.7" class="progress-ring"/>
+                    </svg>
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <span id="progressPercent" class="text-xl font-bold text-gray-800">0%</span>
+                    </div>
+                </div>
+                <div>
+                    <p class="text-gray-500 text-sm">Monthly Progress</p>
+                    <p class="text-2xl font-bold text-gray-800 mt-1">กรกฎาคม</p>
+                    <p class="text-xs text-gray-400 mt-1">เดือนที่ต้อง Update</p>
+                </div>
             </div>
 
-            <!-- Footer Notes -->
-            <div class="p-4 bg-gray-50 border-t border-gray-200">
-                <div class="flex items-start gap-2 text-sm text-gray-600">
-                    <svg class="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
+            <!-- Total KPIs -->
+            <div class="bg-white rounded-xl shadow-sm p-6">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center">
+                        <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                        </svg>
+                    </div>
                     <div>
-                        <p class="font-medium text-gray-700">หมายเหตุ:</p>
-                        <ul class="list-disc list-inside mt-1 space-y-1">
-                            <li>กรอกค่า Actual ของแต่ละ D-KPI และกด Confirm เพื่อบันทึก</li>
-                            <li>เมื่อ Confirm แล้วจะไม่สามารถแก้ไขได้ (ต้องติดต่อ KPI Admin)</li>
-                            <li>YTD คำนวณจากค่าเฉลี่ยของเดือนที่ผ่านมา (หรือผลรวมสำหรับหน่วย บาท)</li>
-                        </ul>
+                        <p class="text-gray-500 text-sm">Total D-KPIs</p>
+                        <p id="statTotal" class="text-3xl font-bold text-gray-800">5</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Confirmed -->
+            <div class="bg-white rounded-xl shadow-sm p-6">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                        <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-gray-500 text-sm">Confirmed</p>
+                        <p id="statConfirmed" class="text-3xl font-bold text-green-600">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pending -->
+            <div class="bg-white rounded-xl shadow-sm p-6">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center">
+                        <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-gray-500 text-sm">Pending</p>
+                        <p id="statPending" class="text-3xl font-bold text-amber-600">5</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- KPI List Header -->
+        <div class="bg-gray-50 rounded-lg px-5 py-2 mb-3 border border-gray-200">
+            <div class="flex items-center text-xs font-medium text-gray-500 uppercase tracking-wide">
+                <div class="w-[600px] flex-shrink-0">KPI Name</div>
+                <div class="w-24 text-center flex-shrink-0">Target</div>
+                <div class="w-24 text-center flex-shrink-0">YTD</div>
+                <div class="w-24 text-center flex-shrink-0">Progress</div>
+                <div class="w-80 text-center flex-shrink-0">Trend</div>
+                <div class="w-48 text-center flex-shrink-0">Update</div>
+            </div>
+        </div>
+
+        <!-- KPI Cards Grid -->
+        <div id="kpiCardsContainer" class="space-y-2">
+            <!-- Dynamic content -->
+        </div>
+
+        <!-- Footer Notes -->
+        <div class="mt-6 bg-white rounded-xl shadow-sm p-5">
+            <div class="flex items-start gap-3 text-sm text-gray-600">
+                <svg class="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <div>
+                    <p class="font-medium text-gray-700">คำแนะนำการใช้งาน</p>
+                    <div class="mt-2 grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                        <div class="flex items-start gap-2">
+                            <span class="w-5 h-5 bg-amber-100 text-amber-600 rounded flex items-center justify-center flex-shrink-0 mt-0.5">1</span>
+                            <span>กรอกค่า Actual ในช่องสีเหลือง</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="w-5 h-5 bg-amber-100 text-amber-600 rounded flex items-center justify-center flex-shrink-0 mt-0.5">2</span>
+                            <span>กด Confirm เพื่อบันทึกแต่ละ KPI</span>
+                        </div>
+                        <div class="flex items-start gap-2">
+                            <span class="w-5 h-5 bg-amber-100 text-amber-600 rounded flex items-center justify-center flex-shrink-0 mt-0.5">3</span>
+                            <span>หรือกด Confirm All เพื่อบันทึกทั้งหมด</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -629,10 +1245,74 @@
 
     <!-- Toast Notification -->
     <div id="toast" class="fixed bottom-6 right-6 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg font-medium transform translate-y-20 opacity-0 transition-all duration-300 flex items-center gap-2">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg id="toastIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
         </svg>
-        <span>Saved successfully</span>
+        <span id="toastText">Saved successfully</span>
+    </div>
+
+    <!-- Add KPI Modal -->
+    <div id="addKpiModal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="closeAddKpiModal()"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl">
+            <div class="bg-white rounded-2xl shadow-2xl mx-4 max-h-[80vh] overflow-hidden flex flex-col">
+                <!-- Modal Header -->
+                <div class="px-6 py-5 border-b border-gray-100 bg-gradient-to-r from-indigo-50 to-purple-50">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-indigo-100 rounded-xl flex items-center justify-center">
+                                <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold text-gray-800">เพิ่ม KPI เข้า Monitoring</h3>
+                                <p class="text-sm text-gray-500">เลือก D-KPI ที่ต้องการติดตามรายเดือน</p>
+                            </div>
+                        </div>
+                        <button onclick="closeAddKpiModal()" class="w-10 h-10 hover:bg-gray-100 rounded-lg flex items-center justify-center transition-colors">
+                            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Modal Body -->
+                <div class="p-6 overflow-y-auto flex-1">
+                    <div id="availableKpiList" class="space-y-3">
+                        <!-- Dynamic content -->
+                    </div>
+                    <div id="noAvailableKpis" class="hidden py-8 text-center">
+                        <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                        <p class="text-gray-600 font-medium">All D-KPIs have been added to Monitoring</p>
+                        <p class="text-sm text-gray-400 mt-1">No D-KPI available to add</p>
+                    </div>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="px-6 py-4 bg-gray-50 border-t border-gray-100 flex items-center justify-between">
+                    <p class="text-sm text-gray-500">
+                        <span id="selectedCount">0</span> items selected
+                    </p>
+                    <div class="flex gap-3">
+                        <button onclick="closeAddKpiModal()" class="px-5 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium transition-colors">
+                            Cancel
+                        </button>
+                        <button id="addSelectedBtn" onclick="addSelectedKpis()" disabled class="px-5 py-2.5 bg-gray-300 text-white rounded-lg font-bold transition-all cursor-not-allowed flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                            </svg>
+                            Add KPI
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 </html>
