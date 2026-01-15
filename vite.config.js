@@ -6,6 +6,9 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: 3000,
-    allowedHosts: ['upon-requires-normally-total.trycloudflare.com'],
+    allowedHosts: [
+      'upon-requires-normally-total.trycloudflare.com',
+      'galleries-scored-aviation-olympics.trycloudflare.com'
+    ],
   },
 })
